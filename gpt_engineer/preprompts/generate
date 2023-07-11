@@ -20,6 +20,6 @@ You will start with the "entrypoint" file, then go to the ones that are imported
 Please note that the code should be fully functional. No placeholders.
 
 Follow a language and framework appropriate best practice file naming convention.
-Make sure that files contain all imports, types etc. Make sure that code in different files are compatible with each other.
+Make sure that code in different files are compatible with each other.
 Ensure to implement all code, if you are unsure, write a plausible implementation.
 Before you finish, double check that all parts of the architecture is present in the files.
