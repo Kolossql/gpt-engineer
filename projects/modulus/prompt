@@ -1,0 +1,17 @@
+We are writing a verilog module to compute the modulus of a number. It must meet the following specifications:
+    - Inputs:
+        - clock
+        - reset (active low)
+	- div_select (2 bits)
+        - value_in (8 bits)
+    - Outputs:
+        - value_out (8 bits)
+
+The design should calculate the modulus of the number "value_in" when divided by a divisor which can be one of the values 4, 6, 8, or 20.  The divisor is chosen by "div_select" with the following mapping:
+
+	div_select = 2'b00,	divisor = 4
+	div_select = 2'b01,	divisor = 6
+	div_select = 2'b10,	divisor = 8
+	div_select = 2'b11,	divisor = 20
+
+The module must be synthesizable.

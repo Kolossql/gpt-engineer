@@ -47,8 +47,13 @@ todo
 scratchpad
 
 # Ignore GPT Engineer files
-projects
-!projects/example
+# projects
+# !projects/example
+
+# Ignore GPT Engineer working files but save the prompts
+projects/*/archive
+projects/*/memory
+projects/*/workspace
 
 # Pyenv
 .python-version

@@ -1,0 +1,8 @@
+We are writing a verilog module for a linear feedback shift register (LFSR). It must meet the following specifications:
+	- Inputs:
+		- Clock
+		- Active-low reset
+	- Outputs:
+		- Data (8-bits)
+
+The initial state should be 10001010, and the taps should be at locations 1, 4, 6, and 7.

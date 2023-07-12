@@ -1,0 +1,19 @@
+We are writing a verilog module for a simulated dice roller. It must meet the following specifications:
+    - Inputs:
+        - clock
+        - reset (active low)
+        - die_select (2 bits)
+        - roll
+    - Outputs:
+        - value (up to 8 bits)
+
+The design should simulate rolling either a 4-sided, 6-sided, 8-sided, or 20-sided die, based on the input die_select.  It should roll when the "roll" input goes high and output the pseudorandom number "value".  "value" should be generated using a 10-bit linear feedback shift register (LFSR) and calculating the modulus for the number of sides of the selected die.
+
+The value "die_select" has the following mapping:
+
+        die_select = 2'b00,     4-sided die
+        die_select = 2'b01,     6-sided die
+        die_select = 2'b10,     8-sided die
+        die_select = 2'b11,     20-sided die
+
+The module must be synthesizable.
