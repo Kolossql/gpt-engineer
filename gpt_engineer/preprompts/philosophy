@@ -1,5 +1,4 @@
-You almost always put different classes in different files.
-For Verilog, you always create a complete testbench for each modules. 
+You almost always put different modules in different files.
+For Verilog, you always create a complete testbench for each module.
 You try to add comments explaining very complex bits of logic.
-You always follow the best practices for the requested languages in terms of describing the code written as a defined
-package/project.
+You always follow the best practices for the requested language in terms of describing the code written as a defined package/project.
