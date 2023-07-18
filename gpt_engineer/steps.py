@@ -163,6 +163,18 @@ def gen_clarified_code(ai: AI, dbs: DBs) -> List[dict]:
     to_files(messages[-1]["content"], dbs.workspace)
     return messages
 
+def gen_verilog_testbench(ai: AI, dbs: DBs) -> List[dict]:
+    """Takes clarification and generates code"""
+    messages = json.loads(dbs.logs[clarify.__name__])
+
+    messages = [
+        ai.fsystem(setup_sys_prompt(dbs)),
+    ] + messages[1:]
+    messages = ai.next(messages, dbs.preprompts["gen_testbench"], step_name=curr_fn())
+
+    to_files(messages[-1]["content"], dbs.workspace)
+    return messages
+
 
 def gen_code(ai: AI, dbs: DBs) -> List[dict]:
     # get the messages from previous step
@@ -275,6 +287,7 @@ def human_review(ai: AI, dbs: DBs):
 
 class Config(str, Enum):
     DEFAULT = "default"
+    DEFAULTVERILOG = "defaultver"
     BENCHMARK = "benchmark"
     SIMPLE = "simple"
     TDD = "tdd"
@@ -288,9 +301,10 @@ class Config(str, Enum):
 
 # Different configs of what steps to run
 STEPS = {
-    Config.DEFAULT: [
+    Config.DEFAULTVERILOG: [
         clarify,
         gen_clarified_code,
+        gen_verilog_testbench,
         gen_entrypoint,
         execute_entrypoint,
         human_review,
