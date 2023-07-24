@@ -301,7 +301,7 @@ class Config(str, Enum):
 
 # Different configs of what steps to run
 STEPS = {
-    Config.DEFAULTVERILOG: [
+    Config.DEFAULT: [
         clarify,
         gen_clarified_code,
         gen_verilog_testbench,
