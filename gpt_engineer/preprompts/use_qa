@@ -20,3 +20,4 @@ Follow a language and framework appropriate best practice file naming convention
 The code should be fully functional. Make sure that code in different files are compatible with each other.
 Before you finish, double check that all parts of the architecture is present in the files.
 For Verilog, do not write a testbench.
+For Verilog, use the exact names for inputs and ouputs as described in the specifications. 
