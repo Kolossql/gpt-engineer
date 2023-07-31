@@ -37,7 +37,7 @@ class TokenUsage:
 
 
 class AI:
-    def __init__(self, model_name="gpt-4", temperature=0.1):
+    def __init__(self, model_name="gpt-4", temperature=0):
         self.temperature = temperature
         self.model_name = fallback_model(model_name)
         self.llm = create_chat_model(self.model_name, temperature)

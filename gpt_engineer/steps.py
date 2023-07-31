@@ -1,6 +1,7 @@
 import inspect
 import re
 import subprocess
+import json
 
 from enum import Enum
 from typing import List, Union
@@ -168,14 +169,14 @@ def gen_clarified_code(ai: AI, dbs: DBs) -> List[dict]:
 
 def gen_verilog_testbench(ai: AI, dbs: DBs) -> List[dict]:
     """Takes clarification and generates code"""
-    messages = json.loads(dbs.logs[clarify.__name__])
+    messages = AI.deserialize_messages(dbs.logs[clarify.__name__])
 
     messages = [
         ai.fsystem(setup_sys_prompt(dbs)),
     ] + messages[1:]
     messages = ai.next(messages, dbs.preprompts["gen_testbench"], step_name=curr_fn())
 
-    to_files(messages[-1]["content"], dbs.workspace)
+    to_files(messages[-1].content.strip(), dbs.workspace)
     return messages
 
 
