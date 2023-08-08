@@ -1,0 +1,69 @@
+Core Blocks:
+1. State Register: This block will store the current state of the ABRO state machine.
+2. State Decoder: This block will decode the current state and generate the appropriate outputs.
+3. State Transition Logic: This block will determine the next state based on the current state and input conditions.
+
+ABROStateMachine.v
+```verilog
+module ABROStateMachine (
+    input wire Clock,
+    input wire Reset,
+    input wire A,
+    input wire B,
+    output wire O,
+    output wire [1:0] State
+);
+
+    // State Register
+    reg [1:0] state_reg;
+    always @(posedge Clock or posedge Reset) begin
+        if (Reset == 1'b0) begin
+            state_reg <= 2'b00; // Initial state
+        end else begin
+            state_reg <= next_state;
+        end
+    end
+    
+    // State Decoder
+    assign O = (state_reg == 2'b11) ? 1'b1 : 1'b0;
+    assign State = state_reg;
+    
+    // State Transition Logic
+    reg [1:0] next_state;
+    always @(state_reg or A or B) begin
+        case (state_reg)
+            2'b00: begin
+                if (A && B) begin
+                    next_state = 2'b01;
+                end else begin
+                    next_state = 2'b00;
+                end
+            end
+            2'b01: begin
+                if (A && B) begin
+                    next_state = 2'b11;
+                end else begin
+                    next_state = 2'b01;
+                end
+            end
+            2'b11: begin
+                next_state = 2'b00;
+            end
+            default: begin
+                next_state = 2'b00;
+            end
+        endcase
+    end
+
+endmodule
+```
+
+In the above code, we have implemented the ABROStateMachine module. It consists of a state register, a state decoder, and state transition logic. The state register stores the current state of the state machine. The state decoder decodes the current state to generate the output O and the State output. The state transition logic determines the next state based on the current state and input conditions.
+
+The state register is implemented using a synchronous always block that triggers on the positive edge of the Clock signal or the positive edge of the Reset signal. If the Reset signal is low, the state register is set to the initial state (2'b00). Otherwise, the state register is updated with the next_state value.
+
+The state decoder is implemented using assign statements. The output O is set to 1 if the current state is 2'b11 (both A and B have been high at least once), otherwise it is set to 0. The State output is directly assigned the value of the state register.
+
+The state transition logic is implemented using a combinational always block that triggers on changes in the state register, A, or B. It uses a case statement to determine the next state based on the current state and input conditions. If the current state is 2'b00 and both A and B are high, the next state is set to 2'b01. If the current state is 2'b01 and both A and B are high, the next state is set to 2'b11. If the current state is 2'b11, the next state is set to 2'b00. For all other cases, the next state is set to 2'b00.
+
+This implementation follows the Verilog 2005 standard without the use of SystemVerilog. It is a single synthesizable module without the use of initial blocks or non-synthesizable functions.

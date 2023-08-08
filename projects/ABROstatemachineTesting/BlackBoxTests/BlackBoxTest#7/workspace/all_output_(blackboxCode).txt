@@ -1,0 +1,97 @@
+Core Blocks:
+1. State Register: This block is responsible for storing the current state of the ABRO state machine.
+2. State Decoder: This block decodes the current state and generates control signals for the state transitions.
+3. Output Logic: This block determines the value of the output O based on the current state and the inputs A and B.
+4. Reset Logic: This block handles the active-low reset functionality of the module.
+
+ABROStateMachine.v
+```verilog
+module ABROStateMachine (
+  input wire clk,
+  input wire reset,
+  input wire A,
+  input wire B,
+  output wire O,
+  output wire [2:0] state
+);
+
+  // State Register
+  reg [2:0] current_state;
+  always @(posedge clk or negedge reset) begin
+    if (!reset)
+      current_state <= 3'b000; // Initial state
+    else
+      current_state <= next_state;
+  end
+
+  // State Decoder
+  reg [2:0] next_state;
+  always @(current_state, A, B) begin
+    case (current_state)
+      3'b000: // State 0
+        if (A && B)
+          next_state = 3'b001; // Transition to State 1
+        else
+          next_state = current_state;
+      3'b001: // State 1
+        if (A && !B)
+          next_state = 3'b010; // Transition to State 2
+        else if (!A && B)
+          next_state = 3'b100; // Transition to State 4
+        else
+          next_state = current_state;
+      3'b010: // State 2
+        if (!A && B)
+          next_state = 3'b011; // Transition to State 3
+        else if (A && !B)
+          next_state = 3'b101; // Transition to State 5
+        else
+          next_state = current_state;
+      3'b011: // State 3
+        if (A && B)
+          next_state = 3'b110; // Transition to State 6
+        else
+          next_state = current_state;
+      3'b100: // State 4
+        if (A && B)
+          next_state = 3'b101; // Transition to State 5
+        else
+          next_state = current_state;
+      3'b101: // State 5
+        if (!A && B)
+          next_state = 3'b110; // Transition to State 6
+        else if (A && !B)
+          next_state = 3'b010; // Transition to State 2
+        else
+          next_state = current_state;
+      3'b110: // State 6
+        if (A && B)
+          next_state = 3'b111; // Transition to State 7
+        else
+          next_state = current_state;
+      3'b111: // State 7
+        if (!A && !B)
+          next_state = 3'b000; // Transition to State 0
+        else
+          next_state = current_state;
+      default:
+        next_state = current_state;
+    endcase
+  end
+
+  // Output Logic
+  assign O = (current_state == 3'b111) ? 1'b1 : 1'b0;
+
+  // Reset Logic
+  always @(posedge clk or negedge reset) begin
+    if (!reset)
+      current_state <= 3'b000; // Initial state
+  end
+
+  // Output current state for verification
+  assign state = current_state;
+
+endmodule
+```
+
+This Verilog module implements the ABRO state machine based on the provided specifications. It consists of a state register, state decoder, output logic, and reset logic. The state register stores the current state of the machine, while the state decoder generates the next state based on the current state and input signals. The output logic determines the value of the output O based on the current state, and the reset logic handles the active-low reset functionality. The module also outputs the current state for verification purposes.

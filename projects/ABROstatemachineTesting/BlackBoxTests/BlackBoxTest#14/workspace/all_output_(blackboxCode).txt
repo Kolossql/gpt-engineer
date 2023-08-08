@@ -1,0 +1,67 @@
+Core Blocks:
+1. ABROStateMachine: Implements the ABRO state machine logic and handles the state transitions based on the inputs.
+
+ABROStateMachine.v
+```verilog
+module ABROStateMachine(
+  input wire clk,
+  input wire reset,
+  input wire A,
+  input wire B,
+  output wire O,
+  output wire [N-1:0] State
+);
+
+  // State definition
+  parameter STATE_INITIAL = 2'b00;
+  parameter STATE_A_HIGH = 2'b01;
+  parameter STATE_B_HIGH = 2'b10;
+  parameter STATE_AB_HIGH = 2'b11;
+
+  // Internal state register
+  reg [N-1:0] state_reg;
+  // Next state logic
+  always @(posedge clk or posedge reset) begin
+    if (reset) begin
+      state_reg <= STATE_INITIAL;
+    end else begin
+      case (state_reg)
+        STATE_INITIAL: begin
+          if (A && B) begin
+            state_reg <= STATE_AB_HIGH;
+          end else if (A) begin
+            state_reg <= STATE_A_HIGH;
+          end else if (B) begin
+            state_reg <= STATE_B_HIGH;
+          end
+        end
+        STATE_A_HIGH: begin
+          if (A && B) begin
+            state_reg <= STATE_AB_HIGH;
+          end
+        end
+        STATE_B_HIGH: begin
+          if (A && B) begin
+            state_reg <= STATE_AB_HIGH;
+          end
+        end
+        STATE_AB_HIGH: begin
+          state_reg <= STATE_INITIAL;
+        end
+      endcase
+    end
+  end
+
+  // Output logic
+  assign O = (state_reg == STATE_AB_HIGH) ? 1'b1 : 1'b0;
+  assign State = state_reg;
+
+endmodule
+```
+Note: Replace `N` with the appropriate number of bits for the State output.
+
+The ABROStateMachine module implements the ABRO state machine logic. It has four states: STATE_INITIAL, STATE_A_HIGH, STATE_B_HIGH, and STATE_AB_HIGH. The module has a clock input (`clk`), an active-low reset input (`reset`), and two data inputs (`A` and `B`). The module also has two outputs: `O` represents the output indicating if both A and B have been high at least once, and `State` represents the current state of the state machine.
+
+The module uses a synchronous always block to handle the state transitions. On each positive edge of the clock or positive edge of the reset signal, the module checks the current state and updates the next state accordingly. The output logic assigns the value of `O` based on the current state, and the `State` output reflects the value of the state register.
+
+The module follows the 2005 Verilog standard and does not use any SystemVerilog features. It is a single synthesizable module without the use of initial blocks or non-synthesizable constructs.

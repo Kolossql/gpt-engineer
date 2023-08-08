@@ -1,0 +1,17 @@
+ABROStateMachine
+{
+    // Clock input
+    input wire 1 clk
+    // Active-low reset input
+    input wire 1 reset
+    // A input
+    input wire 1 A
+    // B input
+    input wire 1 B
+}
+{
+    // Output O indicating if A and B have both been high at least once
+    output wire 1 O
+    // State output indicating the current state of the machine
+    output wire [x:0] State
+}

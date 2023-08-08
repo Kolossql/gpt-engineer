@@ -1,0 +1,97 @@
+module ABROStateMachineTestbench;
+
+  // Inputs
+  reg clk;
+  reg reset;
+  reg A;
+  reg B;
+
+  // Outputs
+  wire O;
+  wire [N-1:0] State;
+
+  // Instantiate the module under test
+  ABROStateMachine dut (
+    .clk(clk),
+    .reset(reset),
+    .A(A),
+    .B(B),
+    .O(O),
+    .State(State)
+  );
+
+  // Testbench logic
+  initial begin
+    // Initialize inputs
+    clk = 0;
+    reset = 1;
+    A = 0;
+    B = 0;
+
+    // Apply reset
+    #10 reset = 0;
+
+    // Test 1: Initial state
+    #10;
+    if (O === 1'b0 && State === 0) begin
+      $display("Test 1 Passed");
+    end else begin
+      $display("Test 1 Failed");
+    end
+
+    // Test 2: Single high input
+    #10 A = 1;
+    #10;
+    if (O === 1'b0 && State === 0) begin
+      $display("Test 2 Passed");
+    end else begin
+      $display("Test 2 Failed");
+    end
+
+    // Test 3: Both inputs high in any order
+    #10 B = 1;
+    #10 A = 0;
+    #10 A = 1;
+    #10;
+    if (O === 1'b1 && State === 1) begin
+      $display("Test 3 Passed");
+    end else begin
+      $display("Test 3 Failed");
+    end
+
+    // Test 4: Reset behavior
+    #10 reset = 1;
+    #10 reset = 0;
+    #10;
+    if (O === 1'b0 && State === 0) begin
+      $display("Test 4 Passed");
+    end else begin
+      $display("Test 4 Failed");
+    end
+
+    // Test 5: Continuous input
+    #10 A = 1;
+    #10 B = 1;
+    #10;
+    if (O === 1'b1 && State === 1) begin
+      $display("Test 5 Passed");
+    end else begin
+      $display("Test 5 Failed");
+    end
+
+    // Finish simulation
+    #10 $finish;
+  end
+
+  // Clock generation
+  always begin
+    #5 clk = ~clk;
+  end
+
+  // Dump waveform for debugging
+  initial begin
+    $dumpfile("WaveOutput.vcd");
+    $dumpvars(0, ABROStateMachineTestbench);
+  end
+
+endmodule

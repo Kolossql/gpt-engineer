@@ -1,0 +1,18 @@
+Core Blocks:
+1. ABROStateMachine: Implements the ABRO state machine logic and handles the input and output signals.
+
+ABROStateMachine.v
+```verilog
+module ABROStateMachine (
+  input wire clk,
+  input wire reset,
+  input wire A,
+  input wire B,
+  output wire O,
+  output wire [x:0] State
+);
+  // Module implementation goes here
+endmodule
+```
+
+Now, let's implement the ABROStateMachine module.

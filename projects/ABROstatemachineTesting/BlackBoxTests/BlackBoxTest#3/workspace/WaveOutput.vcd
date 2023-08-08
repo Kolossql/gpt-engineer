@@ -1,0 +1,73 @@
+$date
+	Mon Jul 31 17:55:08 2023
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1s
+$end
+$scope module ABROStateMachineTestbench $end
+$var wire 2 ! State [1:0] $end
+$var wire 1 " O $end
+$var reg 1 # A $end
+$var reg 1 $ B $end
+$var reg 1 % clk $end
+$var reg 1 & reset $end
+$scope module dut $end
+$var wire 1 # A $end
+$var wire 1 $ B $end
+$var wire 1 " O $end
+$var wire 2 ' State [1:0] $end
+$var wire 1 % clk $end
+$var wire 1 & reset $end
+$var parameter 2 ( S0 $end
+$var parameter 2 ) S1 $end
+$var parameter 2 * S2 $end
+$var parameter 2 + S3 $end
+$var reg 1 , O_reg $end
+$var reg 2 - current_state [1:0] $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+b11 +
+b10 *
+b1 )
+b0 (
+$end
+#0
+$dumpvars
+bx -
+x,
+bx '
+1&
+x%
+x$
+x#
+x"
+bx !
+$end
+#10
+0"
+0,
+b0 !
+b0 '
+b0 -
+0&
+#20
+0#
+#40
+0$
+#80
+1#
+#140
+0#
+#160
+1$
+#200
+1#
+#300
+0#
+#330

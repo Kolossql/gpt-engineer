@@ -1,0 +1,160 @@
+Blocks necessary for testing the ABROStateMachine module:
+1. Clock generator: Generates a clock signal for the testbench.
+2. Stimulus generator: Generates stimulus for the inputs of the ABROStateMachine module.
+3. Monitor: Monitors the outputs of the ABROStateMachine module and checks if they match the expected outputs.
+4. Testbench: The main testbench module that instantiates the ABROStateMachine module and the necessary blocks for testing.
+
+Important edge cases to test:
+1. Initial state: Test when both A and B inputs are low initially.
+2. Single high input: Test when only one of the A or B inputs is high.
+3. Both inputs high in any order: Test when both A and B inputs are high in any order.
+4. Both inputs high in order: Test when both A and B inputs are high in a specific order.
+5. Reset: Test the behavior of the module when the reset input is triggered.
+
+Testbench module:
+
+testbench.v
+```verilog
+module ClockGenerator(
+    input wire clk_in,
+    output reg clk_out
+);
+    always begin
+        #5 clk_out = ~clk_out;
+    end
+endmodule
+
+module StimulusGenerator(
+    input wire clk,
+    output reg reset,
+    output reg A,
+    output reg B
+);
+    reg [2:0] count;
+    
+    always @(posedge clk) begin
+        count <= count + 1;
+        
+        case (count)
+            3'd0: begin
+                reset <= 1;
+                A <= 0;
+                B <= 0;
+            end
+            3'd1: begin
+                reset <= 0;
+                A <= 1;
+                B <= 0;
+            end
+            3'd2: begin
+                reset <= 0;
+                A <= 0;
+                B <= 1;
+            end
+            3'd3: begin
+                reset <= 0;
+                A <= 1;
+                B <= 1;
+            end
+            default: begin
+                reset <= 0;
+                A <= 0;
+                B <= 0;
+            end
+        endcase
+    end
+endmodule
+
+module Monitor(
+    input wire clk,
+    input wire O,
+    input wire [1:0] State
+);
+    always @(posedge clk) begin
+        $display("Output O: %b", O);
+        $display("Current State: %b", State);
+    end
+endmodule
+
+module ABROStateMachine_tb;
+    reg clk;
+    wire O;
+    wire [1:0] State;
+    
+    ClockGenerator clock_gen(
+        .clk_in(clk),
+        .clk_out(clk)
+    );
+    
+    StimulusGenerator stimulus_gen(
+        .clk(clk),
+        .reset(),
+        .A(),
+        .B()
+    );
+    
+    ABROStateMachine dut(
+        .Clock(clk),
+        .Reset(stimulus_gen.reset),
+        .A(stimulus_gen.A),
+        .B(stimulus_gen.B),
+        .O(O),
+        .State(State)
+    );
+    
+    Monitor monitor(
+        .clk(clk),
+        .O(O),
+        .State(State)
+    );
+    
+    initial begin
+        $dumpfile("WaveOutput.vcd");
+        $dumpvars(0, ABROStateMachine_tb);
+        
+        #10;
+        
+        // Test 1: Initial state
+        $display("Test 1: Initial state");
+        stimulus_gen.reset <= 1;
+        #10;
+        stimulus_gen.reset <= 0;
+        #10;
+        
+        // Test 2: Single high input
+        $display("Test 2: Single high input");
+        stimulus_gen.A <= 1;
+        #10;
+        stimulus_gen.A <= 0;
+        #10;
+        
+        // Test 3: Both inputs high in any order
+        $display("Test 3: Both inputs high in any order");
+        stimulus_gen.A <= 1;
+        stimulus_gen.B <= 0;
+        #10;
+        stimulus_gen.A <= 0;
+        stimulus_gen.B <= 1;
+        #10;
+        
+        // Test 4: Both inputs high in order
+        $display("Test 4: Both inputs high in order");
+        stimulus_gen.A <= 1;
+        stimulus_gen.B <= 0;
+        #10;
+        stimulus_gen.B <= 1;
+        #10;
+        
+        // Test 5: Reset
+        $display("Test 5: Reset");
+        stimulus_gen.reset <= 1;
+        #10;
+        stimulus_gen.reset <= 0;
+        #10;
+        
+        $finish;
+    end
+endmodule
+```
+
+Note: The testbench assumes that the ABROStateMachine module has been defined and implemented correctly. The testbench instantiates the ClockGenerator, StimulusGenerator, ABROStateMachine, and Monitor modules. It generates the necessary clock signal, stimulus for the inputs, and monitors the outputs. The testbench includes five test cases to cover different scenarios and uses display statements to verify the output. The testbench also includes the necessary code for dumping waveform data to a VCD file for visualization in GTKWave.

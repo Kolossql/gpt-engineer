@@ -1,0 +1,21 @@
+ABROStateMachine
+{
+    // Clock input
+    input wire clk
+
+    // Active-low reset input
+    input wire reset
+
+    // A input
+    input wire A
+
+    // B input
+    input wire B
+}
+{
+    // Output O
+    output wire O
+
+    // State output
+    output reg [3:0] state
+}
