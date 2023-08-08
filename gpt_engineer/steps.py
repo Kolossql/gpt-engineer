@@ -179,6 +179,40 @@ def gen_verilog_testbench(ai: AI, dbs: DBs) -> List[dict]:
     to_files(messages[-1].content.strip(), dbs.workspace)
     return messages
 
+def gen_blackbox(ai: AI, dbs: DBs) -> List[dict]:
+    messages = AI.deserialize_messages(dbs.logs[clarify.__name__])
+
+    messages = [
+        ai.fsystem(setup_sys_prompt(dbs)),
+    ] + messages[1:]
+    messages = ai.next(messages, dbs.preprompts["blackbox"], step_name=curr_fn())
+
+    to_files(messages[-1].content.strip(), dbs.workspace, "blackbox")
+    return messages
+
+def gen_blackbox_clarified_code(ai: AI, dbs: DBs) -> List[dict]:
+    """Takes clarification and generates code"""
+    messages = AI.deserialize_messages(dbs.logs[gen_blackbox.__name__])
+
+    messages = [
+        ai.fsystem(setup_sys_prompt(dbs)),
+    ] + messages[1:]
+    messages = ai.next(messages, dbs.preprompts["use_qa_bl"], step_name=curr_fn())
+
+    to_files(messages[-1].content.strip(), dbs.workspace, "blackboxCode")
+    return messages
+
+def gen_blackbox_verilog_testbench(ai: AI, dbs: DBs) -> List[dict]:
+    """Takes clarification and generates code"""
+    messages = AI.deserialize_messages(dbs.logs[gen_blackbox.__name__])
+
+    messages = [
+        ai.fsystem(setup_sys_prompt(dbs)),
+    ] + messages[1:]
+    messages = ai.next(messages, dbs.preprompts["gen_testbench_bl"], step_name=curr_fn())
+
+    to_files(messages[-1].content.strip(), dbs.workspace, "blackboxTestbench")
+    return messages
 
 def gen_code(ai: AI, dbs: DBs) -> List[dict]:
     # get the messages from previous step
@@ -292,7 +326,7 @@ def human_review(ai: AI, dbs: DBs):
 
 class Config(str, Enum):
     DEFAULT = "default"
-    DEFAULTVERILOG = "defaultver"
+    BLACKBOX = "blackbox"
     BENCHMARK = "benchmark"
     SIMPLE = "simple"
     TDD = "tdd"
@@ -314,6 +348,12 @@ STEPS = {
         execute_entrypoint,
         human_review,
     ],
+    Config.BLACKBOX: [
+        clarify,
+        gen_blackbox,
+        gen_blackbox_clarified_code,
+        gen_blackbox_verilog_testbench,
+        ],
     Config.BENCHMARK: [simple_gen, gen_entrypoint],
     Config.SIMPLE: [simple_gen, gen_entrypoint, execute_entrypoint],
     Config.TDD: [

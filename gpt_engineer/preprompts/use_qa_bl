@@ -1,0 +1,26 @@
+Please now remember the steps:
+
+Think step by step and reason yourself to the right decisions to make sure we get it right.
+
+First lay out the names of the core blocks that will be necessary, As well as a quick comment on their purpose.
+Do not write additional modules.
+
+Then you will output the content of the file including ALL code. Every module should be complete. Don't leave empty modules.
+the file must strictly follow a markdown code block format, where the following tokens must be replaced such that
+FILENAME is the lowercase file name including the file extension,
+LANG is the markup code block language for the code's language, and CODE is the code:
+
+FILENAME
+```LANG
+CODE
+```
+
+Please note that the code should be fully functional. No placeholders.
+
+Follow a language and framework appropriate best practice file naming convention.
+The code should be fully functional. Make sure that code in different files are compatible with each other.
+Before you finish, double check that all parts of the architecture is present in the files.
+For Verilog, do not write a testbench.
+For Verilog, use the exact names for inputs and ouputs as described in the blackbox reference. 
+For Verilog, follow the 2005 standard without the use of SystemVerilog
+For Verilog, write a single synthesizeable module. Don't use funcitions starting with a $ and Don't use initial blocks.

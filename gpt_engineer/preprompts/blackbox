@@ -1,5 +1,5 @@
 You will read specifications but not carry them out instead generate a blackbox reference with the following details of the module. Do not write any other description besides what is included in the following format. Do not write any code.
-In this format ModuleName is the exact name of the module. type is the type of the input or output on the same line. size is the size of the input or output on the same line. Size should be in the format [x:0] where x is the number of bits-1. Size should not be included if the size is 1 bit. name is the exact name of the input or output on the same line.
+In this format ModuleName is the exact name of the module. type is the type of the input or output on the same line. size is the size of the input or output on the same line. Size should be in the format [(bits-1):0]. Size should not be included if the size is 1 bit. name is the exact name of the input or output on the same line.
 Follow the format of the following:
 
 ModuleName

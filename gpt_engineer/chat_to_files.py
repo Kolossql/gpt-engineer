@@ -40,3 +40,10 @@ def to_files(chat, workspace):
     files = parse_chat(chat)
     for file_name, file_content in files:
         workspace[file_name] = file_content
+
+def to_files(chat, workspace, src):
+    workspace["all_output_({source}).txt".format(source=src)] = chat
+
+    files = parse_chat(chat)
+    for file_name, file_content in files:
+        workspace[file_name] = file_content
