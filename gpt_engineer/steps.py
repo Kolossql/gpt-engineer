@@ -10,9 +10,11 @@ from langchain.schema import AIMessage, HumanMessage, SystemMessage
 from termcolor import colored
 
 from gpt_engineer.ai import AI
-from gpt_engineer.chat_to_files import to_files
+from gpt_engineer.chat_to_files import to_files, find_file_names
 from gpt_engineer.db import DBs
 from gpt_engineer.learning import human_input
+
+import subprocess, shlex
 
 Message = Union[AIMessage, HumanMessage, SystemMessage]
 
@@ -214,6 +216,36 @@ def gen_blackbox_verilog_testbench(ai: AI, dbs: DBs) -> List[dict]:
     to_files(messages[-1].content.strip(), dbs.workspace, "blackboxTestbench")
     return messages
 
+def check_output(ai: AI, dbs: DBs) -> List[dict]:
+
+    messages = AI.deserialize_messages(dbs.logs[gen_blackbox.__name__])
+    module = AI.deserialize_messages(dbs.logs[gen_blackbox_clarified_code.__name__])
+    testbench = AI.deserialize_messages(dbs.logs[gen_blackbox_verilog_testbench.__name__])
+    files = find_file_names(module[-1].content) + find_file_names(testbench[-1].content)
+    filenames = ""
+    for i in files:
+        filenames += i+" "
+
+    print(str(filenames), str(dbs.workspace.path)+ "INDICATOR")
+
+    args = shlex.split("iverilog -o hello " +filenames +" && vvp hello && exit")
+    process = subprocess.run(args, shell=True, capture_output = True, cwd = dbs.workspace.path )
+    output = str(process.stdout).strip("b'").replace("\\n", "\n").replace("\\r", "") +"   "+ str(process.stderr).strip("b'").replace("\\n", "\n").replace("\\r", "")
+    print(str(output) + "INDICATOR")
+    if str(output) == str(bytes()):
+        output = "The module and testbench never finished running"
+    output = ai.fuser(output)
+
+    print (str(output.content))
+
+    messages = [
+        ai.fsystem(setup_sys_prompt(dbs)),
+    ] + messages[1:] + module + testbench +  [output]
+    messages = ai.next(messages, dbs.preprompts["Testing"], step_name=curr_fn())
+
+    to_files(messages[-1].content.strip(), dbs.workspace, "Testing")
+    return messages
+
 def gen_code(ai: AI, dbs: DBs) -> List[dict]:
     # get the messages from previous step
     messages = [
@@ -353,6 +385,7 @@ STEPS = {
         gen_blackbox,
         gen_blackbox_clarified_code,
         gen_blackbox_verilog_testbench,
+        check_output
         ],
     Config.BENCHMARK: [simple_gen, gen_entrypoint],
     Config.SIMPLE: [simple_gen, gen_entrypoint, execute_entrypoint],

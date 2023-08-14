@@ -1,6 +1,31 @@
 import re
 
 
+def find_file_names(chat):  # -> List[Tuple[str, str]]:
+    # Get all ``` blocks and preceding filenames
+    regex = r"(\S+)\n\s*```[^\n]*\n(.+?)```"
+    matches = re.finditer(regex, chat, re.DOTALL)
+
+    files = []
+    for match in matches:
+        # Strip the filename of any non-allowed characters and convert / to \
+        path = re.sub(r'[\:<>"|?*]', "", match.group(1))
+
+        # Remove leading and trailing brackets
+        path = re.sub(r"^\[(.*)\]$", r"\1", path)
+
+        # Remove leading and trailing backticks
+        path = re.sub(r"^`(.*)`$", r"\1", path)
+
+        # Remove trailing ]
+        path = re.sub(r"[\]\:]$", "", path)
+
+        # Add file name to list
+        files.append(path)
+
+    # Return the filenames
+    return files
+
 def parse_chat(chat):  # -> List[Tuple[str, str]]:
     # Get all ``` blocks and preceding filenames
     regex = r"(\S+)\n\s*```[^\n]*\n(.+?)```"
@@ -32,7 +57,6 @@ def parse_chat(chat):  # -> List[Tuple[str, str]]:
 
     # Return the files
     return files
-
 
 def to_files(chat, workspace):
     workspace["all_output.txt"] = chat

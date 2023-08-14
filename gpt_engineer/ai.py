@@ -170,6 +170,13 @@ def create_chat_model(model: str, temperature) -> BaseChatModel:
             streaming=True,
             client=openai.ChatCompletion,
         )
+    elif model == "gpt-3.5-turbo-16k":
+        return ChatOpenAI(
+            model="gpt-3.5-turbo-16k",
+            temperature=temperature,
+            streaming=True,
+            client=openai.ChatCompletion,
+        )
     elif model == "gpt-3.5-turbo":
         return ChatOpenAI(
             model="gpt-3.5-turbo",

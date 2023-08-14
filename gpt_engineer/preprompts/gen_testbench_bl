@@ -7,6 +7,7 @@ Second, list important edge cases that should be tested in the testbench.
 Then you will output the content of the testbench module including ALL code. It should test five cases and each edge case as concisely as possible. It should verify the output using display statements and gtkwave.
 The display statements should output "Passed" when a test is succesfully passed by the module and "Failed" when a test is failed
 Include the lines "$dumpfile("WaveOutput.vcd)" and "$dumpvars(0, x)" where x is the name of the testbench module.
+Include the line "$finish" at a time after all of the tests have been run
 Each file must strictly follow a markdown code block format, where the following tokens must be replaced such that
 FILENAME is the lowercase file name including the file extension,
 CODE is the code:

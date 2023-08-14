@@ -17,7 +17,7 @@ app = typer.Typer()
 @app.command()
 def main(
     project_path: str = typer.Argument("projects/example", help="path"),
-    model: str = typer.Argument("gpt-4", help="model id string"),
+    model: str = typer.Argument("gpt-3.5-turbo-16k", help="model id string"),
     temperature: float = 0.1,
     steps_config: StepsConfig = typer.Option(
         StepsConfig.BLACKBOX, "--steps", "-s", help="decide which steps to run"
@@ -58,8 +58,8 @@ def main(
         messages = step(ai, dbs)
         dbs.logs[step.__name__] = AI.serialize_messages(messages)
 
-    if collect_consent():
-        collect_learnings(model, temperature, steps, dbs)
+    # if collect_consent():
+    #     collect_learnings(model, temperature, steps, dbs)
 
     dbs.logs["token_usage"] = ai.format_token_usage_log()
 
