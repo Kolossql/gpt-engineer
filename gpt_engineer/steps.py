@@ -226,17 +226,12 @@ def check_output(ai: AI, dbs: DBs) -> List[dict]:
     for i in files:
         filenames += i+" "
 
-    print(str(filenames), str(dbs.workspace.path)+ "INDICATOR")
-
     args = shlex.split("iverilog -o hello " +filenames +" && vvp hello && exit")
     process = subprocess.run(args, shell=True, capture_output = True, cwd = dbs.workspace.path )
     output = str(process.stdout).strip("b'").replace("\\n", "\n").replace("\\r", "") +"   "+ str(process.stderr).strip("b'").replace("\\n", "\n").replace("\\r", "")
-    print(str(output) + "INDICATOR")
     if str(output) == str(bytes()):
         output = "The module and testbench never finished running"
     output = ai.fuser(output)
-
-    print (str(output.content))
 
     messages = [
         ai.fsystem(setup_sys_prompt(dbs)),
@@ -359,6 +354,7 @@ def human_review(ai: AI, dbs: DBs):
 class Config(str, Enum):
     DEFAULT = "default"
     BLACKBOX = "blackbox"
+    BLACKBOXPLUS = "blackbox+"
     BENCHMARK = "benchmark"
     SIMPLE = "simple"
     TDD = "tdd"
@@ -381,6 +377,13 @@ STEPS = {
         human_review,
     ],
     Config.BLACKBOX: [
+        clarify,
+        gen_blackbox,
+        gen_blackbox_clarified_code,
+        gen_blackbox_verilog_testbench,
+        check_output
+        ],
+    Config.BLACKBOXPLUS: [
         clarify,
         gen_blackbox,
         gen_blackbox_clarified_code,
