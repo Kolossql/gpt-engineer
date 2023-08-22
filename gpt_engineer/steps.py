@@ -156,7 +156,6 @@ def gen_unit_tests(ai: AI, dbs: DBs) -> List[dict]:
 
     return messages
 
-
 def gen_clarified_code(ai: AI, dbs: DBs) -> List[dict]:
     """Takes clarification and generates code"""
     messages = AI.deserialize_messages(dbs.logs[clarify.__name__])
@@ -169,8 +168,20 @@ def gen_clarified_code(ai: AI, dbs: DBs) -> List[dict]:
     to_files(messages[-1].content.strip(), dbs.workspace)
     return messages
 
+def gen_caravel_user_wrapper(ai: AI, dbs: DBs) -> List[dict]:
+    messages = AI.deserialize_messages(dbs.logs[gen_blackbox_clarified_code.__name__])
+
+    messages = [
+        ai.fsystem(setup_sys_prompt(dbs)),
+    ] + messages[1:]
+    messages = ai.next(messages, dbs.preprompts["caravel_wrapper"], step_name=curr_fn())
+
+    to_files(messages[-1].content.strip(), dbs.workspace, "user_wrapper")
+
+    return messages
+
 def gen_verilog_testbench(ai: AI, dbs: DBs) -> List[dict]:
-    """Takes clarification and generates code"""
+    """Takes clarification and generates a Verilog testbench"""
     messages = AI.deserialize_messages(dbs.logs[clarify.__name__])
 
     messages = [
@@ -182,6 +193,8 @@ def gen_verilog_testbench(ai: AI, dbs: DBs) -> List[dict]:
     return messages
 
 def gen_blackbox(ai: AI, dbs: DBs) -> List[dict]:
+    """Takes clarification and generates a blackbox which contains the inputs and outputs
+       and a brief description of the module to be written"""
     messages = AI.deserialize_messages(dbs.logs[clarify.__name__])
 
     messages = [
@@ -193,7 +206,7 @@ def gen_blackbox(ai: AI, dbs: DBs) -> List[dict]:
     return messages
 
 def gen_blackbox_clarified_code(ai: AI, dbs: DBs) -> List[dict]:
-    """Takes clarification and generates code"""
+    """Takes clarification and blackbox and generates code"""
     messages = AI.deserialize_messages(dbs.logs[gen_blackbox.__name__])
 
     messages = [
@@ -205,7 +218,7 @@ def gen_blackbox_clarified_code(ai: AI, dbs: DBs) -> List[dict]:
     return messages
 
 def gen_blackbox_verilog_testbench(ai: AI, dbs: DBs) -> List[dict]:
-    """Takes clarification and generates code"""
+    """Takes clarification and blackbox and generates a verilog testbench"""
     messages = AI.deserialize_messages(dbs.logs[gen_blackbox.__name__])
 
     messages = [
@@ -218,27 +231,61 @@ def gen_blackbox_verilog_testbench(ai: AI, dbs: DBs) -> List[dict]:
 
 def check_output(ai: AI, dbs: DBs) -> List[dict]:
 
-    messages = AI.deserialize_messages(dbs.logs[gen_blackbox.__name__])
-    module = AI.deserialize_messages(dbs.logs[gen_blackbox_clarified_code.__name__])
-    testbench = AI.deserialize_messages(dbs.logs[gen_blackbox_verilog_testbench.__name__])
-    files = find_file_names(module[-1].content) + find_file_names(testbench[-1].content)
-    filenames = ""
-    for i in files:
-        filenames += i+" "
+    checkErrors = True
+    loopNum = 0
+    while checkErrors:
 
-    args = shlex.split("iverilog -o hello " +filenames +" && vvp hello && exit")
-    process = subprocess.run(args, shell=True, capture_output = True, cwd = dbs.workspace.path )
-    output = str(process.stdout).strip("b'").replace("\\n", "\n").replace("\\r", "") +"   "+ str(process.stderr).strip("b'").replace("\\n", "\n").replace("\\r", "")
-    if str(output) == str(bytes()):
-        output = "The module and testbench never finished running"
-    output = ai.fuser(output)
+        ## Loads the blackbox and the generation of the module and testbench
+        messages = AI.deserialize_messages(dbs.logs[gen_blackbox.__name__])
+        module = AI.deserialize_messages(dbs.logs[gen_blackbox_clarified_code.__name__])
+        testbench = AI.deserialize_messages(dbs.logs[gen_blackbox_verilog_testbench.__name__])
 
-    messages = [
-        ai.fsystem(setup_sys_prompt(dbs)),
-    ] + messages[1:] + module + testbench +  [output]
-    messages = ai.next(messages, dbs.preprompts["Testing"], step_name=curr_fn())
+        ## Gets all filesnames from both the generation of the module and testbench
+        files = find_file_names(module[-1].content) + find_file_names(testbench[-1].content)
+        filenames = ""
+        fileMessages = ""
 
-    to_files(messages[-1].content.strip(), dbs.workspace, "Testing")
+        ## reads each file directly using the filenames retrieved above
+        for i in files:
+            filenames += i+" "
+            file = open(str(dbs.workspace.path)+"\\"+i, "r")
+            
+            #Formats the code according to the following format
+            ##FILENAME
+            # ``` LANG
+            # CODE
+            # ```
+            fileMessages += "\n"+i+"\n```verilog\n"+file.read()+"\n```"
+
+        ## Runs the files in iverilog and records both successful and unsuccesful outputs
+        args = shlex.split("iverilog -o attempt#"+ str(loopNum)+ " "+filenames +" && vvp attempt#"+ str(loopNum)+ " && exit")
+        process = subprocess.run(args, shell=True, capture_output = True, cwd = dbs.workspace.path )
+        output = str(process.stdout).strip("b'").replace("\\n", "\n").replace("\\r", "") +"   "+ str(process.stderr).strip("b'").replace("\\n", "\n").replace("\\r", "")
+
+        ## Checks to ensure that iverilog did finish running
+        if str(output) == str(bytes()):
+            output = "The module and testbench never finished running"
+
+        ## Message chain attatches files and output after the clarification and blackbox messages
+        files = ai.fassistant(fileMessages)
+        output = ai.fassistant(output)
+        messages = [
+            ai.fsystem(setup_sys_prompt(dbs)),
+        ] + messages[1:] + [files, output]
+        
+        ## Prints the outputs so that the user can decide to run the error checking again or not
+        print("\n\n -----iverilog output------ \n\n" +output.content+"\n\n -----iverilog output------ \n\n")
+
+        # runs the ai if and only if the user accepts it
+        checkErrors = False
+        if (input("Would you like to automatically debug based on this output? (y or n) ") == "y"):
+            loopNum += 1
+            messages = ai.next(messages, dbs.preprompts["Testing"], step_name=curr_fn())
+            checkErrors = True
+            
+        
+
+        to_files(messages[-1].content.strip(), dbs.workspace, "Testing#" + str(loopNum))
     return messages
 
 def gen_code(ai: AI, dbs: DBs) -> List[dict]:
@@ -252,7 +299,6 @@ def gen_code(ai: AI, dbs: DBs) -> List[dict]:
     messages = ai.next(messages, dbs.preprompts["use_qa"], step_name=curr_fn())
     to_files(messages[-1].content.strip(), dbs.workspace)
     return messages
-
 
 def execute_entrypoint(ai: AI, dbs: DBs) -> List[dict]:
     command = dbs.workspace["run.sh"]
@@ -291,7 +337,6 @@ def execute_entrypoint(ai: AI, dbs: DBs) -> List[dict]:
 
     return []
 
-
 def gen_entrypoint(ai: AI, dbs: DBs) -> List[dict]:
     messages = ai.start(
         system=(
@@ -316,7 +361,6 @@ def gen_entrypoint(ai: AI, dbs: DBs) -> List[dict]:
     dbs.workspace["run.sh"] = "\n".join(match.group(1) for match in matches)
     return messages
 
-
 def use_feedback(ai: AI, dbs: DBs):
     messages = [
         ai.fsystem(setup_sys_prompt(dbs)),
@@ -327,7 +371,6 @@ def use_feedback(ai: AI, dbs: DBs):
     messages = ai.next(messages, dbs.input["feedback"], step_name=curr_fn())
     to_files(messages[-1].content.strip(), dbs.workspace)
     return messages
-
 
 def fix_code(ai: AI, dbs: DBs):
     messages = AI.deserialize_messages(dbs.logs[gen_code.__name__])
@@ -344,7 +387,6 @@ def fix_code(ai: AI, dbs: DBs):
     to_files(messages[-1].content.strip(), dbs.workspace)
     return messages
 
-
 def human_review(ai: AI, dbs: DBs):
     review = human_input()
     dbs.memory["review"] = review.to_json()  # type: ignore
@@ -353,8 +395,10 @@ def human_review(ai: AI, dbs: DBs):
 
 class Config(str, Enum):
     DEFAULT = "default"
+    VERILOGDEFAULT = "verilogdefault"
     BLACKBOX = "blackbox"
     BLACKBOXPLUS = "blackbox+"
+    BLACKBOXCARAVEL = "blackboxcaravel"
     BENCHMARK = "benchmark"
     SIMPLE = "simple"
     TDD = "tdd"
@@ -371,6 +415,13 @@ STEPS = {
     Config.DEFAULT: [
         clarify,
         gen_clarified_code,
+        gen_entrypoint,
+        execute_entrypoint,
+        human_review,
+    ],
+    Config.VERILOGDEFAULT: [
+        clarify,
+        gen_clarified_code,
         gen_verilog_testbench,
         gen_entrypoint,
         execute_entrypoint,
@@ -381,14 +432,20 @@ STEPS = {
         gen_blackbox,
         gen_blackbox_clarified_code,
         gen_blackbox_verilog_testbench,
-        check_output
         ],
     Config.BLACKBOXPLUS: [
         clarify,
         gen_blackbox,
         gen_blackbox_clarified_code,
         gen_blackbox_verilog_testbench,
-        check_output
+        check_output,
+        ],
+    Config.BLACKBOXCARAVEL: [
+        clarify,
+        gen_blackbox,
+        gen_blackbox_clarified_code,
+        gen_blackbox_verilog_testbench,
+        gen_caravel_user_wrapper,
         ],
     Config.BENCHMARK: [simple_gen, gen_entrypoint],
     Config.SIMPLE: [simple_gen, gen_entrypoint, execute_entrypoint],

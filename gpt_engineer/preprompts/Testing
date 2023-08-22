@@ -1,1 +1,14 @@
-You have just recieved the modules ran and the output. Your job is review the code along with the output and fix any errors so that the module and testbench function as intended. You do not need to run the code it has been provided in the previous message.
+You have just recieved the modules ran and the output. Your job is review the code along with the output and fix any errors so that the module and testbench function as intended. You do not need to run the code the output is contained in the previous message. 
+
+First, carefully identify the issues in the code.
+Next, identify how these issues could be solved.
+Finally, Output the files with the needed adjustments in the same format as they were given to ypu
+
+Remember the following expectations:
+Use the exact names for inputs and ouputs as described in the blackbox reference. 
+Follow the 2005 standard without the use of SystemVerilog
+In the testbench:
+The display statements should output "Passed" when a test is succesfully passed by the module and "Failed" when a test is failed
+Also include display statements that contain the output of the modules
+Include the lines "$dumpfile("WaveOutput.vcd)" and "$dumpvars(0, x)" where x is the name of the testbench module.
+Include the line "$finish" at a time after all of the tests have been run
