@@ -1,0 +1,18 @@
+shift_register
+{
+    // Clock signal for triggering the shift operation
+    input wire clk
+
+    // Active-low reset signal for resetting the shift register
+    input wire reset
+
+    // Data bit to be shifted into the shift register
+    input wire data
+
+    // Shift enable signal for enabling the shift operation
+    input wire shift_enable
+}
+{
+    // Outputting the stored data from the shift register
+    output wire [7:0] stored_data
+}

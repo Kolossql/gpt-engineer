@@ -1,0 +1,34 @@
+The error message indicates that the `data` output, which is declared as `reg`, cannot be driven by primitives or continuous assignment. In Verilog, only `wire` types can be driven by continuous assignments or gate primitives. 
+
+To fix this error, we need to change the `data` output declaration from `reg` to `wire` in the LFSR module. Here is the corrected code:
+
+lfsr.v
+```verilog
+module LFSR (
+    input wire clk,
+    input wire reset_n,
+    output wire [7:0] data
+);
+
+    // Shift Register
+    reg [7:0] shift_reg;
+
+    // Feedback Logic
+    wire feedback;
+    assign feedback = shift_reg[7] ^ shift_reg[6] ^ shift_reg[4] ^ shift_reg[1];
+
+    // Reset Logic and Shift Register Update
+    always @(posedge clk or negedge reset_n) begin
+        if (~reset_n)
+            shift_reg <= 8'b10001010; // Initial state
+        else
+            shift_reg <= {shift_reg[6:0], feedback};
+    end
+
+    // Output Data
+    assign data = shift_reg;
+
+endmodule
+```
+
+This change should resolve the error. The `data` output is now a `wire` type and can be driven by the continuous assignment `assign data = shift_reg;`.

@@ -1,0 +1,27 @@
+Core blocks necessary:
+
+1. Shift Register: This is the main block that will hold the 8-bit data and perform the shift operation. It will take in the clock, reset, data_in, and shift_enable signals as inputs and output the 8-bit data.
+
+Now, let's write the Verilog code for the shift register module.
+
+shiftregister.v
+```verilog
+module ShiftRegister (
+    input wire clk,
+    input wire reset_n,
+    input wire data_in,
+    input wire shift_enable,
+    output reg [7:0] data_out
+);
+
+always @(posedge clk or negedge reset_n) begin
+    if (!reset_n) begin
+        data_out <= 8'b00000000; // Reset the shift register to initial state
+    end else if (shift_enable) begin
+        data_out <= {data_out[6:0], data_in}; // Shift the data bit on the right side of the data vector
+    end
+end
+
+endmodule
+```
+This Verilog code defines a module named ShiftRegister. It has four inputs: clk, reset_n, data_in, and shift_enable, and one 8-bit output: data_out. The always block is sensitive to the positive edge of the clk signal and the negative edge of the reset_n signal. If reset_n is low (active), the shift register is reset to its initial state (all zeros). If shift_enable is high and the clock signal is on the rising edge, the data bit is shifted to the right side of the data vector.

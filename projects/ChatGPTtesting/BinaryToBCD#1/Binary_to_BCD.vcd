@@ -1,0 +1,95 @@
+$date
+	Mon Jul 31 19:15:03 2023
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ps
+$end
+$scope module testbench $end
+$var wire 12 ! BCD_output [11:0] $end
+$var reg 8 " binary_input [7:0] $end
+$var reg 1 # clk $end
+$var reg 1 $ reset_n $end
+$scope module U1 $end
+$var wire 8 % binary_input [7:0] $end
+$var wire 1 # clk $end
+$var wire 1 $ reset_n $end
+$var reg 12 & BCD_output [11:0] $end
+$var reg 20 ' shift_register [19:0] $end
+$var reg 8 ( temp_input [7:0] $end
+$scope begin $ivl_for_loop0 $end
+$var integer 32 ) i [31:0] $end
+$upscope $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+$end
+#0
+$dumpvars
+bx )
+bx (
+b0 '
+b0 &
+b0 %
+0$
+0#
+b0 "
+b0 !
+$end
+#5000
+1#
+#10000
+0#
+1$
+#15000
+b1000 )
+b0 (
+1#
+#20000
+0#
+b10010 "
+b10010 %
+#25000
+b10 !
+b10 &
+b100100 '
+b1000 )
+b0 (
+1#
+#30000
+0#
+b11111111 "
+b11111111 %
+#35000
+b1100001111 !
+b1100001111 &
+b11000011111111 '
+b1000 )
+b0 (
+1#
+#40000
+0#
+b10100011 "
+b10100011 %
+#45000
+b110011110100 !
+b110011110100 &
+b101100111101000111 '
+b1000 )
+b0 (
+1#
+#50000
+0#
+#55000
+b11000110100 !
+b11000110100 &
+b100110001101000111 '
+b1000 )
+b0 (
+1#
+#60000
+0#

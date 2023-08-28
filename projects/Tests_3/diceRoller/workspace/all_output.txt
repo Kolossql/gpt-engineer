@@ -1,0 +1,122 @@
+The necessary blocks for testing the module are as follows:
+
+1. Testbench module: This module will instantiate the module under test and provide stimulus to its inputs. It will also monitor the outputs and compare them with expected values to verify the correctness of the design.
+
+Important edge cases to test in the testbench:
+
+1. Test with a 4-sided die, roll input high, and clock rising edge.
+2. Test with a 6-sided die, roll input high, and clock rising edge.
+3. Test with an 8-sided die, roll input high, and clock rising edge.
+4. Test with a 20-sided die, roll input high, and clock rising edge.
+5. Test with roll input low and clock rising edge.
+
+Now, let's proceed with the content of the testbench module:
+
+testbench.v
+```verilog
+module testbench;
+  // Inputs
+  reg initial_state;
+  reg clock;
+  reg reset;
+  reg [1:0] die_select;
+  reg roll;
+  
+  // Outputs
+  wire [7:0] rolled_number;
+  
+  // Instantiate the module under test
+  dice_roller dut (
+    .initial_state(initial_state),
+    .clock(clock),
+    .reset(reset),
+    .die_select(die_select),
+    .roll(roll),
+    .rolled_number(rolled_number)
+  );
+  
+  // Clock generation
+  always begin
+    clock = 0;
+    #5;
+    clock = 1;
+    #5;
+  end
+  
+  // Reset generation
+  initial begin
+    reset = 0;
+    #10;
+    reset = 1;
+    #10;
+    reset = 0;
+  end
+  
+  // Test cases
+  initial begin
+    // Test case 1: 4-sided die, roll input high, clock rising edge
+    initial_state = 1;
+    die_select = 2'b00;
+    roll = 1;
+    #20;
+    if (rolled_number === 4'b0000)
+      $display("Test case 1 Passed");
+    else
+      $display("Test case 1 Failed");
+    
+    // Test case 2: 6-sided die, roll input high, clock rising edge
+    initial_state = 1;
+    die_select = 2'b01;
+    roll = 1;
+    #20;
+    if (rolled_number >= 4'b0001 && rolled_number <= 4'b0110)
+      $display("Test case 2 Passed");
+    else
+      $display("Test case 2 Failed");
+    
+    // Test case 3: 8-sided die, roll input high, clock rising edge
+    initial_state = 1;
+    die_select = 2'b10;
+    roll = 1;
+    #20;
+    if (rolled_number >= 4'b0001 && rolled_number <= 4'b1000)
+      $display("Test case 3 Passed");
+    else
+      $display("Test case 3 Failed");
+    
+    // Test case 4: 20-sided die, roll input high, clock rising edge
+    initial_state = 1;
+    die_select = 2'b11;
+    roll = 1;
+    #20;
+    if (rolled_number >= 4'b0001 && rolled_number <= 4'b10100)
+      $display("Test case 4 Passed");
+    else
+      $display("Test case 4 Failed");
+    
+    // Test case 5: Roll input low, clock rising edge
+    initial_state = 1;
+    die_select = 2'b00;
+    roll = 0;
+    #20;
+    if (rolled_number === 4'b0000)
+      $display("Test case 5 Passed");
+    else
+      $display("Test case 5 Failed");
+    
+    $finish;
+  end
+  
+  // Dump waveform for debugging
+  initial begin
+    $dumpfile("WaveOutput.vcd");
+    $dumpvars(0, testbench);
+  end
+endmodule
+```
+
+Please note that the testbench assumes that the module under test is named "dice_roller". Replace it with the actual name of the module if different.
+
+The testbench module instantiates the module under test and provides stimulus to its inputs. It generates the clock signal and the reset signal. It also defines the test cases and checks the output of the module against the expected values. The results of the test cases are displayed using the `$display` statement. Finally, the waveform is dumped to a VCD file for debugging purposes.
+
+Please let me know if you need any further assistance.

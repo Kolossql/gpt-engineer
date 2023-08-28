@@ -1,0 +1,27 @@
+Core Blocks:
+
+1. Shift Register: This is the main block that will perform the shifting operation based on the inputs.
+
+Now, let's write the Verilog code for the Shift Register.
+
+shiftregister.v
+```verilog
+module ShiftRegister (
+    input wire clk,
+    input wire reset_n,
+    input wire data_in,
+    input wire shift_enable,
+    output reg [7:0] data_out
+);
+
+always @(posedge clk or negedge reset_n) begin
+    if (~reset_n)
+        data_out <= 8'b00000000; // Reset the shift register to initial state
+    else if (shift_enable)
+        data_out <= {data_out[6:0], data_in}; // Shift the data bit on the right side of the data vector
+end
+
+endmodule
+```
+
+This Verilog code defines a shift register module that takes a clock signal, an active-low reset signal, a data input signal, and a shift enable signal as inputs. It outputs an 8-bit data vector. The shift register is reset to its initial state when the reset signal is low. When the shift enable signal is high and the clock signal is on the rising edge, the data input bit is shifted into the right side of the data vector.

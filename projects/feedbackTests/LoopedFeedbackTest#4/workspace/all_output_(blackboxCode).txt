@@ -1,0 +1,37 @@
+Core Blocks:
+1. Shift Register: Implements the shift register functionality, including the shift operation and storage of data.
+
+Filename: shift_register.v
+```verilog
+module shift_register (
+  input wire clk,
+  input wire reset,
+  input wire data,
+  input wire shift_enable,
+  output wire [7:0] stored_data
+);
+  reg [7:0] data_register;
+
+  always @(posedge clk) begin
+    if (reset == 0) begin
+      data_register <= 8'b00000000;
+    end else if (shift_enable == 1) begin
+      data_register <= {data_register[6:0], data};
+    end
+  end
+
+  assign stored_data = data_register;
+
+endmodule
+```
+
+Explanation:
+- The shift_register module takes in the clock signal (clk), active-low reset signal (reset), data bit (data), and shift enable signal (shift_enable) as inputs.
+- It also has an output wire named stored_data, which represents the stored data in the shift register.
+- Inside the module, there is a register named data_register, which is used to store the data bits.
+- The always block is triggered on the positive edge of the clock signal.
+- If the reset signal is low, the data_register is set to the initial state of 8'b00000000.
+- If the shift_enable signal is high, the data_register is shifted to the right by one bit, and the new data bit is inserted at the leftmost position.
+- The assign statement assigns the value of data_register to the stored_data output.
+
+Note: The code provided follows the 2005 Verilog standard without the use of SystemVerilog features.

@@ -1,0 +1,41 @@
+[
+    {
+        "type": "system",
+        "data": {
+            "content": "You are a project manager reviewing specifications for a computer chip. \nYou will read specifications and not carry them out, only seek to clarify them. Read carefully and only clarify things that are not included in the specifications.\nSpecifically you will first summarize a list of super short bullets of areas that need clarification.",
+            "additional_kwargs": {}
+        }
+    },
+    {
+        "type": "human",
+        "data": {
+            "content": "I am trying to create a Synthesizeable Verilog module that follows the 2005 standard verilog without the use of SystemVerilog for a sequence generator. It must meet the following specifications:\nInitial state: outputting the first element of the sequence.\nInputs: \nClock: When the clock has a rising edge the sequence generator should output the next part of the sequence. This is the only time that \nActive-low reset: The active-low reset should set the module to the initial state.\nEnable: The sequence should only be outputted if enable is high.\nOutputs: Data (8 bits), Hexadecimal format of the values below.\nWhile enabled, it should generate an output sequence of the following hexadecimal values in the following order and then repeat:\n        - 0xAF\n        - 0xBC\n        - 0xE2\n        - 0x78\n        - 0xFF\n        - 0xE2\n        - 0x0B\n        - 0x8D",
+            "additional_kwargs": {},
+            "example": false
+        }
+    },
+    {
+        "type": "ai",
+        "data": {
+            "content": "Areas that need clarification:\n1. Is the clock signal provided externally or should the module generate its own clock signal?\n2. What is the initial state of the module? Should it start outputting the first element of the sequence immediately upon power-up or after a specific event?\n3. How should the active-low reset signal be triggered? Is it a synchronous or asynchronous reset?\n4. What is the behavior of the module when the enable signal is low? Should it hold the current output or stop generating the sequence?\n5. Is there a specific timing requirement for the rising edge of the clock signal?\n6. Should the module have any additional inputs or outputs apart from the clock, active-low reset, enable, and data outputs?\n7. Is there a specific requirement for the naming convention of the Verilog module and its ports?\n8. Should the module have any specific constraints or limitations in terms of area, power, or performance?",
+            "additional_kwargs": {},
+            "example": false
+        }
+    },
+    {
+        "type": "human",
+        "data": {
+            "content": "Make your own assumptions and state them explicitly before starting",
+            "additional_kwargs": {},
+            "example": false
+        }
+    },
+    {
+        "type": "ai",
+        "data": {
+            "content": "Assumptions:\n1. The clock signal is provided externally.\n2. The initial state of the module is defined as outputting the first element of the sequence immediately upon power-up.\n3. The active-low reset signal is asynchronous and can be triggered at any time.\n4. When the enable signal is low, the module should hold the current output and not generate the sequence.\n5. The timing requirement for the rising edge of the clock signal is not specified, so we will assume a standard clock frequency.\n6. There are no additional inputs or outputs required for the module.\n7. The naming convention for the Verilog module and its ports can follow standard conventions.\n8. There are no specific constraints or limitations mentioned in terms of area, power, or performance.",
+            "additional_kwargs": {},
+            "example": false
+        }
+    }
+]

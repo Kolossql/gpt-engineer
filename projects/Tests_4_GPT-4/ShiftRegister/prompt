@@ -1,0 +1,9 @@
+I am trying to create a Behavioral Verilog module for a shift register. It must meet the following specifications:
+Initial State: stored data at 00000000
+Inputs:
+Clock: On the clock rising edge if Shift enable is high shift the Data bit on the right side of the data vector
+Active-low reset: resets the module to the initial state
+Data (1 bit): The data bit that is next to be shifted
+Shift enable: On the clock rising edge if Shift enable is high shift the Data bit on the right side of the data vector
+Outputs:
+Data (8 bits): Outputs the stored data when the data is changed

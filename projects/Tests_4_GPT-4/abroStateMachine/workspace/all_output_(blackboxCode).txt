@@ -1,0 +1,66 @@
+Core blocks necessary for the ABRO state machine:
+
+1. State Register: This block will hold the current state of the machine. It will be updated based on the inputs and the current state.
+
+2. Next State Logic: This block will determine the next state based on the current state and the inputs.
+
+3. Output Logic: This block will generate the output O based on the current state.
+
+Now, let's write the Verilog code for the ABRO state machine.
+
+abro_state_machine.v
+```verilog
+module ABROStateMachine (
+    input wire clk,
+    input wire reset_n,
+    input wire A,
+    input wire B,
+    output wire O,
+    output wire [1:0] State
+);
+
+    // State Register
+    reg [1:0] current_state, next_state;
+
+    // Next State Logic
+    always @(posedge clk or negedge reset_n) begin
+        if (!reset_n)
+            current_state <= 2'b00;
+        else
+            current_state <= next_state;
+    end
+
+    // Next State Logic
+    always @(*) begin
+        case (current_state)
+            2'b00: begin
+                if (A)
+                    next_state = 2'b01;
+                else
+                    next_state = current_state;
+            end
+            2'b01: begin
+                if (B)
+                    next_state = 2'b10;
+                else
+                    next_state = current_state;
+            end
+            2'b10: begin
+                if (!A && !B)
+                    next_state = 2'b00;
+                else
+                    next_state = current_state;
+            end
+            default: next_state = 2'b00;
+        endcase
+    end
+
+    // Output Logic
+    assign O = (current_state == 2'b10) ? 1'b1 : 1'b0;
+
+    // State Output
+    assign State = current_state;
+
+endmodule
+```
+This Verilog code defines a module for the ABRO state machine. It includes a state register to hold the current state, next state logic to determine the next state based on the current state and inputs, and output logic to generate the output O. The state output is simply the current state. The state machine starts in the initial state (00), and transitions to the next state when the inputs A and B are entered. The output O is 1 when the output state is reached (10), and 0 otherwise.

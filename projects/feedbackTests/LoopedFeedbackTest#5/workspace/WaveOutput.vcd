@@ -1,0 +1,65 @@
+$date
+	Sat Aug 19 21:43:58 2023
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1s
+$end
+$scope module traffic_light_tb $end
+$var wire 1 ! yellow $end
+$var wire 1 " red $end
+$var wire 1 # green $end
+$var reg 1 $ clk $end
+$var reg 1 % enable $end
+$var reg 1 & reset $end
+$scope module dut $end
+$var wire 1 $ clk $end
+$var wire 1 % enable $end
+$var wire 1 & reset $end
+$var wire 1 ! yellow $end
+$var wire 1 " red $end
+$var wire 1 # green $end
+$var parameter 2 ' GREEN_STATE $end
+$var parameter 2 ( RED_STATE $end
+$var parameter 2 ) YELLOW_STATE $end
+$var reg 5 * green_counter [4:0] $end
+$var reg 6 + red_counter [5:0] $end
+$var reg 2 , state [1:0] $end
+$var reg 4 - yellow_counter [3:0] $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+b10 )
+b0 (
+b1 '
+$end
+#0
+$dumpvars
+b0 -
+b0 ,
+b0 +
+b0 *
+1&
+1%
+x$
+0#
+1"
+0!
+$end
+#10
+0&
+#50
+0%
+#100
+1%
+#150
+0%
+#295
+1&
+#305
+0&
+#405

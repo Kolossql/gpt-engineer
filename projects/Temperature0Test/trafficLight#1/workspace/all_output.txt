@@ -1,0 +1,104 @@
+The blocks necessary to properly test the traffic light module are:
+1. Testbench module: This module will instantiate the traffic light module and provide the necessary inputs (clock, reset, enable) to test its behavior. It will also monitor the outputs (red, yellow, green) and verify their correctness.
+
+Important edge cases to test in the testbench:
+1. Initial state: Verify that the module starts in the correct initial state (red light with 32 clock cycles remaining before green).
+2. Transition from red to green: Verify that the module transitions from red to green after 32 clock cycles.
+3. Transition from green to yellow: Verify that the module transitions from green to yellow after 20 clock cycles.
+4. Transition from yellow to red: Verify that the module transitions from yellow to red after 7 clock cycles.
+5. Enable signal transitions: Verify that the module correctly pauses and resumes its operation when the enable signal transitions from low to high and high to low.
+
+Now, let's proceed with the content of the testbench module:
+
+**File: traffic_light_tb.v**
+
+```verilog
+module traffic_light_tb;
+
+  // Parameters
+  parameter CLK_PERIOD = 10; // Clock period in ns
+
+  // Signals
+  reg clk;
+  reg reset;
+  reg enable;
+  wire red;
+  wire yellow;
+  wire green;
+
+  // Instantiate the module under test
+  traffic_light_module uut (
+    .clk(clk),
+    .reset(reset),
+    .enable(enable),
+    .red(red),
+    .yellow(yellow),
+    .green(green)
+  );
+
+  // Clock generation
+  always begin
+    clk = 0;
+    #((CLK_PERIOD)/2);
+    clk = 1;
+    #((CLK_PERIOD)/2);
+  end
+
+  // Testbench stimulus
+  initial begin
+    // Initialize inputs
+    reset = 1;
+    enable = 1;
+
+    // Wait for a few clock cycles
+    #((CLK_PERIOD)*5);
+
+    // Release reset
+    reset = 0;
+
+    // Test initial state
+    #((CLK_PERIOD)*32);
+    $display("Initial State Test:");
+    $display("Red: %b, Yellow: %b, Green: %b", red, yellow, green);
+
+    // Test transition from red to green
+    #((CLK_PERIOD)*32);
+    $display("Transition from Red to Green Test:");
+    $display("Red: %b, Yellow: %b, Green: %b", red, yellow, green);
+
+    // Test transition from green to yellow
+    #((CLK_PERIOD)*20);
+    $display("Transition from Green to Yellow Test:");
+    $display("Red: %b, Yellow: %b, Green: %b", red, yellow, green);
+
+    // Test transition from yellow to red
+    #((CLK_PERIOD)*7);
+    $display("Transition from Yellow to Red Test:");
+    $display("Red: %b, Yellow: %b, Green: %b", red, yellow, green);
+
+    // Test enable signal transitions
+    enable = 0;
+    #((CLK_PERIOD)*10);
+    $display("Enable Signal Transition Test (Enable = 0):");
+    $display("Red: %b, Yellow: %b, Green: %b", red, yellow, green);
+
+    enable = 1;
+    #((CLK_PERIOD)*10);
+    $display("Enable Signal Transition Test (Enable = 1):");
+    $display("Red: %b, Yellow: %b, Green: %b", red, yellow, green);
+
+    // End simulation
+    $finish;
+  end
+
+endmodule
+```
+
+This testbench module tests the traffic light module in five cases:
+1. Initial state: It waits for 32 clock cycles and displays the state of the traffic light.
+2. Transition from red to green: It waits for an additional 32 clock cycles and displays the state of the traffic light.
+3. Transition from green to yellow: It waits for 20 clock cycles and displays the state of the traffic light.
+4. Transition from yellow to red: It waits for 7 clock cycles and displays the state of the traffic light.
+5. Enable signal transitions: It sets the enable signal to 0 for 10 clock cycles, then sets it back to 1 for another 10 clock cycles, and displays the state of the traffic light at each transition.
+
+The testbench module generates a clock signal with a specified period and instantiates the traffic light module. It also initializes the inputs (reset and enable) and monitors the outputs (red, yellow, green) using display statements. The simulation is ended using the $finish system task.

@@ -1,0 +1,11 @@
+LFSR
+{ 
+    // Clock signal for the LFSR
+    input wire clk
+    // Active-low reset signal for the LFSR
+    input wire reset_n
+}
+{
+    // 8-bit pseudorandom output of the LFSR
+    output reg [7:0] data
+}

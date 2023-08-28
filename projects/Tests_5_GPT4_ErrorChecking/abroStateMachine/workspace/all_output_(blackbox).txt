@@ -1,0 +1,17 @@
+ABROStateMachine
+{ 
+    //Clock signal to synchronize the state machine
+    input wire clk
+    //Active-low reset signal to reset the state machine
+    input wire reset_n
+    //Input A signal
+    input wire A
+    //Input B signal
+    input wire B
+}
+{
+    //Output signal indicating if the final state is reached
+    output wire O
+    //Output signal indicating the current state of the state machine
+    output reg [3:0] State
+}

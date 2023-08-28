@@ -1,0 +1,125 @@
+The blocks necessary to properly test the ABRO state machine module are:
+1. Testbench module: This module will instantiate the ABRO state machine module and provide stimulus inputs to test its functionality.
+2. Clock generator: This block will generate the clock signal required for the ABRO state machine module.
+3. Reset generator: This block will generate the active-low reset signal to reset the ABRO state machine module.
+4. Monitor: This block will monitor the output of the ABRO state machine module and compare it with the expected output to determine if the test cases pass or fail.
+
+Important edge cases to test in the testbench:
+1. Test case where A and B are not entered in the correct order.
+2. Test case where A is entered before B.
+3. Test case where B is entered before A.
+4. Test case where A and B are entered simultaneously.
+5. Test case where A and B are entered multiple times in different orders.
+
+Now, let's proceed with the testbench module.
+
+testbench.v
+```verilog
+module testbench;
+  
+  // Parameters
+  parameter CLK_PERIOD = 10; // Clock period in ns
+  
+  // Signals
+  reg clk;
+  reg reset;
+  reg A;
+  reg B;
+  wire O;
+  wire [3:0] state;
+  
+  // Instantiate ABRO state machine module
+  ABRO_state_machine uut (
+    .clk(clk),
+    .reset(reset),
+    .A(A),
+    .B(B),
+    .O(O),
+    .state(state)
+  );
+  
+  // Clock generator
+  always #((CLK_PERIOD)/2) clk = ~clk;
+  
+  // Reset generator
+  initial begin
+    reset = 1;
+    #((CLK_PERIOD)*2) reset = 0;
+  end
+  
+  // Test cases
+  initial begin
+    // Test case 1: A and B not entered in correct order
+    A = 1;
+    B = 1;
+    #((CLK_PERIOD)*10);
+    if (O == 0)
+      $display("Test case 1: Passed");
+    else
+      $display("Test case 1: Failed");
+    
+    // Test case 2: A entered before B
+    A = 1;
+    B = 0;
+    #((CLK_PERIOD)*10);
+    if (O == 0)
+      $display("Test case 2: Passed");
+    else
+      $display("Test case 2: Failed");
+    
+    // Test case 3: B entered before A
+    A = 0;
+    B = 1;
+    #((CLK_PERIOD)*10);
+    if (O == 0)
+      $display("Test case 3: Passed");
+    else
+      $display("Test case 3: Failed");
+    
+    // Test case 4: A and B entered simultaneously
+    A = 1;
+    B = 1;
+    #((CLK_PERIOD)*10);
+    if (O == 1)
+      $display("Test case 4: Passed");
+    else
+      $display("Test case 4: Failed");
+    
+    // Test case 5: A and B entered multiple times in different orders
+    A = 1;
+    B = 0;
+    #((CLK_PERIOD)*10);
+    if (O == 0)
+      $display("Test case 5: Passed");
+    else
+      $display("Test case 5: Failed");
+    
+    A = 0;
+    B = 1;
+    #((CLK_PERIOD)*10);
+    if (O == 0)
+      $display("Test case 5: Passed");
+    else
+      $display("Test case 5: Failed");
+    
+    A = 1;
+    B = 1;
+    #((CLK_PERIOD)*10);
+    if (O == 1)
+      $display("Test case 5: Passed");
+    else
+      $display("Test case 5: Failed");
+  end
+  
+  // Dump waveform for visualization
+  initial begin
+    $dumpfile("WaveOutput.vcd");
+    $dumpvars(0, testbench);
+  end
+  
+endmodule
+```
+
+This testbench module tests five cases, including the important edge cases, and verifies the output using display statements. It also includes the lines `$dumpfile("WaveOutput.vcd")` and `$dumpvars(0, testbench)` to generate a VCD waveform file for visualization in GTKWave.
+
+Please note that the code provided assumes that the ABRO state machine module is defined in a separate file named "ABRO_state_machine.v".

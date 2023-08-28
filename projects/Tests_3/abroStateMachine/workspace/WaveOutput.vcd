@@ -1,0 +1,64 @@
+$date
+	Sun Jul 30 21:18:41 2023
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1s
+$end
+$scope module testbench $end
+$var wire 4 ! state [3:0] $end
+$var wire 1 " O $end
+$var parameter 32 # CLK_PERIOD $end
+$var reg 1 $ A $end
+$var reg 1 % B $end
+$var reg 1 & clk $end
+$var reg 1 ' reset $end
+$scope module uut $end
+$var wire 1 $ A $end
+$var wire 1 % B $end
+$var wire 1 & clk $end
+$var wire 1 ' reset $end
+$var wire 4 ( state [3:0] $end
+$var reg 1 " O $end
+$var reg 4 ) current_state [3:0] $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+b1010 #
+$end
+#0
+$dumpvars
+bx )
+bx (
+1'
+x&
+1%
+1$
+x"
+bx !
+$end
+#20
+0"
+b1 !
+b1 (
+b1 )
+0'
+#100
+0%
+#200
+1%
+0$
+#300
+1$
+#400
+0%
+#500
+1%
+0$
+#600
+1$
+#211441485

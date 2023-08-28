@@ -1,0 +1,74 @@
+$date
+	Mon Jul 24 22:58:14 2023
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1s
+$end
+$scope module testbench $end
+$var wire 8 ! rolled_number [7:0] $end
+$var parameter 32 " CLK_PERIOD $end
+$var reg 1 # clk $end
+$var reg 2 $ die_select [1:0] $end
+$var reg 1 % reset $end
+$var reg 1 & roll $end
+$scope module dut $end
+$var wire 1 # clock $end
+$var wire 2 ' die_select [1:0] $end
+$var wire 1 ( initial_state $end
+$var wire 1 % reset $end
+$var wire 1 & roll $end
+$var wire 8 ) rolled_number [7:0] $end
+$var reg 2 * current_die_select [1:0] $end
+$var reg 8 + rolled_number_reg [7:0] $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+b1010 "
+$end
+#0
+$dumpvars
+bx +
+bx *
+bx )
+z(
+b0 '
+0&
+1%
+b0 $
+x#
+bx !
+$end
+#20
+b0 *
+b0 !
+b0 )
+b0 +
+0%
+#40
+1&
+#140
+0&
+#180
+1&
+#200
+1%
+#220
+0%
+#320
+0&
+#340
+1&
+#360
+b11 $
+b11 '
+#460
+0&
+#480
+1&
+#580
+0&

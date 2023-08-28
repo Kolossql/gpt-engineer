@@ -1,0 +1,7 @@
+step_name,prompt_tokens_in_step,completion_tokens_in_step,total_tokens_in_step,total_prompt_tokens,total_completion_tokens,total_tokens
+clarify,265,93,358,265,93,358
+clarify,417,134,551,682,227,909
+gen_blackbox,902,48,950,1584,275,1859
+gen_blackbox_clarified_code,1699,507,2206,3283,782,4065
+gen_blackbox_verilog_testbench,1925,678,2603,5208,1460,6668
+check_output,5035,408,5443,10243,1868,12111

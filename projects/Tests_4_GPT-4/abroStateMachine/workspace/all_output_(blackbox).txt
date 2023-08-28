@@ -1,0 +1,25 @@
+ABROStateMachine
+{ 
+    //Clock signal to synchronize the state changes
+    input wire clk
+}
+{
+    //Active-low reset signal to reset both A and B
+    input wire reset_n
+}
+{
+    //Input A, must be entered before the output is sent
+    input wire A
+}
+{
+    //Input B, must be entered before the output is sent
+    input wire B
+}
+{
+    //Output O, 1 if the output state is reached, 0 otherwise
+    output wire O
+}
+{
+    //Output State, binary number corresponding to the current state of the module
+    output wire [1:0] State
+}

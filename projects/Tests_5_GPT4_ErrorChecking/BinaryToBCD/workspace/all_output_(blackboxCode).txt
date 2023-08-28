@@ -1,0 +1,40 @@
+The core blocks necessary for the Binary to BCD conversion using the Double Dabble algorithm are:
+
+1. Shift Register: This block will be used to shift the binary input left by one bit at a time. It is the main component of the Double Dabble algorithm.
+
+2. BCD Register: This block will hold the BCD output. It will be updated after each shift operation.
+
+3. Control Logic: This block will control the shift and update operations. It will also check if the BCD digits are greater than 4 and if so, it will add 3 to the digit.
+
+Now, let's write the Verilog code for the BinaryToBCD module.
+
+binarytobcd.v
+```verilog
+module BinaryToBCD (
+    input wire [7:0] binary_input,
+    output wire [11:0] BCD_output
+);
+
+    reg [11:0] BCD_register = 12'b0;
+    reg [7:0] shift_register = binary_input;
+    integer i;
+
+    always @(*) begin
+        for(i = 0; i < 8; i = i + 1) begin
+            // Shift left operation
+            shift_register = shift_register << 1;
+            BCD_register = BCD_register << 1;
+            BCD_register[0] = shift_register[7];
+
+            // Check if any BCD digit is greater than 4
+            if(BCD_register[3:0] > 4) BCD_register[3:0] = BCD_register[3:0] + 3;
+            if(BCD_register[7:4] > 4) BCD_register[7:4] = BCD_register[7:4] + 3;
+            if(BCD_register[11:8] > 4) BCD_register[11:8] = BCD_register[11:8] + 3;
+        end
+    end
+
+    assign BCD_output = BCD_register;
+
+endmodule
+```
+This Verilog code implements the Binary to BCD conversion using the Double Dabble algorithm. It uses a shift register to shift the binary input left by one bit at a time and a BCD register to hold the BCD output. The control logic checks if any BCD digit is greater than 4 and if so, it adds 3 to the digit. The BCD output is then assigned to the BCD register.

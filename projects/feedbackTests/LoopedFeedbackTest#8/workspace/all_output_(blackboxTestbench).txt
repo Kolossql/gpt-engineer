@@ -1,0 +1,94 @@
+The necessary blocks for the testbench are:
+
+1. Initialization Block: This block will initialize the inputs and outputs of the module under test (MUT). It will also open the VCD file for waveform generation.
+
+2. Stimulus Block: This block will provide the necessary stimulus to the MUT. It will generate different test cases to verify the functionality of the MUT.
+
+3. Monitor Block: This block will monitor the outputs of the MUT and compare them with the expected outputs. It will print "Passed" if the output matches the expected output and "Failed" if it doesn't.
+
+Important edge cases that should be tested are:
+
+1. When the enable signal is low.
+2. When the active-low reset signal is high.
+3. When the clock signal is not on a rising edge.
+4. When the sequence generator reaches the end of the sequence.
+5. When the active-low reset signal is low and the enable signal is high simultaneously.
+6. When the active-low reset signal is low and the enable signal is low simultaneously.
+
+Now, let's write the testbench module.
+
+testbench.v
+```verilog
+`timescale 1ns / 1ps
+
+module Testbench;
+    reg clk;
+    reg reset_n;
+    reg enable;
+    wire [7:0] data;
+
+    // Instantiate the module under test
+    SequenceGenerator MUT (
+        .clk(clk),
+        .reset_n(reset_n),
+        .enable(enable),
+        .data(data)
+    );
+
+    initial begin
+        // Open VCD file
+        $dumpfile("WaveOutput.vcd");
+        $dumpvars(0, Testbench);
+
+        // Initialize inputs
+        clk = 0;
+        reset_n = 0;
+        enable = 0;
+
+        // Apply stimulus
+        #10 reset_n = 1;
+        #10 enable = 1;
+        #10 clk = 1;
+        #10 clk = 0;
+        #10 clk = 1;
+        #10 clk = 0;
+        #10 enable = 0;
+        #10 enable = 1;
+        #10 reset_n = 0;
+        #10 reset_n = 1;
+        #10 clk = 1;
+        #10 clk = 0;
+        #10 clk = 1;
+        #10 clk = 0;
+        #10 enable = 0;
+        #10 enable = 1;
+        #10 reset_n = 0;
+        #10 reset_n = 1;
+
+        // Finish simulation
+        #10 $finish;
+    end
+
+    always @(posedge clk or negedge reset_n) begin
+        if (!reset_n) begin
+            if (data != 8'hAF) begin
+                $display("Failed: data = %h, expected = AF", data);
+            end else begin
+                $display("Passed: data = %h", data);
+            end
+        end else if (enable) begin
+            case (data)
+                8'hAF: if (data != 8'hBC) $display("Failed: data = %h, expected = BC", data);
+                8'hBC: if (data != 8'hE2) $display("Failed: data = %h, expected = E2", data);
+                8'hE2: if (data != 8'h78) $display("Failed: data = %h, expected = 78", data);
+                8'h78: if (data != 8'hFF) $display("Failed: data = %h, expected = FF", data);
+                8'hFF: if (data != 8'hE2) $display("Failed: data = %h, expected = E2", data);
+                8'h0B: if (data != 8'h8D) $display("Failed: data = %h, expected = 8D", data);
+                8'h8D: if (data != 8'hAF) $display("Failed: data = %h, expected = AF", data);
+                default: $display("Failed: Unexpected data = %h", data);
+            endcase
+        end
+    end
+endmodule
+```
+This testbench will test the sequence generator for all the edge cases and print the output for each test case. It will also generate a waveform file "WaveOutput.vcd" which can be viewed using gtkwave.

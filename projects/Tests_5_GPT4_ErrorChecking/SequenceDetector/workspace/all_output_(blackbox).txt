@@ -1,0 +1,13 @@
+SequenceDetector
+{ 
+    //Clock signal to synchronize the data processing
+    input wire clk
+    //Active-low reset signal to reset the module to the initial state
+    input wire reset_n
+    //The incoming data that should be checked
+    input wire [2:0] data_in
+}
+{
+    //Indicates if the sequence was found
+    output reg sequence_found
+}

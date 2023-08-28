@@ -1,0 +1,68 @@
+The blocks necessary for testing the binary to BCD converter module are:
+1. Testbench module: This module will instantiate the binary to BCD converter module and provide stimulus to its inputs. It will also monitor the outputs and verify their correctness.
+2. Clock generator: This block will generate a clock signal to drive the testbench and the DUT (Design Under Test).
+3. Stimulus generator: This block will generate different test cases for the binary input to be applied to the DUT.
+4. Monitor: This block will monitor the BCD output from the DUT and compare it with the expected output.
+
+Important edge cases to test in the testbench:
+1. Input value 0 (00000)
+2. Input value 31 (11111)
+3. Input value with all bits set to 1 (11111)
+4. Input value with all bits set to 0 (00000)
+5. Random input value
+
+Now, let's proceed with the testbench module:
+
+testbench.v
+```verilog
+module testbench;
+  
+  // Inputs
+  reg [4:0] binary_input;
+  
+  // Outputs
+  wire [7:0] bcd_output;
+  
+  // Instantiate the DUT
+  binary_to_bcd_converter dut (
+    .binary_input(binary_input),
+    .bcd_output(bcd_output)
+  );
+  
+  // Clock generation
+  reg clk;
+  always #5 clk = ~clk;
+  
+  // Stimulus generation
+  initial begin
+    clk = 0;
+    binary_input = 5'b00000; // Test case 1: Input value 0
+    #10;
+    
+    binary_input = 5'b11111; // Test case 2: Input value 31
+    #10;
+    
+    binary_input = 5'b11111; // Test case 3: Input value with all bits set to 1
+    #10;
+    
+    binary_input = 5'b00000; // Test case 4: Input value with all bits set to 0
+    #10;
+    
+    binary_input = 5'b10101; // Test case 5: Random input value
+    #10;
+    
+    $finish;
+  end
+  
+  // Monitor
+  always @(posedge clk) begin
+    $display("Binary Input: %b", binary_input);
+    $display("BCD Output: %b", bcd_output);
+  end
+  
+endmodule
+```
+
+This testbench module instantiates the binary to BCD converter module and provides stimulus to its inputs. It generates a clock signal, sets different test cases for the binary input, and monitors the binary input and BCD output using display statements.
+
+Please note that the above testbench assumes that the binary to BCD converter module is named "binary_to_bcd_converter" and has inputs named "binary_input" and outputs named "bcd_output". Make sure to replace these names with the actual module and signal names in your implementation.

@@ -1,0 +1,106 @@
+Core Blocks:
+1. TrafficLightController: Responsible for controlling the timing sequence of the traffic light.
+2. StateMachine: Implements the state transitions and outputs based on the current state and inputs.
+
+traffic_light_module.v
+```verilog
+module TrafficLightModule(
+    input wire clk,
+    input wire reset_n,
+    input wire enable,
+    output wire red,
+    output wire yellow,
+    output wire green
+);
+
+    // Instantiate TrafficLightController
+    TrafficLightController controller(
+        .clk(clk),
+        .reset_n(reset_n),
+        .enable(enable)
+    );
+
+    // Instantiate StateMachine
+    StateMachine state_machine(
+        .clk(clk),
+        .reset_n(reset_n),
+        .enable(enable),
+        .red(red),
+        .yellow(yellow),
+        .green(green),
+        .state(controller.state),
+        .timer(controller.timer)
+    );
+
+endmodule
+```
+
+TrafficLightController:
+```verilog
+module TrafficLightController(
+    input wire clk,
+    input wire reset_n,
+    input wire enable
+);
+
+    reg [4:0] timer;
+    reg [1:0] state;
+
+    always @(posedge clk or negedge reset_n) begin
+        if (!reset_n) begin
+            timer <= 0;
+            state <= 2'b00; // Initial state: Red
+        end else if (enable) begin
+            // Increment timer on each clock cycle
+            timer <= timer + 1;
+
+            // State transitions based on timer value
+            case (state)
+                2'b00: begin // Red state
+                    if (timer == 32) begin
+                        state <= 2'b01; // Transition to Green state
+                        timer <= 0;
+                    end
+                end
+                2'b01: begin // Green state
+                    if (timer == 20) begin
+                        state <= 2'b10; // Transition to Yellow state
+                        timer <= 0;
+                    end
+                end
+                2'b10: begin // Yellow state
+                    if (timer == 7) begin
+                        state <= 2'b00; // Transition to Red state
+                        timer <= 0;
+                    end
+                end
+                default: state <= 2'b00; // Default to Red state
+            endcase
+        end
+    end
+
+endmodule
+```
+
+StateMachine:
+```verilog
+module StateMachine(
+    input wire clk,
+    input wire reset_n,
+    input wire enable,
+    output wire red,
+    output wire yellow,
+    output wire green,
+    input wire [1:0] state,
+    input wire [4:0] timer
+);
+
+    // Output signals
+    assign red = (state == 2'b00);
+    assign yellow = (state == 2'b10);
+    assign green = (state == 2'b01);
+
+endmodule
+```
+
+In the above code, the TrafficLightModule is the top-level module that instantiates the TrafficLightController and StateMachine modules. The TrafficLightController module is responsible for controlling the timing sequence of the traffic light, while the StateMachine module implements the state transitions and outputs based on the current state and inputs. The TrafficLightController module increments the timer on each clock cycle and transitions between the different states based on the timer value. The StateMachine module assigns the appropriate values to the red, yellow, and green outputs based on the current state.

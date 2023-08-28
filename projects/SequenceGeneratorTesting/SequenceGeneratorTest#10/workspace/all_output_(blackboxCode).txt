@@ -1,0 +1,67 @@
+The core block necessary for the sequence generator module is the state machine. The state machine will keep track of the current state of the sequence generator and generate the appropriate output based on the inputs.
+
+Here is the content of the Verilog file for the SequenceGenerator module:
+
+sequence_generator.v
+```verilog
+module SequenceGenerator (
+    input wire clk,
+    input wire rst_n,
+    input wire enable,
+    output wire [7:0] data
+);
+
+    // Define the states
+    localparam IDLE = 2'b00;
+    localparam OUTPUT_SEQUENCE = 2'b01;
+
+    // Define the sequence values
+    localparam SEQUENCE_VALUES [7:0] = {8'hAF, 8'hBC, 8'hE2, 8'h78, 8'hFF, 8'hE2, 8'h0B, 8'h8D};
+
+    // Define the state register
+    reg [1:0] state;
+
+    // Define the output register
+    reg [7:0] output_data;
+
+    always @(posedge clk or negedge rst_n) begin
+        if (~rst_n) begin
+            // Reset the state and output data
+            state <= IDLE;
+            output_data <= SEQUENCE_VALUES[0];
+        end else begin
+            // State machine logic
+            case (state)
+                IDLE: begin
+                    if (enable) begin
+                        // Transition to the output sequence state
+                        state <= OUTPUT_SEQUENCE;
+                    end
+                end
+                OUTPUT_SEQUENCE: begin
+                    // Output the next value in the sequence
+                    output_data <= SEQUENCE_VALUES[output_data];
+                    if (!enable) begin
+                        // Transition back to the idle state
+                        state <= IDLE;
+                    end
+                end
+            endcase
+        end
+    end
+
+    // Assign the output data
+    assign data = output_data;
+
+endmodule
+```
+
+In this Verilog code, the SequenceGenerator module takes in the clock signal (clk), active-low reset signal (rst_n), and enable signal (enable) as inputs. It outputs the data signal (data) which represents the current value in the sequence.
+
+The module uses a state machine to control the generation of the sequence. The state machine has two states: IDLE and OUTPUT_SEQUENCE. In the IDLE state, the module waits for the enable signal to be high. Once the enable signal is high, the module transitions to the OUTPUT_SEQUENCE state and starts outputting the sequence values. If the enable signal goes low, the module transitions back to the IDLE state.
+
+The sequence values are stored in the SEQUENCE_VALUES parameter, which is an array of 8-bit values. The output_data register holds the current value in the sequence and is updated based on the state and enable signal.
+
+The output_data is assigned to the data output using the assign statement.
+
+This Verilog code follows the 2005 standard without the use of SystemVerilog and is synthesizable for an ASIC target.

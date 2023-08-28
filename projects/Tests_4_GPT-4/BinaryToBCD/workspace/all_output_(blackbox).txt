@@ -1,0 +1,9 @@
+BinaryToBCD
+{ 
+    //8-bit binary input
+    input wire [7:0] binary_input
+}
+{
+    //12-bit BCD output
+    output wire [11:0] BCD_output
+}

@@ -1,0 +1,15 @@
+DiceRoller
+{ 
+    //Clock signal
+    input wire clk
+    //Active-low reset signal
+    input wire reset_n
+    //Die select signal
+    input wire [1:0] die_select
+    //Roll signal
+    input wire roll
+}
+{
+    //Rolled number
+    output reg [7:0] rolled_number
+}

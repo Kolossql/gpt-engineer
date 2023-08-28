@@ -1,0 +1,15 @@
+SequenceGenerator
+{
+    // Clock signal
+    input wire clk
+
+    // Active-low reset signal
+    input wire reset
+
+    // Enable signal
+    input wire enable
+}
+{
+    // Data output
+    output reg [7:0] data
+}

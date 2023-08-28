@@ -47,9 +47,9 @@ todo
 scratchpad
 
 # Ignore GPT Engineer files
-projects
-!projects/example
-!projects/ABROstatemachineTesting/BlackBoxTests
+# projects
+# !projects/example
+# !projects/ABROstatemachineTesting/BlackBoxTests
 
 # Pyenv
 .python-version

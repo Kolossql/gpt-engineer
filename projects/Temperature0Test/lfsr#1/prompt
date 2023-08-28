@@ -1,0 +1,8 @@
+I am trying to create a Verilog model for an LFSR. It must meet the following specifications:
+Initial state: should be 10001010, and the taps should be at locations 1, 4, 6, and 7.
+Inputs:
+Clock: On every clock rising edge output the psuedo random number
+Active-low reset: reset the module to the initial state
+Outputs:
+Data (8-bits): The psuedorandom output of the LFSR module
+

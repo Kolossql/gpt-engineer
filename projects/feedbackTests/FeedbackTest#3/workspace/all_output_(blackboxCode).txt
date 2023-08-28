@@ -1,0 +1,33 @@
+Core Blocks:
+1. Shift Register: Implements the behavior of the shift register, including shifting the data on the rising edge of the clock when the shift enable signal is high.
+
+Filename: shift_register.v
+```verilog
+module shift_register (
+  input wire clk,
+  input wire reset,
+  input wire data,
+  input wire shift_enable,
+  output wire [7:0] stored_data
+);
+
+  reg [7:0] register;
+
+  always @(posedge clk or negedge reset) begin
+    if (!reset) begin
+      register <= 8'b00000000;
+    end else if (shift_enable) begin
+      register <= {register[6:0], data};
+    end
+  end
+
+  assign stored_data = register;
+
+endmodule
+```
+
+In the above code, the shift_register module takes in the clock signal (clk), active-low reset signal (reset), data input (data), and shift enable signal (shift_enable). It outputs the stored data (stored_data) as an 8-bit vector.
+
+The module uses a register (register) to store the data. On the rising edge of the clock or when the reset signal is triggered, the register is reset to the initial state of 00000000. When the shift enable signal is high, the data input is shifted into the register, moving the existing data to the left.
+
+The stored_data output is assigned the value of the register, representing the current stored data in the shift register.

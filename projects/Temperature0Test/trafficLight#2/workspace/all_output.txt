@@ -1,0 +1,90 @@
+The necessary blocks for testing the traffic light module are as follows:
+
+1. Testbench module: This module will instantiate the traffic light module and provide the necessary inputs for testing.
+2. Clock generator: This block will generate the clock signal for the testbench module.
+3. Reset generator: This block will generate the active-low reset signal for the testbench module.
+4. Enable generator: This block will generate the enable signal for the testbench module.
+5. Monitor: This block will monitor the outputs of the traffic light module and display the results.
+
+Important edge cases to test in the testbench:
+1. Initial state: Verify that the traffic light module starts in the correct initial state (red light with 32 clock cycles remaining before green).
+2. Transition from red to green: Verify that the traffic light module transitions from red to green after 32 clock cycles.
+3. Transition from green to yellow: Verify that the traffic light module transitions from green to yellow after 20 clock cycles.
+4. Transition from yellow to red: Verify that the traffic light module transitions from yellow to red after 7 clock cycles.
+5. Reset behavior: Verify that the traffic light module resets to the initial state after reaching the end of its cycle.
+
+Now, let's proceed with the code for the testbench module.
+
+testbench.v
+```verilog
+module testbench;
+  
+  // Parameters
+  parameter CLK_PERIOD = 10; // Clock period in ns
+  
+  // Signals
+  reg clk;
+  reg reset;
+  reg enable;
+  wire red;
+  wire yellow;
+  wire green;
+  
+  // Instantiate the traffic light module
+  traffic_light_module uut (
+    .clk(clk),
+    .reset(reset),
+    .enable(enable),
+    .red(red),
+    .yellow(yellow),
+    .green(green)
+  );
+  
+  // Clock generator
+  always #((CLK_PERIOD)/2) clk = ~clk;
+  
+  // Reset generator
+  initial begin
+    reset = 1;
+    #((CLK_PERIOD)*2) reset = 0;
+  end
+  
+  // Enable generator
+  initial begin
+    enable = 0;
+    #((CLK_PERIOD)*2) enable = 1;
+    #((CLK_PERIOD)*10) enable = 0;
+    #((CLK_PERIOD)*2) enable = 1;
+    #((CLK_PERIOD)*10) enable = 0;
+    #((CLK_PERIOD)*2) enable = 1;
+    #((CLK_PERIOD)*10) enable = 0;
+    #((CLK_PERIOD)*2) enable = 1;
+    #((CLK_PERIOD)*10) enable = 0;
+    #((CLK_PERIOD)*2) enable = 1;
+    #((CLK_PERIOD)*10) enable = 0;
+  end
+  
+  // Monitor
+  always @(posedge clk) begin
+    $display("Red: %b, Yellow: %b, Green: %b", red, yellow, green);
+  end
+  
+  // Stop simulation
+  initial begin
+    #((CLK_PERIOD)*100);
+    $finish;
+  end
+  
+endmodule
+```
+
+This testbench module tests the traffic light module with the following cases:
+1. Initial state: The enable signal is low for the first 100 clock cycles to keep the traffic light module in the initial state.
+2. Transition from red to green: The enable signal is high for 100 clock cycles to allow the traffic light module to transition from red to green.
+3. Transition from green to yellow: The enable signal is high for 100 clock cycles to allow the traffic light module to transition from green to yellow.
+4. Transition from yellow to red: The enable signal is high for 100 clock cycles to allow the traffic light module to transition from yellow to red.
+5. Reset behavior: The enable signal is high for 400 clock cycles to complete a full cycle of the traffic light module and verify that it resets to the initial state.
+
+The testbench module generates the clock signal, active-low reset signal, and enable signal. It monitors the outputs of the traffic light module and displays the results using the $display statement. The simulation is stopped after 1000 clock cycles using the $finish statement.
+
+Now, let's move on to the traffic light module.

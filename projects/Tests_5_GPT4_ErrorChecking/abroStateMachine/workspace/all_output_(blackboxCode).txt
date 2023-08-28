@@ -1,0 +1,48 @@
+The core blocks necessary for the ABRO state machine are:
+
+1. State Register: This block will hold the current state of the state machine. It will be updated on every clock cycle based on the current state and the inputs A and B.
+
+2. State Logic: This block will determine the next state based on the current state and the inputs A and B.
+
+3. Output Logic: This block will determine the output O based on the current state.
+
+Now, let's write the Verilog code for the ABRO state machine.
+
+abro_state_machine.v
+```verilog
+module ABROStateMachine (
+    input wire clk,
+    input wire reset_n,
+    input wire A,
+    input wire B,
+    output wire O,
+    output reg [3:0] State
+);
+
+    // State Register
+    always @(posedge clk or negedge reset_n) begin
+        if (!reset_n)
+            State <= 4'b0001; // Initial state
+        else
+            State <= State; // Hold state
+    end
+
+    // State Logic
+    always @(State or A or B) begin
+        case (State)
+            4'b0001: // State 1: Waiting for A and B
+                if (A && B)
+                    State <= 4'b0010; // Move to State 2
+            4'b0010: // State 2: Output state
+                State <= 4'b0001; // Move back to State 1
+            default:
+                State <= 4'b0001; // Default to State 1
+        endcase
+    end
+
+    // Output Logic
+    assign O = (State == 4'b0010) ? 1'b1 : 1'b0;
+
+endmodule
+```
+This Verilog code defines a module for the ABRO state machine. It includes a state register that holds the current state, state logic that determines the next state based on the current state and inputs A and B, and output logic that determines the output O based on the current state. The state machine starts in an initial state and transitions to an output state when both inputs A and B are received. It then transitions back to the initial state. The output O is 1 when the state machine is in the output state and 0 otherwise.

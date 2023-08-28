@@ -1,0 +1,13 @@
+I am trying to create a Behavioral Verilog module for a simulated dice roller. It must meet the following specifications:
+Initial State: 4-sided die, roll set to 0.
+Inputs:
+Clock: Outputs the rolled number on a clock rising edge only if roll is high.
+Active-low reset: sets the module to its initial state
+Die select (2-bits): 00 for 4-sided, 01 for 6-sided, 10 for 8-sided, 11 for 20-sided
+Roll: 1 if a die should be simulated on a clock rising edge or 0 if it shouldn't be simulated
+Outputs:
+Rolled number (8-bits): decimal number that is the result of the simulated dice roll
+
+The design should simulate rolling either a 4-sided, 6-sided, 8-sided, or 20-sided die, based on
+the input die select. It should roll when the roll input goes high and output the random number
+based on the number of sides of the selected die.

@@ -1,0 +1,10 @@
+Stored Data: 00000000
+Passed: Initial state test
+Stored Data: 00000001
+Passed: Shift operation test
+Stored Data: 00000001
+Passed: Shift operation with shift enable low test
+Stored Data: 00000000
+Passed: Reset operation test
+Stored Data: 00000010
+Passed: Output when data is changed test

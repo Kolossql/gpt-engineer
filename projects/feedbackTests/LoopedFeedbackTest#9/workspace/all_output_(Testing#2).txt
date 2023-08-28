@@ -1,0 +1,142 @@
+Issues Identified:
+
+1. The shift register and BCD register are not being updated correctly. The shift register should be initialized with the binary input and then shifted left in each iteration. The BCD register should be updated based on the shift register.
+
+2. The condition checks for BCD_register[3:0], BCD_register[7:4], and BCD_register[11:8] being greater than 4 are not correct. These checks should be performed after the shift operation.
+
+3. The testbench is not correctly checking the output of the module. The expected BCD outputs for the test cases are not correct.
+
+Solutions:
+
+1. Update the shift register and BCD register correctly. Initialize the shift register with the binary input and then shift it left in each iteration. Update the BCD register based on the shift register.
+
+2. Perform the condition checks for BCD_register[3:0], BCD_register[7:4], and BCD_register[11:8] being greater than 4 after the shift operation.
+
+3. Correct the expected BCD outputs for the test cases in the testbench.
+
+Here are the corrected module and testbench:
+
+binarytobcd.v
+```verilog
+module BinaryToBCD (
+    input wire [7:0] binary_input,
+    output wire [11:0] BCD_output
+);
+
+    reg [19:0] shift_register; // Shift Register
+    reg [11:0] BCD_register; // BCD Register
+    integer i;
+
+    always @(binary_input)
+    begin
+        shift_register = {12'b0, binary_input}; // Initialize Shift Register with binary input
+        BCD_register = 12'b0; // Initialize BCD Register with 0
+
+        for (i = 0; i < 8; i = i + 1)
+        begin
+            BCD_register = BCD_register << 1; // Shift BCD Register to left
+            BCD_register[0] = shift_register[19]; // Copy MSB of Shift Register to LSB of BCD Register
+            shift_register = shift_register << 1; // Shift Shift Register to left
+
+            if (BCD_register[3:0] > 4)
+                BCD_register[3:0] = BCD_register[3:0] + 3;
+
+            if (BCD_register[7:4] > 4)
+                BCD_register[7:4] = BCD_register[7:4] + 3;
+
+            if (BCD_register[11:8] > 4)
+                BCD_register[11:8] = BCD_register[11:8] + 3;
+        end
+    end
+
+    assign BCD_output = BCD_register;
+
+endmodule
+```
+
+testbench.v
+```verilog
+`timescale 1ns / 1ps
+
+module BinaryToBCD_Test;
+
+    // Inputs
+    reg [7:0] binary_input;
+
+    // Outputs
+    wire [11:0] BCD_output;
+
+    // Instantiate the Unit Under Test (UUT)
+    BinaryToBCD uut (
+        .binary_input(binary_input), 
+        .BCD_output(BCD_output)
+    );
+
+    initial begin
+        // Initialize Inputs
+        binary_input = 8'b0;
+
+        // Wait for 100 ns for the UUT to process the input
+        #100;
+
+        // Dump waveforms
+        $dumpfile("WaveOutput.vcd");
+        $dumpvars(0, BinaryToBCD_Test);
+
+        // Test Case 1: Binary input is at the lower limit (0)
+        binary_input = 8'b0;
+        #100;
+        if (BCD_output == 12'b0000_0000_0000) begin
+            $display("Test Case 1 Passed");
+        end else begin
+            $display("Test Case 1 Failed");
+            $display("BCD_output = %b", BCD_output);
+        end
+
+        // Test Case 2: Binary input is at the upper limit (255)
+        binary_input = 8'b1111_1111;
+        #100;
+        if (BCD_output == 12'b0010_0101_0101) begin
+            $display("Test Case 2 Passed");
+        end else begin
+            $display("Test Case 2 Failed");
+            $display("BCD_output = %b", BCD_output);
+        end
+
+        // Test Case 3: Binary input is in the middle of the range (128)
+        binary_input = 8'b1000_0000;
+        #100;
+        if (BCD_output == 12'b0001_0010_1000) begin
+            $display("Test Case 3 Passed");
+        end else begin
+            $display("Test Case 3 Failed");
+            $display("BCD_output = %b", BCD_output);
+        end
+
+        // Test Case 4: Binary input is just above the lower limit (1)
+        binary_input = 8'b0000_0001;
+        #100;
+        if (BCD_output == 12'b0000_0000_0001) begin
+            $display("Test Case 4 Passed");
+        end else begin
+            $display("Test Case 4 Failed");
+            $display("BCD_output = %b", BCD_output);
+        end
+
+        // Test Case 5: Binary input is just below the upper limit (254)
+        binary_input = 8'b1111_1110;
+        #100;
+        if (BCD_output == 12'b0010_0101_0100) begin
+            $display("Test Case 5 Passed");
+        end else begin
+            $display("Test Case 5 Failed");
+            $display("BCD_output = %b", BCD_output);
+        end
+
+        // Finish the simulation
+        #100;
+        $finish;
+    end
+
+endmodule
+```

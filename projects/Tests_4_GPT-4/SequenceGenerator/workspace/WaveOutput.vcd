@@ -1,0 +1,99 @@
+$date
+	Sun Aug 13 23:12:20 2023
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ps
+$end
+$scope module Testbench $end
+$var wire 8 ! data [7:0] $end
+$var reg 1 " clk $end
+$var reg 1 # enable $end
+$var reg 1 $ reset_n $end
+$scope module uut $end
+$var wire 1 " clk $end
+$var wire 1 # enable $end
+$var wire 1 $ reset_n $end
+$var parameter 3 % S_0B $end
+$var parameter 3 & S_78 $end
+$var parameter 3 ' S_8D $end
+$var parameter 3 ( S_AF $end
+$var parameter 3 ) S_BC $end
+$var parameter 3 * S_E2 $end
+$var parameter 3 + S_FF $end
+$var reg 8 , data [7:0] $end
+$var reg 3 - state [2:0] $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+b100 +
+b10 *
+b1 )
+b0 (
+b110 '
+b11 &
+b101 %
+$end
+#0
+$dumpvars
+b0 -
+b10101111 ,
+0$
+1#
+0"
+b10101111 !
+$end
+#5000
+1"
+#10000
+0"
+#15000
+1"
+#20000
+0"
+#25000
+1"
+#30000
+1"
+#35000
+0"
+#40000
+1"
+0#
+#45000
+0"
+#50000
+0"
+#55000
+1"
+#60000
+0"
+#65000
+1"
+#70000
+1"
+#75000
+0"
+#80000
+1"
+1#
+#85000
+0"
+#90000
+0"
+#95000
+1"
+#100000
+0"
+1$
+#105000
+b10111100 !
+b10111100 ,
+b1 -
+1"
+#110000
+0"

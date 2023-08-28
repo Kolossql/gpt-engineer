@@ -1,0 +1,134 @@
+$date
+	Sat Aug 19 19:45:17 2023
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ps
+$end
+$scope module SequenceGenerator_tb $end
+$var wire 8 ! data [7:0] $end
+$var reg 1 " clk $end
+$var reg 1 # enable $end
+$var reg 1 $ reset_n $end
+$scope module uut $end
+$var wire 1 " clk $end
+$var wire 1 # enable $end
+$var wire 1 $ reset_n $end
+$var parameter 3 % S0 $end
+$var parameter 3 & S1 $end
+$var parameter 3 ' S2 $end
+$var parameter 3 ( S3 $end
+$var parameter 3 ) S4 $end
+$var parameter 3 * S5 $end
+$var parameter 3 + S6 $end
+$var parameter 3 , S7 $end
+$var reg 8 - data [7:0] $end
+$var reg 3 . state [2:0] $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+b111 ,
+b110 +
+b101 *
+b100 )
+b11 (
+b10 '
+b1 &
+b0 %
+$end
+#0
+$dumpvars
+b0 .
+b10101111 -
+0$
+0#
+0"
+b10101111 !
+$end
+#5000
+1"
+#10000
+0"
+1#
+#15000
+1"
+#20000
+0"
+0#
+#25000
+1"
+#30000
+0"
+1#
+#35000
+1"
+#40000
+0"
+#45000
+1"
+#50000
+0"
+1$
+#55000
+b10111100 !
+b10111100 -
+b1 .
+1"
+#60000
+b10101111 !
+b10101111 -
+b0 .
+0"
+0$
+#65000
+1"
+#70000
+0"
+#75000
+1"
+#80000
+1"
+#85000
+0"
+#90000
+1"
+#95000
+0"
+#100000
+1"
+#105000
+0"
+#110000
+1"
+#115000
+0"
+#120000
+1"
+#125000
+0"
+#130000
+1"
+#135000
+0"
+#140000
+1"
+#145000
+0"
+#150000
+1"
+#155000
+0"
+#160000
+1"
+#165000
+0"
+#170000
+b10111100 !
+b10111100 -
+b1 .
+1"
+1$

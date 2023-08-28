@@ -1,0 +1,14 @@
+I am trying to create a Behavioral Verilog module for a traffic light state machine. It must meet the following specifications:
+Initial State: Red light with 32 clock cycles remaining before green
+Inputs:
+Clock: Used to time the traffic light as described below 
+Active-low reset: Resets the module to its initial state
+Enable: When this is high the traaffic light module will operate on the timing described below. When this is low it will pause all operation.
+Outputs:
+Red: 1 if the signal is displaying red, 0 otherwise
+Yellow: 1 if the signal is displaying yellow, 0 otherwise
+Green:  1 if the signal is displaying green, 0 otherwise
+
+The state machine should reset to a red light, change from red to green after 32 clock cycles,
+change from green to yellow after 20 clock cycles, and then change from yellow to red after 7
+clock cycles.

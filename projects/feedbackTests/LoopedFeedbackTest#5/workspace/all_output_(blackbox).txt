@@ -1,0 +1,21 @@
+TrafficLightModule
+{
+    // Clock input
+    input wire clk
+
+    // Active-low reset input
+    input wire reset
+
+    // Enable input
+    input wire enable
+}
+{
+    // Red output
+    output wire red
+
+    // Yellow output
+    output wire yellow
+
+    // Green output
+    output wire green
+}

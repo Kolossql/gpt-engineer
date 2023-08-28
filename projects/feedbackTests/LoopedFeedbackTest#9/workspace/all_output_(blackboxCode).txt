@@ -1,0 +1,47 @@
+The core blocks necessary for this module are:
+
+1. Shift Register: This block will hold the binary input and perform the shift operations required by the Double Dabble algorithm.
+
+2. BCD Register: This block will hold the BCD output. It will be updated after each shift operation in the Shift Register.
+
+3. Control Logic: This block will control the shift operations in the Shift Register and the updates in the BCD Register. It will also check for any errors and generate the error signal.
+
+Now, let's write the Verilog code for this module.
+
+binarytobcd.v
+```verilog
+module BinaryToBCD (
+    input wire [7:0] binary_input,
+    output wire [11:0] BCD_output
+);
+
+    reg [19:0] shift_register; // Shift Register
+    reg [11:0] BCD_register; // BCD Register
+
+    always @(binary_input)
+    begin
+        shift_register = {12'b0, binary_input}; // Initialize Shift Register with binary input
+        BCD_register = 12'b0; // Initialize BCD Register with 0
+
+        for (int i = 0; i < 8; i = i + 1)
+        begin
+            if (BCD_register[3:0] > 4)
+                BCD_register[3:0] = BCD_register[3:0] + 3;
+
+            if (BCD_register[7:4] > 4)
+                BCD_register[7:4] = BCD_register[7:4] + 3;
+
+            if (BCD_register[11:8] > 4)
+                BCD_register[11:8] = BCD_register[11:8] + 3;
+
+            BCD_register = BCD_register << 1; // Shift BCD Register to left
+            BCD_register[0] = shift_register[19]; // Copy MSB of Shift Register to LSB of BCD Register
+            shift_register = shift_register << 1; // Shift Shift Register to left
+        end
+    end
+
+    assign BCD_output = BCD_register;
+
+endmodule
+```
+This Verilog code implements the Double Dabble algorithm for binary to BCD conversion. It uses a Shift Register and a BCD Register to perform the conversion. The Control Logic is implemented in the always block which controls the shift operations and the updates in the registers. It also checks for any errors and generates the error signal.

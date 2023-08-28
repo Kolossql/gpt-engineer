@@ -1,0 +1,39 @@
+Based on the specifications, the core blocks necessary for the shift register module are:
+1. Register: To store the data bits.
+2. Combinational Logic: To handle the shifting of data bits based on the clock and shift enable signals.
+3. Reset Logic: To reset the module to the initial state when the reset signal is asserted.
+
+Here is the content of the shift_register.v file:
+
+shift_register.v
+```verilog
+module shift_register (
+  input wire clk,
+  input wire reset,
+  input wire data,
+  input wire shift_enable,
+  output wire [7:0] stored_data
+);
+
+  reg [7:0] register;
+
+  always @(posedge clk or posedge reset) begin
+    if (reset) begin
+      register <= 8'b00000000;
+    end else if (shift_enable) begin
+      register <= {register[6:0], data};
+    end
+  end
+
+  assign stored_data = register;
+
+endmodule
+```
+
+In this code, the shift_register module takes the clock (clk), reset, data, and shift_enable signals as inputs. It also has the stored_data signal as an output.
+
+Inside the module, there is a register defined as an 8-bit wide reg variable to store the data bits. The always block is triggered on the positive edge of the clock (clk) or the positive edge of the reset signal. 
+
+Within the always block, there are two conditions checked. If the reset signal is asserted, the register is set to the initial state of 8'b00000000. If the shift_enable signal is high, the data bit is shifted into the register by concatenating the current register value (register[6:0]) with the data input.
+
+Finally, the stored_data output is assigned the value of the register, which represents the stored data in the shift register.

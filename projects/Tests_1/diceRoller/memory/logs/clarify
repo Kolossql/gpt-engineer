@@ -1,0 +1,22 @@
+[
+    {
+        "role": "system",
+        "content": "You will read specifications and not carry them out, only seek to clarify them. Read carefully and only clarify things that are \nSpecifically you will first summarise a list of super short bullets of areas that need clarification.\nThen you will pick one clarifying question, and wait for an answer from the user. Only ask questions that would be neccesary for a developer to write code to the specifications.\n"
+    },
+    {
+        "role": "user",
+        "content": "I am trying to create a Behavioral Verilog module for a simulated dice roller. It must meet the following specifications:\nInputs:\nInitial State: 4-sided die, roll set to 0.\nClock: Outputs the rolled number on a clock rising edge only if roll is high.\nActive-low reset: sets the module to its initial state\nDie select (2-bits): 00 for 4-sided, 01 for 6-sided, 10 for 8-sided, 11 for 20-sided\nRoll: 1 if a die should be simulated on a clock rising edge or 0 if it shouldn't be simulated\nOutputs:\nRolled number (8-bits): decimal number that is the result of the simulated dice roll\n\nThe design should simulate rolling either a 4-sided, 6-sided, 8-sided, or 20-sided die, based on\nthe input die select. It should roll when the roll input goes high and output the random number\nbased on the number of sides of the selected die."
+    },
+    {
+        "role": "assistant",
+        "content": "Areas that need clarification:\n1. How should the initial state be represented? Is it a specific value for the roll set to 0?\n2. What is the behavior of the module when the clock is not on a rising edge?\n3. How should the module handle the roll input when it is low?\n4. How should the module handle the die select input when it is not one of the specified values (00, 01, 10, 11)?\n5. How should the module generate the random number for the dice roll?"
+    },
+    {
+        "role": "user",
+        "content": "Use an LSFR to generate the random number\n\nIs anything else unclear? If yes, only answer in the form:\n{remaining unclear areas} remaining questions.\n{Next question}\nIf everything is sufficiently clear, only answer \"Nothing more to clarify.\"."
+    },
+    {
+        "role": "assistant",
+        "content": "Nothing more to clarify."
+    }
+]

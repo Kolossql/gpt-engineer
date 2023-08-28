@@ -1,0 +1,91 @@
+The blocks necessary for testing the sequence generator module are as follows:
+
+1. Testbench module: This module will instantiate the sequence generator module and provide the necessary inputs for testing.
+2. Clock generator: This block will generate the clock signal for the testbench module.
+3. Reset generator: This block will generate the active-low reset signal for the testbench module.
+4. Enable generator: This block will generate the enable signal for the testbench module.
+5. Monitor: This block will monitor the outputs of the sequence generator module and compare them with the expected values.
+
+Important edge cases to test in the testbench:
+
+1. Initial state: Verify that the sequence generator outputs the first element of the sequence when it is in the initial state.
+2. Clock edge: Verify that the sequence generator outputs the next element of the sequence when the clock has a rising edge.
+3. Active-low reset: Verify that the sequence generator resets to the initial state when the active-low reset signal is asserted.
+4. Enable signal: Verify that the sequence generator only outputs the sequence when the enable signal is high.
+5. Sequence repetition: Verify that the sequence generator repeats the sequence after outputting all the elements.
+
+Now, let's proceed with the content of the testbench module:
+
+testbench.v
+```verilog
+module testbench;
+  
+  // Inputs
+  reg clk;
+  reg reset;
+  reg enable;
+  
+  // Outputs
+  wire [7:0] data;
+  
+  // Instantiate the sequence generator module
+  sequence_generator dut (
+    .clk(clk),
+    .reset(reset),
+    .enable(enable),
+    .data(data)
+  );
+  
+  // Clock generator
+  always #5 clk = ~clk;
+  
+  // Reset generator
+  initial begin
+    reset = 1;
+    #10 reset = 0;
+  end
+  
+  // Enable generator
+  initial begin
+    enable = 0;
+    #20 enable = 1;
+    #100 enable = 0;
+    #20 enable = 1;
+    #100 enable = 0;
+    #20 enable = 1;
+    #100 enable = 0;
+  end
+  
+  // Monitor
+  always @(posedge clk) begin
+    if (enable) begin
+      case (data)
+        8'hAF: $display("Passed: Output is 0xAF");
+        8'hBC: $display("Passed: Output is 0xBC");
+        8'hE2: $display("Passed: Output is 0xE2");
+        8'h78: $display("Passed: Output is 0x78");
+        8'hFF: $display("Passed: Output is 0xFF");
+        8'h0B: $display("Passed: Output is 0x0B");
+        8'h8D: $display("Passed: Output is 0x8D");
+        default: $display("Failed: Unexpected output");
+      endcase
+    end
+  end
+  
+  // Simulation end
+  initial begin
+    #500 $finish;
+  end
+  
+  // Dump waveform
+  initial begin
+    $dumpfile("WaveOutput.vcd");
+    $dumpvars(0, testbench);
+  end
+  
+endmodule
+```
+
+Please note that the testbench module assumes that the sequence generator module is named "sequence_generator" and has the specified inputs and outputs. The testbench generates the clock, reset, and enable signals, monitors the output of the sequence generator, and compares it with the expected values using display statements. It also includes the necessary lines to dump the waveform for viewing in GTKWave.
+
+Make sure to double-check that all parts of the architecture are present in the files.

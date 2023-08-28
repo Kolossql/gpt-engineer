@@ -1,0 +1,71 @@
+Core blocks necessary:
+
+1. State Machine: This block will be responsible for controlling the sequence of the output data. It will have states corresponding to each element of the sequence. On each rising edge of the clock, if the enable signal is high, it will transition to the next state, thus changing the output data to the next element in the sequence. If the active-low reset signal is low, it will transition to the initial state.
+
+2. Output Register: This block will hold the current output data. It will be updated on each rising edge of the clock, if the enable signal is high, based on the current state of the state machine. If the active-low reset signal is low, it will be reset to the initial output data.
+
+Now, let's write the Verilog code for the sequence generator module.
+
+sequence_generator.v
+```verilog
+module SequenceGenerator (
+    input wire clk,
+    input wire reset_n,
+    input wire enable,
+    output reg [7:0] data
+);
+
+    // Define the states for the state machine
+    parameter S0 = 3'b000, // State for 0xAF
+              S1 = 3'b001, // State for 0xBC
+              S2 = 3'b010, // State for 0xE2
+              S3 = 3'b011, // State for 0x78
+              S4 = 3'b100, // State for 0xFF
+              S5 = 3'b101, // State for 0xE2
+              S6 = 3'b110, // State for 0x0B
+              S7 = 3'b111; // State for 0x8D
+
+    // Define the state register
+    reg [2:0] state;
+
+    // State machine
+    always @(posedge clk or negedge reset_n) begin
+        if (!reset_n)
+            state <= S0;
+        else if (enable) begin
+            case (state)
+                S0: state <= S1;
+                S1: state <= S2;
+                S2: state <= S3;
+                S3: state <= S4;
+                S4: state <= S5;
+                S5: state <= S6;
+                S6: state <= S7;
+                S7: state <= S0;
+                default: state <= S0;
+            endcase
+        end
+    end
+
+    // Output register
+    always @(posedge clk or negedge reset_n) begin
+        if (!reset_n)
+            data <= 8'hAF;
+        else if (enable) begin
+            case (state)
+                S0: data <= 8'hAF;
+                S1: data <= 8'hBC;
+                S2: data <= 8'hE2;
+                S3: data <= 8'h78;
+                S4: data <= 8'hFF;
+                S5: data <= 8'hE2;
+                S6: data <= 8'h0B;
+                S7: data <= 8'h8D;
+                default: data <= 8'hAF;
+            endcase
+        end
+    end
+
+endmodule
+```
+This Verilog code defines a sequence generator module that meets the given specifications. It uses a state machine to control the sequence of the output data and an output register to hold the current output data. The state machine and the output register are updated on each rising edge of the clock, if the enable signal is high, and are reset to the initial state and the initial output data, respectively, if the active-low reset signal is low.

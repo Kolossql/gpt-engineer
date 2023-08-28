@@ -1,0 +1,104 @@
+Buffered UART:
+
+Implement a system in a caravel user project that implements  a buffered UART for data acquisition that works in the following manner:
+(1) A UART with selectable baud rate determined by the core clock
+    rate divided by a 16-bit number held in a register.  The fastest
+    rate is the core clock frequency divided by 8.  All register
+    values less than 8 can be treated as the same as divide-by-8.
+    Only the receive function of the UART needs to be implemented.
+(2) The UART is connected to one input GPIO.  Use caravel GPIO[5]
+    for Rx (receive), which matches the function of that pin for the
+    management SoC.
+(3) There is a dual-port memory of 1kB that holds (buffers) any
+    input data until they are read by the SoC.  The memory will be
+    one of the SRAM macros, so there is a defined module function
+    and pinout for it.
+(4) There is a small memory controller that maintains two pointers
+    (addresses) to the SRAM, one for the bottom of the buffer
+    (oldest data) and one for the top of the buffer (newest data).
+    The initial pointer values (addresses) for the buffer top and
+    bottom are both zero.
+(5) There is a wishbone interface to the caravel SoC.  It decodes
+    five different addresses for these registered values:
+        (1) Input data word (read only) (from SRAM read-only port,
+            the buffer bottom)
+        (2) A configuration word for controlling the UART (enable
+            and baud rate) (read/write)
+        (3) Buffer status (empty, full, near empty, near full,
+            overflow, underflow)
+        (4) Buffer address top (read only) (diagnostic)
+        (5) Buffer address bottom (read only) (diagnostic)
+    The wishbone address for the user project space is 0x30000000.
+    The interface implementation needs only to look at the low byte
+    to decode the five registers above.
+(5) When the UART receives a byte, it signals to the controller that
+    a byte has been received.  The controller writes the byte to
+    SRAM and increments the address of the top of the buffer.  If the
+    address reaches the end of memory, it loops back to the beginning.
+    If the buffer top equals the buffer bottom, then the "full" status
+    is set.  If the buffer top is 10 bytes or less below the buffer
+    bottom, the "almost full" status is set.  If the buffer is full
+    when a new UART byte arrives, then it is discarded and the memory
+    pointer is not incremented, and the "overflow" status is set.
+(7) The controller always outputs the SRAM value at the bottom of the
+    buffer which can be read on wishbone address 0.  When a read is
+    requested on the wishbone bus at address 0, the controller
+    acknowledges the read and then increments the pointer to the
+    bottom of the buffer.  If the address reaches the end of memory,
+    it loops back to the beginning.  If the buffer top equals the
+    buffer bottom, then the "empty" status is set.  If the buffer
+    top is 10 bytes or less above the buffer bottom, the "almost
+    empty" status is set.  If the buffer is empty when a new read
+    is requested, then the memory pointer is not decremented, and
+    the "underflow" status is set.
+The SRAM is module sky130_sram_1kbyte_1rw1r_8x1024_8.v from the
+sky130_sram_macros library.  Its black-box definition is:
+    module sky130_sram_1kbyte_1rw1r_8x1024_8 (
+        input  clk0,            // core clock
+        input  csb0,            // disable
+        input  web0,            // active low write control
+        input  [0:0]  wmask0,   // write mask
+        input  [9:0]  addr0,    // buffer top address
+        input  [7:0]  din0,     // UART data in
+        output [7:0]  dout0,    // unused
+        input  clk1,            // core clock
+        input  csb1,            // disable
+        input  [9:0]  addr1,    // buffer bottom address
+        output [7:0]  dout1     // data out to wishbone
+    );
+The UART black-box module can be defined as:
+    module uart (
+        input clk,              // core clock
+        input resetn,           // active-low reset
+        input enable,           // enable signal
+        input rx,               // input (receive) value
+        input [15:0] divider,   // baud rate clock divider
+        output [7:0] data_out,  // data byte out
+        output data_ready       // data ready signal
+    );
+The wishbone controller can include the memory controller and its
+black-box module can be defined as:
+    module buffered_uart_wb (
+        // SoC-wishbone bus facing signals
+        input wb_clk_i,
+        input wb_rst_i,
+        input [31:0] wb_adr_i,
+        input [31:0] wb_dat_i,
+        input [3:0]  wb_sel_i,
+        input wb_we_i,
+        input wb_cyc_i,
+        input wb_stb_i,
+        output wb_ack_o,
+        output [31:0] wb_dat_o,
+
+        // Memory (SRAM) connections
+        output [9:0] buffer_top,
+        output [9:0] buffer_bottom,
+        input [7:0]  buffer_output,
+
+        // UART connections (from internal registers)
+        input  uart_ready,
+        output [7:0] uart_value,
+        output uart_enable,
+        output uart_divider
+    );

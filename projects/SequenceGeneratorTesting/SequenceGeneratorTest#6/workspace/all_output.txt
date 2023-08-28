@@ -1,0 +1,35 @@
+Based on the specifications, the core module required for the sequence generator is as follows:
+
+1. SequenceGenerator: This module generates the sequence based on the clock, reset, and enable signals. It outputs the sequence in hexadecimal format.
+
+Now, let's proceed with creating the necessary files and implementing the code.
+
+1. sequence_generator.v: 
+
+```verilog
+module SequenceGenerator (
+  input wire clk,
+  input wire reset,
+  input wire enable,
+  output reg [7:0] data
+);
+
+  reg [7:0] sequence [7:0] = {8'hAF, 8'hBC, 8'hE2, 8'h78, 8'hFF, 8'hE2, 8'h0B, 8'h8D};
+  reg [2:0] state = 0;
+
+  always @(posedge clk or negedge reset) begin
+    if (!reset) begin
+      state <= 0;
+      data <= sequence[0];
+    end else if (enable) begin
+      state <= state + 1;
+      data <= sequence[state];
+    end
+  end
+
+endmodule
+```
+
+This completes the implementation of the sequence generator module. The module takes inputs for the clock, reset, and enable signals, and outputs the sequence in hexadecimal format.
+
+Please let me know if you need any further assistance.

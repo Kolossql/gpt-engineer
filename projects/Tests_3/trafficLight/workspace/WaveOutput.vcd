@@ -1,0 +1,78 @@
+$date
+	Sun Jul 30 22:36:07 2023
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1s
+$end
+$scope module testbench $end
+$var wire 1 ! yellow $end
+$var wire 1 " red $end
+$var wire 1 # green $end
+$var reg 1 $ clk $end
+$var reg 1 % enable $end
+$var reg 1 & reset $end
+$scope module uut $end
+$var wire 1 $ clk $end
+$var wire 1 % enable $end
+$var wire 1 & reset $end
+$var parameter 2 ' GREEN $end
+$var parameter 2 ( RED $end
+$var parameter 2 ) YELLOW $end
+$var reg 5 * counter [4:0] $end
+$var reg 2 + current_state [1:0] $end
+$var reg 1 # green $end
+$var reg 2 , next_state [1:0] $end
+$var reg 1 " red $end
+$var reg 1 ! yellow $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+b0 )
+b0 (
+b1 '
+$end
+#0
+$dumpvars
+bx ,
+bx +
+bx *
+1&
+0%
+x$
+x#
+x"
+x!
+$end
+#10
+b0 +
+b0 *
+0#
+0!
+1"
+0&
+#60
+1%
+#260
+0%
+#360
+1&
+#370
+0&
+#420
+1%
+#620
+0%
+#720
+1&
+#730
+0&
+#780
+1%
+#980
+0%
+#1080

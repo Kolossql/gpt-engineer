@@ -1,0 +1,50 @@
+The core blocks necessary for this module are:
+
+1. State Register: This will hold the current state of the traffic light. It will be updated every clock cycle based on the current state and the inputs.
+
+2. Next State Logic: This will determine the next state of the traffic light based on the current state and the inputs.
+
+3. Output Logic: This will determine the outputs (red, yellow, green) based on the current state.
+
+Now, let's write the Verilog code for the traffic light state machine.
+
+trafficlight.v
+```verilog
+module TrafficLightStateMachine (
+    input wire clk,
+    input wire reset_n,
+    input wire enable,
+    output wire red,
+    output wire yellow,
+    output wire green
+);
+
+    // Define the states
+    parameter RED = 3'b000, GREEN = 3'b001, YELLOW = 3'b010;
+
+    // State Register
+    reg [2:0] state_reg = RED, state_next;
+
+    // Next State Logic
+    always @(posedge clk or negedge reset_n) begin
+        if (!reset_n) begin
+            state_reg <= RED;
+        end else if (enable) begin
+            case (state_reg)
+                RED: state_next = GREEN;
+                GREEN: state_next = YELLOW;
+                YELLOW: state_next = RED;
+                default: state_next = RED;
+            endcase
+            state_reg <= state_next;
+        end
+    end
+
+    // Output Logic
+    assign red = (state_reg == RED);
+    assign yellow = (state_reg == YELLOW);
+    assign green = (state_reg == GREEN);
+
+endmodule
+```
+This Verilog code defines a module `TrafficLightStateMachine` with inputs `clk`, `reset_n`, `enable` and outputs `red`, `yellow`, `green`. The state of the traffic light is stored in `state_reg` and the next state is determined by the `always` block. The outputs are determined by the current state.

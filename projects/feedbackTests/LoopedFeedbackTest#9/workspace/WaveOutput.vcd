@@ -1,0 +1,55 @@
+$date
+	Sun Aug 20 21:25:29 2023
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ps
+$end
+$scope module BinaryToBCD_Test $end
+$var wire 12 ! BCD_output [11:0] $end
+$var reg 8 " binary_input [7:0] $end
+$scope module uut $end
+$var wire 12 # BCD_output [11:0] $end
+$var wire 8 $ binary_input [7:0] $end
+$var reg 12 % BCD_register [11:0] $end
+$var reg 20 & shift_register [19:0] $end
+$var integer 32 ' i [31:0] $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+$end
+#0
+$dumpvars
+b1000 '
+b0 &
+b0 %
+b0 $
+b0 #
+b0 "
+b0 !
+$end
+#200000
+b1000 '
+b1111111100000000 &
+b11111111 "
+b11111111 $
+#400000
+b1000 '
+b1000000000000000 &
+b10000000 "
+b10000000 $
+#600000
+b1000 '
+b100000000 &
+b1 "
+b1 $
+#800000
+b1000 '
+b1111111000000000 &
+b11111110 "
+b11111110 $
+#1100000

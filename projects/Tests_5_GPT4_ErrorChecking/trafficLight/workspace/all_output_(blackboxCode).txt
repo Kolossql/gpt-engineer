@@ -1,0 +1,53 @@
+The core blocks necessary for the traffic light state machine are:
+
+1. State Register: This block will hold the current state of the traffic light. It will be updated based on the clock input and the current state.
+
+2. State Logic: This block will determine the next state based on the current state and the enable input.
+
+3. Output Logic: This block will determine the values of the red, yellow, and green outputs based on the current state.
+
+Now, let's write the Verilog code for the traffic light state machine.
+
+trafficlightstatemachine.v
+```verilog
+module TrafficLightStateMachine(
+    input wire clk,
+    input wire reset_n,
+    input wire enable,
+    output wire red,
+    output wire yellow,
+    output wire green
+);
+
+    // Define the states
+    parameter RED = 3'b000, GREEN = 3'b001, YELLOW = 3'b010;
+
+    // State Register
+    reg [2:0] state, next_state;
+
+    // State Logic
+    always @(posedge clk or negedge reset_n) begin
+        if (!reset_n)
+            state <= RED;
+        else if (enable)
+            state <= next_state;
+    end
+
+    // Next State Logic
+    always @(*) begin
+        case (state)
+            RED: next_state = (enable) ? GREEN : RED;
+            GREEN: next_state = (enable) ? YELLOW : GREEN;
+            YELLOW: next_state = (enable) ? RED : YELLOW;
+            default: next_state = RED;
+        endcase
+    end
+
+    // Output Logic
+    assign red = (state == RED);
+    assign yellow = (state == YELLOW);
+    assign green = (state == GREEN);
+
+endmodule
+```
+This Verilog code defines a module `TrafficLightStateMachine` with inputs `clk`, `reset_n`, `enable` and outputs `red`, `yellow`, `green`. The `state` register holds the current state of the traffic light, which is updated on the rising edge of the clock or the falling edge of the reset signal. The `next_state` logic determines the next state based on the current state and the `enable` signal. The output logic assigns the `red`, `yellow`, and `green` outputs based on the current state.

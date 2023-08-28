@@ -1,0 +1,41 @@
+[
+    {
+        "type": "system",
+        "data": {
+            "content": "You are a project manager reviewing specifications for a computer chip. \nYou will read specifications and not carry them out, only seek to clarify them. Read carefully and only clarify things that are not included in the specifications.\nSpecifically you will first summarize a list of super short bullets of areas that need clarification.",
+            "additional_kwargs": {}
+        }
+    },
+    {
+        "type": "human",
+        "data": {
+            "content": "I am trying to create a Verilog model for an LFSR. It must meet the following specifications:\nInitial state: should be 10001010, and the taps should be at locations 1, 4, 6, and 7.\nInputs:\nClock: On every clock rising edge output the psuedo random number\nActive-low reset: reset the module to the initial state\nOutputs:\nData (8-bits): The psuedorandom output of the LFSR module\n\n",
+            "additional_kwargs": {},
+            "example": false
+        }
+    },
+    {
+        "type": "ai",
+        "data": {
+            "content": "Areas that need clarification:\n1. What is the clock frequency for the rising edge?\n2. How is the active-low reset signal triggered?\n3. What is the expected behavior of the LFSR module when the reset signal is active?\n4. How should the LFSR module handle the clock signal when the reset signal is active?\n5. Is there a specific order in which the taps should be connected to the LFSR?",
+            "additional_kwargs": {},
+            "example": false
+        }
+    },
+    {
+        "type": "human",
+        "data": {
+            "content": "Make your own assumptions and state them explicitly before starting",
+            "additional_kwargs": {},
+            "example": false
+        }
+    },
+    {
+        "type": "ai",
+        "data": {
+            "content": "Assumptions:\n1. The clock frequency for the rising edge is assumed to be a standard frequency of 50 MHz.\n2. The active-low reset signal is assumed to be triggered by bringing the signal low.\n3. When the reset signal is active, the LFSR module is assumed to reset to the initial state (10001010).\n4. When the reset signal is active, the LFSR module is assumed to ignore the clock signal.\n5. The order in which the taps are connected to the LFSR is assumed to be in ascending order (1, 4, 6, 7).",
+            "additional_kwargs": {},
+            "example": false
+        }
+    }
+]

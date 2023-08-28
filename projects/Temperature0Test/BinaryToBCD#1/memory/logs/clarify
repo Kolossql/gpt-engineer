@@ -1,0 +1,41 @@
+[
+    {
+        "type": "system",
+        "data": {
+            "content": "You are a project manager reviewing specifications for a computer chip. \nYou will read specifications and not carry them out, only seek to clarify them. Read carefully and only clarify things that are not included in the specifications.\nSpecifically you will first summarize a list of super short bullets of areas that need clarification.",
+            "additional_kwargs": {}
+        }
+    },
+    {
+        "type": "human",
+        "data": {
+            "content": "I am trying to create a Behavioral Verilog module for a binary to binary-coded-decimal converter. It must meet the following specifications:\nInputs:\nBinary input (5-bits): Binary number between 0-31\nOutputs:\nBCD (8-bits): 4-bits for the 10's place and 4-bits for the 1's place",
+            "additional_kwargs": {},
+            "example": false
+        }
+    },
+    {
+        "type": "ai",
+        "data": {
+            "content": "Areas that need clarification:\n- Are there any constraints on the input values? For example, should the input be validated to ensure it is within the range of 0-31?\n- How should the BCD output be represented? Is it in binary or decimal format?\n- Is there a specific encoding scheme to be used for the BCD output? For example, should the BCD values be represented using the 8421 BCD code?\n- Are there any timing requirements or constraints for the module?\n- Is there a specific behavior expected for invalid input values? Should an error flag be raised or should the module simply ignore invalid inputs?",
+            "additional_kwargs": {},
+            "example": false
+        }
+    },
+    {
+        "type": "human",
+        "data": {
+            "content": "Make your own assumptions and state them explicitly before starting",
+            "additional_kwargs": {},
+            "example": false
+        }
+    },
+    {
+        "type": "ai",
+        "data": {
+            "content": "Assumptions:\n- The input values are assumed to be valid and within the range of 0-31.\n- The BCD output will be represented using the 8421 BCD code.\n- There are no specific timing requirements or constraints for the module.\n- Invalid input values will be ignored and no error flag will be raised.",
+            "additional_kwargs": {},
+            "example": false
+        }
+    }
+]

@@ -1,0 +1,75 @@
+The core block necessary for the traffic light state machine module is the state machine itself. This block will implement the logic to transition between different states based on the inputs and timing requirements.
+
+Here is the content of the `traffic_light_module.v` file:
+
+```verilog
+module traffic_light_module (
+  input wire clk,
+  input wire reset,
+  input wire enable,
+  output wire red,
+  output wire yellow,
+  output wire green
+);
+
+  // Define the states
+  typedef enum logic [1:0] {
+    STATE_RED,
+    STATE_GREEN,
+    STATE_YELLOW
+  } state_t;
+
+  // Define the state register
+  reg state_t current_state;
+  reg [4:0] counter;
+
+  // Output assignment
+  assign red = (current_state == STATE_RED) ? 1'b1 : 1'b0;
+  assign yellow = (current_state == STATE_YELLOW) ? 1'b1 : 1'b0;
+  assign green = (current_state == STATE_GREEN) ? 1'b1 : 1'b0;
+
+  // State machine logic
+  always @(posedge clk or posedge reset) begin
+    if (reset) begin
+      current_state <= STATE_RED;
+      counter <= 5'b0;
+    end else if (enable) begin
+      case (current_state)
+        STATE_RED: begin
+          if (counter == 5'b11111) begin
+            current_state <= STATE_GREEN;
+            counter <= 5'b0;
+          end else begin
+            counter <= counter + 1;
+          end
+        end
+        STATE_GREEN: begin
+          if (counter == 5'b10011) begin
+            current_state <= STATE_YELLOW;
+            counter <= 5'b0;
+          end else begin
+            counter <= counter + 1;
+          end
+        end
+        STATE_YELLOW: begin
+          if (counter == 5'b00111) begin
+            current_state <= STATE_RED;
+            counter <= 5'b0;
+          end else begin
+            counter <= counter + 1;
+          end
+        end
+      endcase
+    end
+  end
+
+endmodule
+```
+
+This Verilog module implements the traffic light state machine. It includes a state register `current_state` to keep track of the current state, and a counter `counter` to count the clock cycles. The module transitions between states based on the counter value and the enable signal. The outputs `red`, `yellow`, and `green` are assigned based on the current state.
+
+The state machine logic is implemented using an `always` block triggered by the positive edge of the clock signal or the positive edge of the reset signal. When the reset signal is asserted, the state is set to `STATE_RED` and the counter is reset to 0. When the enable signal is asserted, the state transitions are determined based on the current state and the counter value. The counter is incremented on each clock cycle.
+
+The outputs `red`, `yellow`, and `green` are assigned based on the current state using the `assign` statements.
+
+This module follows the 2005 Verilog standard and does not use any SystemVerilog features.

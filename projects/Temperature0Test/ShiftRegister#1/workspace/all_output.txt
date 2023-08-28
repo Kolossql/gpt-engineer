@@ -1,0 +1,104 @@
+The necessary blocks for testing the shift register module are as follows:
+
+1. Testbench module: This module will instantiate the shift register module and provide the necessary inputs for testing.
+2. Clock generator: This block will generate the clock signal for the testbench module.
+3. Stimulus generator: This block will generate the necessary stimulus signals (active-low reset, data bit, shift enable) for testing the shift register module.
+4. Monitor: This block will monitor the outputs of the shift register module and display them for verification.
+
+Important edge cases to test in the testbench:
+1. Initial state: Verify that the shift register module starts with the correct initial state (stored data at 00000000).
+2. Shift enable low: Verify that the shift register module does not perform any shifting operation when the shift enable signal is low.
+3. Shift enable high: Verify that the shift register module performs the shifting operation correctly when the shift enable signal is high.
+4. Active-low reset: Verify that the shift register module resets to the initial state when the active-low reset signal is asserted.
+5. Data change: Verify that the shift register module outputs the stored data correctly when the data bit is changed.
+
+Now, let's proceed with the code for the testbench module:
+
+**shift_register_tb.v**
+```verilog
+module shift_register_tb;
+
+  // Parameters
+  parameter CLK_PERIOD = 10; // Clock period in ns
+
+  // Inputs
+  reg clk;
+  reg reset;
+  reg data;
+  reg shift_enable;
+
+  // Outputs
+  wire [7:0] stored_data;
+
+  // Instantiate the shift register module
+  shift_register dut (
+    .clk(clk),
+    .reset(reset),
+    .data(data),
+    .shift_enable(shift_enable),
+    .stored_data(stored_data)
+  );
+
+  // Clock generator
+  always #((CLK_PERIOD)/2) clk = ~clk;
+
+  // Stimulus generator
+  initial begin
+    clk = 0;
+    reset = 1;
+    data = 0;
+    shift_enable = 0;
+
+    // Wait for a few clock cycles
+    #((CLK_PERIOD)*5);
+
+    // Test case 1: Initial state
+    $display("Test Case 1: Initial state");
+    $display("Stored Data: %b", stored_data);
+    #((CLK_PERIOD)*5);
+
+    // Test case 2: Shift enable low
+    $display("Test Case 2: Shift enable low");
+    reset = 0;
+    shift_enable = 0;
+    data = 1;
+    #((CLK_PERIOD)*5);
+    $display("Stored Data: %b", stored_data);
+    #((CLK_PERIOD)*5);
+
+    // Test case 3: Shift enable high
+    $display("Test Case 3: Shift enable high");
+    shift_enable = 1;
+    #((CLK_PERIOD)*5);
+    $display("Stored Data: %b", stored_data);
+    #((CLK_PERIOD)*5);
+
+    // Test case 4: Active-low reset
+    $display("Test Case 4: Active-low reset");
+    reset = 1;
+    #((CLK_PERIOD)*5);
+    $display("Stored Data: %b", stored_data);
+    #((CLK_PERIOD)*5);
+
+    // Test case 5: Data change
+    $display("Test Case 5: Data change");
+    reset = 0;
+    data = 0;
+    #((CLK_PERIOD)*5);
+    $display("Stored Data: %b", stored_data);
+    #((CLK_PERIOD)*5);
+
+    $finish;
+  end
+
+endmodule
+```
+
+This testbench module tests five cases:
+1. Initial state: Verifies that the shift register module starts with the correct initial state.
+2. Shift enable low: Verifies that the shift register module does not perform any shifting operation when the shift enable signal is low.
+3. Shift enable high: Verifies that the shift register module performs the shifting operation correctly when the shift enable signal is high.
+4. Active-low reset: Verifies that the shift register module resets to the initial state when the active-low reset signal is asserted.
+5. Data change: Verifies that the shift register module outputs the stored data correctly when the data bit is changed.
+
+The testbench uses display statements to print the stored data at different stages of the test cases. The testbench also uses a clock generator to generate the clock signal for the shift register module.

@@ -1,0 +1,159 @@
+Based on the specifications, the core modules and blocks necessary for the ABRO state machine are as follows:
+
+1. ABRO Module: This is the main module that implements the ABRO state machine logic.
+2. State Register: This module is responsible for storing and updating the current state of the ABRO machine.
+3. Output Register: This module is responsible for storing and updating the output value of the ABRO machine.
+4. Reset Logic: This module handles the active-low reset functionality for the ABRO machine.
+
+Now, let's proceed with creating the necessary files and their contents.
+
+1. abro_module.v:
+
+```verilog
+module abro_module (
+  input wire clk,
+  input wire reset,
+  input wire A,
+  input wire B,
+  output wire O,
+  output wire [n-1:0] state
+);
+
+  // Instantiate the State Register module
+  state_register #(.n(n)) state_reg (
+    .clk(clk),
+    .reset(reset),
+    .A(A),
+    .B(B),
+    .state(state)
+  );
+
+  // Instantiate the Output Register module
+  output_register output_reg (
+    .clk(clk),
+    .reset(reset),
+    .A(A),
+    .B(B),
+    .O(O)
+  );
+
+endmodule
+```
+
+2. state_register.v:
+
+```verilog
+module state_register #(
+  parameter n = 4
+) (
+  input wire clk,
+  input wire reset,
+  input wire A,
+  input wire B,
+  output wire [n-1:0] state
+);
+
+  reg [n-1:0] current_state;
+
+  always @(posedge clk or negedge reset) begin
+    if (!reset) begin
+      current_state <= 0;
+    end else begin
+      case (current_state)
+        0: begin
+          if (A && B) begin
+            current_state <= 1;
+          end
+        end
+        1: begin
+          if (A) begin
+            current_state <= 2;
+          end
+        end
+        2: begin
+          if (B) begin
+            current_state <= 3;
+          end
+        end
+        3: begin
+          current_state <= 0;
+        end
+      endcase
+    end
+  end
+
+  assign state = current_state;
+
+endmodule
+```
+
+3. output_register.v:
+
+```verilog
+module output_register (
+  input wire clk,
+  input wire reset,
+  input wire A,
+  input wire B,
+  output wire O
+);
+
+  reg O_reg;
+
+  always @(posedge clk or negedge reset) begin
+    if (!reset) begin
+      O_reg <= 0;
+    end else begin
+      case (O_reg)
+        0: begin
+          if (A && B) begin
+            O_reg <= 1;
+          end
+        end
+        1: begin
+          O_reg <= 0;
+        end
+      endcase
+    end
+  end
+
+  assign O = O_reg;
+
+endmodule
+```
+
+4. reset_logic.v:
+
+```verilog
+module reset_logic (
+  input wire clk,
+  input wire reset,
+  input wire A,
+  input wire B,
+  output wire reset_ab
+);
+
+  reg reset_ab_reg;
+
+  always @(posedge clk) begin
+    if (!reset) begin
+      reset_ab_reg <= 1;
+    end else begin
+      if (A && B) begin
+        reset_ab_reg <= 0;
+      end
+    end
+  end
+
+  assign reset_ab = reset_ab_reg;
+
+endmodule
+```
+
+Please note that the `n` parameter in the `state_register` module represents the number of bits required to represent all possible states. You can adjust this parameter based on your specific requirements.
+
+Make sure to replace `n` with the appropriate value in the `abro_module` instantiation.
+
+Also, ensure that the inputs and outputs in the module instantiations match the specifications exactly.
+
+Finally, double-check that all the necessary modules and blocks are present in the files and that the code is fully functional.

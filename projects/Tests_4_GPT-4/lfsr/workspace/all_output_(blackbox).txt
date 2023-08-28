@@ -1,0 +1,11 @@
+LFSR_Module
+{ 
+    //Clock signal for the module
+    input wire clk
+    //Active-low reset signal
+    input wire reset
+}
+{
+    //8-bit pseudorandom output data
+    output reg [7:0] data
+}

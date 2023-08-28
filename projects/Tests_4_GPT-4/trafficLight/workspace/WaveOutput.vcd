@@ -1,0 +1,110 @@
+$date
+	Sun Aug 13 23:26:10 2023
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ps
+$end
+$scope module Testbench $end
+$var wire 1 ! yellow $end
+$var wire 1 " red $end
+$var wire 1 # green $end
+$var reg 1 $ clk $end
+$var reg 1 % enable $end
+$var reg 1 & reset_n $end
+$scope module u1 $end
+$var wire 1 $ clk $end
+$var wire 1 % enable $end
+$var wire 1 & reset_n $end
+$var wire 1 ! yellow $end
+$var wire 1 " red $end
+$var wire 1 # green $end
+$var parameter 3 ' GREEN $end
+$var parameter 3 ( RED $end
+$var parameter 3 ) YELLOW $end
+$var reg 3 * next_state [2:0] $end
+$var reg 3 + state [2:0] $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+b10 )
+b0 (
+b1 '
+$end
+#0
+$dumpvars
+bx +
+b0 *
+1&
+1%
+0$
+x#
+x"
+x!
+$end
+#10000
+b1 *
+1"
+0!
+0#
+b0 +
+1$
+#20000
+0$
+#30000
+b10 *
+0"
+1#
+b1 +
+1$
+#40000
+0$
+#50000
+b0 *
+1!
+0#
+b10 +
+1$
+#60000
+0$
+#70000
+b1 *
+1"
+0!
+b0 +
+1$
+#80000
+0$
+#90000
+b10 *
+0"
+1#
+b1 +
+1$
+#91000
+b1 *
+0%
+#100000
+0$
+#101000
+b10 *
+1%
+#110000
+b0 *
+1!
+0#
+b10 +
+1$
+#120000
+0$
+#130000
+b1 *
+1"
+0!
+b0 +
+1$
+#133000

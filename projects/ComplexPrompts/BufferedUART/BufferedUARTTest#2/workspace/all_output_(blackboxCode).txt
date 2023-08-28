@@ -1,0 +1,84 @@
+Core blocks:
+
+1. UART: This block is responsible for receiving data from the GPIO[5] pin and outputting it to the SRAM. It also handles the baud rate selection.
+
+2. SRAM: This block is the dual-port memory that buffers the input data until they are read by the SoC.
+
+3. Memory Controller: This block maintains two pointers to the SRAM, one for the bottom of the buffer (oldest data) and one for the top of the buffer (newest data).
+
+4. Wishbone Interface: This block decodes five different addresses for the registered values and communicates with the caravel SoC.
+
+Now, let's write the Verilog code for these blocks.
+
+buffered_uart.v
+```verilog
+module buffered_uart (
+    input wire clk,
+    input wire resetn,
+    input wire enable,
+    input wire rx,
+    input wire [15:0] divider,
+    output wire [7:0] data_out,
+    output wire data_ready
+);
+    // UART logic here
+endmodule
+```
+
+sram.v
+```verilog
+module sky130_sram_1kbyte_1rw1r_8x1024_8 (
+    input wire clk0,
+    input wire csb0,
+    input wire web0,
+    input wire [0:0] wmask0,
+    input wire [9:0] addr0,
+    input wire [7:0] din0,
+    output wire [7:0] dout0,
+    input wire clk1,
+    input wire csb1,
+    input wire [9:0] addr1,
+    output wire [7:0] dout1
+);
+    // SRAM logic here
+endmodule
+```
+
+memory_controller.v
+```verilog
+module memory_controller (
+    input wire clk,
+    input wire resetn,
+    input wire enable,
+    input wire [7:0] data_in,
+    output wire [9:0] buffer_top,
+    output wire [9:0] buffer_bottom
+);
+    // Memory Controller logic here
+endmodule
+```
+
+wishbone_interface.v
+```verilog
+module buffered_uart_wb (
+    input wire wb_clk_i,
+    input wire wb_rst_i,
+    input wire [31:0] wb_adr_i,
+    input wire [31:0] wb_dat_i,
+    input wire [3:0] wb_sel_i,
+    input wire wb_we_i,
+    input wire wb_cyc_i,
+    input wire wb_stb_i,
+    output wire wb_ack_o,
+    output wire [31:0] wb_dat_o,
+    output wire [9:0] buffer_top,
+    output wire [9:0] buffer_bottom,
+    input wire [7:0] buffer_output,
+    input wire uart_ready,
+    output wire [7:0] uart_value,
+    output wire uart_enable,
+    output wire uart_divider
+);
+    // Wishbone Interface logic here
+endmodule
+```

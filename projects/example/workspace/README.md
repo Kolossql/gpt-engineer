@@ -1,0 +1,1 @@
+To clarify, are we still working on the snake game in Python or are we now switching to Verilog for the testbench?

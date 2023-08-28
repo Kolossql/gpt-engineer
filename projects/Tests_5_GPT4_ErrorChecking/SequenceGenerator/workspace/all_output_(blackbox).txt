@@ -1,0 +1,13 @@
+SequenceGenerator
+{ 
+    //Clock signal
+    input wire clk
+    //Active-low reset signal
+    input wire reset_n
+    //Enable signal
+    input wire enable
+}
+{
+    //8-bit data output in hexadecimal format
+    output reg [7:0] data
+}

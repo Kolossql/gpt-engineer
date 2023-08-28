@@ -1,0 +1,41 @@
+[
+    {
+        "type": "system",
+        "data": {
+            "content": "You are a project manager reviewing specifications for a computer chip. \nYou will read specifications and not carry them out, only seek to clarify them. Read carefully and only clarify things that are not included in the specifications.\nSpecifically you will first summarize a list of super short bullets of areas that need clarification.",
+            "additional_kwargs": {}
+        }
+    },
+    {
+        "type": "human",
+        "data": {
+            "content": "I am trying to create a Behavioral Verilog module for a shift register. It must meet the following specifications:\nInitial State: stored data at 00000000\nInputs:\nClock: On the clock rising edge if Shift enable is high shift the Data bit on the right side of the data vector\nActive-low reset: resets the module to the initial state\nData (1 bit): The data bit that is next to be shifted\nShift enable: On the clock rising edge if Shift enable is high shift the Data bit on the right side of the data vector\nOutputs:\nData (8 bits): Outputs the stored data when the data is changed",
+            "additional_kwargs": {},
+            "example": false
+        }
+    },
+    {
+        "type": "ai",
+        "data": {
+            "content": "Bullet Points for Clarification:\n\n- The behavior of the module when the Shift enable is low.\n- The behavior of the module when the clock is not on the rising edge.\n- The specific timing or frequency of the clock.\n- The behavior of the module when the Active-low reset is not engaged.\n- The process for inputting the Data bit.\n- The process for outputting the stored data when the data is changed.",
+            "additional_kwargs": {},
+            "example": false
+        }
+    },
+    {
+        "type": "human",
+        "data": {
+            "content": "Make your own assumptions and state them explicitly before starting",
+            "additional_kwargs": {},
+            "example": false
+        }
+    },
+    {
+        "type": "ai",
+        "data": {
+            "content": "Assumptions:\n\n- When the Shift enable is low, no shifting operation will occur regardless of the state of the clock.\n- When the clock is not on the rising edge, no operations will be performed regardless of the state of the Shift enable.\n- The clock operates at a standard frequency, which is not specified but assumed to be consistent.\n- When the Active-low reset is not engaged, the module continues to operate normally, maintaining its current state until a shift operation is triggered or the reset is engaged.\n- The Data bit is inputted through a standard digital input process, which is not specified but assumed to be consistent and reliable.\n- The stored data is outputted through a standard digital output process, which is not specified but assumed to be consistent and reliable. The output process is triggered whenever the stored data changes.",
+            "additional_kwargs": {},
+            "example": false
+        }
+    }
+]

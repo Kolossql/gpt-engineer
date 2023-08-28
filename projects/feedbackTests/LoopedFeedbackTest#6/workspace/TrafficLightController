@@ -1,0 +1,48 @@
+module TrafficLightController(
+    input wire clk,
+    input wire reset_n,
+    input wire enable,
+    output wire [1:0] state,
+    output wire [4:0] timer
+);
+
+    reg [4:0] timer_reg;
+    reg [1:0] state_reg;
+
+    always @(posedge clk or negedge reset_n) begin
+        if (!reset_n) begin
+            timer_reg <= 0;
+            state_reg <= 2'b00; // Initial state: Red
+        end else if (enable) begin
+            // Increment timer on each clock cycle
+            timer_reg <= timer_reg + 1;
+
+            // State transitions based on timer value
+            case (state_reg)
+                2'b00: begin // Red state
+                    if (timer_reg == 32) begin
+                        state_reg <= 2'b01; // Transition to Green state
+                        timer_reg <= 0;
+                    end
+                end
+                2'b01: begin // Green state
+                    if (timer_reg == 20) begin
+                        state_reg <= 2'b10; // Transition to Yellow state
+                        timer_reg <= 0;
+                    end
+                end
+                2'b10: begin // Yellow state
+                    if (timer_reg == 7) begin
+                        state_reg <= 2'b00; // Transition to Red state
+                        timer_reg <= 0;
+                    end
+                end
+                default: state_reg <= 2'b00; // Default to Red state
+            endcase
+        end
+    end
+
+    assign state = state_reg;
+    assign timer = timer_reg;
+
+endmodule

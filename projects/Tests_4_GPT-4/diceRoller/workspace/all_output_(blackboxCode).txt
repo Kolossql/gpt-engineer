@@ -1,0 +1,47 @@
+Core Blocks:
+1. Random Number Generator: This block will generate a random number within the range of the selected die.
+2. Die Selector: This block will select the type of die based on the die_select input.
+3. Roll Controller: This block will control the roll operation based on the roll and clk inputs.
+
+dice_roller.v
+```verilog
+module DiceRoller(
+    input wire clk,
+    input wire reset_n,
+    input wire [1:0] die_select,
+    input wire roll,
+    output reg [7:0] rolled_number
+);
+
+    // Random Number Generator
+    reg [7:0] random_number;
+    always @(posedge clk or negedge reset_n) begin
+        if (!reset_n)
+            random_number <= 8'h0;
+        else
+            random_number <= random_number + 8'h1;
+    end
+
+    // Die Selector
+    reg [7:0] die_max;
+    always @(die_select) begin
+        case (die_select)
+            2'b00: die_max = 8'h4;  // 4-sided die
+            2'b01: die_max = 8'h6;  // 6-sided die
+            2'b10: die_max = 8'h8;  // 8-sided die
+            2'b11: die_max = 8'h14; // 20-sided die
+            default: die_max = 8'h4; // default to 4-sided die
+        endcase
+    end
+
+    // Roll Controller
+    always @(posedge clk or negedge reset_n) begin
+        if (!reset_n)
+            rolled_number <= 8'h0;
+        else if (roll)
+            rolled_number <= (random_number % die_max) + 1;
+    end
+
+endmodule
+```
+This module simulates a dice roll based on the inputs. The Random Number Generator block generates a random number on each clock cycle. The Die Selector block selects the maximum number based on the die_select input. The Roll Controller block controls the roll operation and outputs the rolled number.

@@ -1,0 +1,205 @@
+$date
+	Sun Aug 20 22:08:01 2023
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1s
+$end
+$scope module testbench_sequence_generator $end
+$var wire 8 ! data [7:0] $end
+$var reg 1 " clk $end
+$var reg 1 # enable $end
+$var reg 1 $ rst_n $end
+$scope module uut $end
+$var wire 1 " clk $end
+$var wire 1 # enable $end
+$var wire 1 $ rst_n $end
+$var wire 3 % state [2:0] $end
+$var wire 8 & sequence_data [7:0] $end
+$var wire 1 ' gated_clk $end
+$var wire 8 ( data [7:0] $end
+$var wire 3 ) count [2:0] $end
+$var wire 1 * active_reset $end
+$var wire 1 + active_enable $end
+$scope module clock_gating_inst $end
+$var wire 1 " clk $end
+$var wire 1 # enable $end
+$var reg 1 ' gated_clk $end
+$upscope $end
+$scope module counter_inst $end
+$var wire 1 " clk $end
+$var wire 1 * rst_n $end
+$var wire 1 + enable $end
+$var reg 3 , count [2:0] $end
+$upscope $end
+$scope module enable_logic_inst $end
+$var wire 1 # enable $end
+$var wire 3 - state [2:0] $end
+$var reg 1 + active_enable $end
+$upscope $end
+$scope module output_register_inst $end
+$var wire 1 ' clk $end
+$var wire 8 . data_in [7:0] $end
+$var reg 8 / data_out [7:0] $end
+$upscope $end
+$scope module reset_logic_inst $end
+$var wire 1 # enable $end
+$var wire 1 $ rst_n $end
+$var reg 1 * active_reset $end
+$upscope $end
+$scope module sequence_rom_inst $end
+$var wire 3 0 addr [2:0] $end
+$var reg 8 1 data [7:0] $end
+$upscope $end
+$scope module state_machine_inst $end
+$var wire 1 " clk $end
+$var wire 1 # enable $end
+$var wire 1 $ rst_n $end
+$var reg 3 2 state [2:0] $end
+$upscope $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+$end
+#0
+$dumpvars
+b0 2
+b10101111 1
+b0 0
+bx /
+b10101111 .
+b0 -
+b0 ,
+0+
+0*
+b0 )
+bx (
+x'
+b10101111 &
+b0 %
+0$
+0#
+0"
+bx !
+$end
+#5
+0'
+1"
+#10
+0"
+1$
+#15
+1"
+#20
+1+
+1*
+0"
+1#
+#25
+b10101111 !
+b10101111 (
+b10101111 /
+b10111100 &
+b10111100 .
+b10111100 1
+1'
+b1 )
+b1 ,
+b1 0
+b1 %
+b1 -
+b1 2
+1"
+#30
+0"
+#35
+b11100010 &
+b11100010 .
+b11100010 1
+b10 )
+b10 ,
+b10 0
+b10 %
+b10 -
+b10 2
+1"
+#40
+0"
+#45
+b1111000 &
+b1111000 .
+b1111000 1
+b11 )
+b11 ,
+b11 0
+b11 %
+b11 -
+b11 2
+1"
+#50
+0"
+#55
+b11111111 &
+b11111111 .
+b11111111 1
+b100 )
+b100 ,
+b100 0
+b100 %
+b100 -
+b100 2
+1"
+#60
+0"
+#65
+b11100010 &
+b11100010 .
+b11100010 1
+b101 )
+b101 ,
+b101 0
+b101 %
+b101 -
+b101 2
+1"
+#70
+0"
+#75
+b1011 &
+b1011 .
+b1011 1
+b110 )
+b110 ,
+b110 0
+b110 %
+b110 -
+b110 2
+1"
+#80
+0"
+#85
+b10001101 &
+b10001101 .
+b10001101 1
+0+
+b111 )
+b111 ,
+b111 0
+b111 %
+b111 -
+b111 2
+1"
+#90
+0"
+#95
+1+
+b0 %
+b0 -
+b0 2
+1"
+#100
+0"

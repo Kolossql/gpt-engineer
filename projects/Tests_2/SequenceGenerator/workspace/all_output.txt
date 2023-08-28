@@ -1,0 +1,92 @@
+Core Blocks:
+1. SequenceGenerator: This block generates the output sequence based on the clock, active-low reset, and enable signals.
+
+Now let's proceed with the file contents.
+
+**sequence_generator.v**
+```verilog
+module SequenceGenerator (
+  input wire clk,
+  input wire rst_n,
+  input wire enable,
+  output reg [7:0] data
+);
+
+  reg [7:0] sequence [7:0] = {8'hAF, 8'hBC, 8'hE2, 8'h78, 8'hFF, 8'hE2, 8'h0B, 8'h8D};
+  reg [2:0] state;
+
+  always @(posedge clk or negedge rst_n) begin
+    if (~rst_n) begin
+      state <= 0;
+      data <= sequence[0];
+    end else if (enable) begin
+      state <= state + 1;
+      data <= sequence[state];
+    end
+  end
+
+endmodule
+```
+
+This Verilog module `SequenceGenerator` takes in the clock (`clk`), active-low reset (`rst_n`), and enable (`enable`) signals as inputs. It outputs the data sequence as an 8-bit value (`data`).
+
+The `sequence` array holds the sequence of hexadecimal values. The `state` variable keeps track of the current state of the sequence generator.
+
+Inside the `always` block, we have a clocked process that triggers on the positive edge of the clock or the negative edge of the reset signal. When the reset signal is asserted (`~rst_n`), the state is set to 0 and the data output is set to the first element of the sequence (`sequence[0]`).
+
+When the enable signal is high, the state is incremented by 1 (`state <= state + 1`) and the data output is updated with the corresponding element from the sequence (`data <= sequence[state]`).
+
+Now let's move on to the entrypoint file.
+
+**main.v**
+```verilog
+module Main;
+
+  reg clk;
+  reg rst_n;
+  reg enable;
+  wire [7:0] data;
+
+  SequenceGenerator sequence_gen (
+    .clk(clk),
+    .rst_n(rst_n),
+    .enable(enable),
+    .data(data)
+  );
+
+  initial begin
+    clk = 0;
+    forever #5 clk = ~clk;
+  end
+
+  initial begin
+    rst_n = 0;
+    #10 rst_n = 1;
+  end
+
+  initial begin
+    enable = 1;
+    #100 enable = 0;
+    #100 enable = 1;
+    #100 enable = 0;
+    #100 enable = 1;
+    #100 enable = 0;
+    #100 enable = 1;
+    #100 enable = 0;
+    #100 enable = 1;
+  end
+
+endmodule
+```
+
+This Verilog module `Main` serves as the entrypoint for the design. It instantiates the `SequenceGenerator` module and connects the input and output signals.
+
+The `clk` signal is a regular register that toggles every 5 time units using an `initial` block with a `forever` loop.
+
+The `rst_n` signal is a regular register that is initially set to 0 and then asserted to 1 after 10 time units.
+
+The `enable` signal is a regular register that is initially set to 1. It is then toggled between 0 and 1 every 100 time units using a series of `#delay` statements.
+
+The `data` signal is a wire that receives the output sequence from the `SequenceGenerator` module.
+
+This completes the implementation of the sequence generator module and the entrypoint module. All the required functionality and connections are present in the files.

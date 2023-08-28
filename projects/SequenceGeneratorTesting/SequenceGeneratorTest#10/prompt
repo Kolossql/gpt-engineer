@@ -1,0 +1,16 @@
+I am trying to create a Synthesizeable Verilog module that follows the 2005 standard verilog without the use of SystemVerilog for a sequence generator. It must meet the following specifications:
+Initial state: outputting the first element of the sequence.
+Inputs: 
+Clock: When the clock has a rising edge the sequence generator should output the next part of the sequence. This is the only time that 
+Active-low reset: The active-low reset should set the module to the initial state.
+Enable: The sequence should only be outputted if enable is high.
+Outputs: Data (8 bits), Hexadecimal format of the values below.
+While enabled, it should generate an output sequence of the following hexadecimal values in the following order and then repeat:
+        - 0xAF
+        - 0xBC
+        - 0xE2
+        - 0x78
+        - 0xFF
+        - 0xE2
+        - 0x0B
+        - 0x8D

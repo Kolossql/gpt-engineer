@@ -1,0 +1,13 @@
+traffic_light_module
+{
+    // Inputs
+    input wire clk
+    input wire reset
+    input wire enable
+}
+{
+    // Outputs
+    output wire red
+    output wire yellow
+    output wire green
+}

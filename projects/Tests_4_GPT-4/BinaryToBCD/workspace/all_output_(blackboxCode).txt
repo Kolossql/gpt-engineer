@@ -1,0 +1,39 @@
+The core blocks necessary for this task are:
+
+1. Shift Register: This block will be used to shift the binary input left during each iteration of the Double Dabble algorithm.
+2. BCD Register: This block will hold the BCD output. It will be updated during each iteration of the Double Dabble algorithm.
+3. Control Logic: This block will control the operation of the Shift Register and BCD Register based on the Double Dabble algorithm.
+
+Now, let's write the Verilog code for the BinaryToBCD module.
+
+binarytobcd.v
+```verilog
+module BinaryToBCD (
+    input wire [7:0] binary_input,
+    output wire [11:0] BCD_output
+);
+
+    reg [11:0] BCD_register = 12'b0;
+    reg [7:0] shift_register = binary_input;
+    integer i;
+
+    always @ (binary_input) begin
+        BCD_register = 12'b0;
+        shift_register = binary_input;
+
+        for (i = 0; i < 8; i = i + 1) begin
+            if (BCD_register[3:0] >= 5) BCD_register[3:0] = BCD_register[3:0] + 3;
+            if (BCD_register[7:4] >= 5) BCD_register[7:4] = BCD_register[7:4] + 3;
+            if (BCD_register[11:8] >= 5) BCD_register[11:8] = BCD_register[11:8] + 3;
+
+            BCD_register = BCD_register << 1;
+            BCD_register[0] = shift_register[7];
+            shift_register = shift_register << 1;
+        end
+    end
+
+    assign BCD_output = BCD_register;
+endmodule
+```
+
+This Verilog code implements the BinaryToBCD module using the Double Dabble algorithm. The binary input is loaded into a shift register, and the BCD output is stored in a BCD register. The control logic is implemented in an always block, which performs the Double Dabble algorithm whenever the binary input changes. The BCD output is then assigned to the BCD register.

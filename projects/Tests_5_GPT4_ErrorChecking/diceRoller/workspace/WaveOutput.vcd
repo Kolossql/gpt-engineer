@@ -1,0 +1,105 @@
+$date
+	Sat Aug 19 19:11:35 2023
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ps
+$end
+$scope module DiceRoller_tb $end
+$var wire 8 ! rolled_number [7:0] $end
+$var reg 1 " clk $end
+$var reg 2 # die_select [1:0] $end
+$var reg 1 $ reset_n $end
+$var reg 1 % roll $end
+$scope module u1 $end
+$var wire 1 " clk $end
+$var wire 2 & die_select [1:0] $end
+$var wire 1 $ reset_n $end
+$var wire 1 % roll $end
+$var reg 8 ' max_number [7:0] $end
+$var reg 8 ( random_number [7:0] $end
+$var reg 1 ) roll_flag $end
+$var reg 8 * rolled_number [7:0] $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+$end
+#0
+$dumpvars
+b0 *
+0)
+b0 (
+b100 '
+b0 &
+0%
+0$
+b0 #
+0"
+b0 !
+$end
+#5000
+b1 (
+1"
+#10000
+0"
+1%
+1$
+#15000
+b10 !
+b10 *
+1)
+b10 (
+1"
+#20000
+b110 '
+0"
+b1 #
+b1 &
+#25000
+b11 (
+1"
+#30000
+0"
+#35000
+b100 (
+1"
+#40000
+0"
+0%
+#45000
+b101 (
+0)
+1"
+#50000
+0"
+1%
+#55000
+b110 !
+b110 *
+1)
+b110 (
+1"
+#60000
+b1000 '
+0"
+b10 #
+b10 &
+#65000
+b111 (
+1"
+#70000
+b10100 '
+0"
+0%
+b11 #
+b11 &
+#75000
+0)
+b1000 (
+1"
+#80000
+0"

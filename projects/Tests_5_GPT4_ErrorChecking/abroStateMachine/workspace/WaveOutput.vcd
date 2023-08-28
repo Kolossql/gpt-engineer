@@ -1,0 +1,26 @@
+$date
+	Sat Aug 19 19:04:02 2023
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ps
+$end
+$scope module ABROStateMachine_tb $end
+$var wire 4 ! State [3:0] $end
+$var wire 1 " O $end
+$var reg 1 # A $end
+$var reg 1 $ B $end
+$var reg 1 % clk $end
+$var reg 1 & reset_n $end
+$scope module uut $end
+$var wire 1 # A $end
+$var wire 1 $ B $end
+$var wire 1 % clk $end
+$var wire 1 & reset_n $end
+$var wire 1 " O $end
+$var reg 4 ' State [3:0] $end
+$upscope $end
+$upscope $end
+#100000

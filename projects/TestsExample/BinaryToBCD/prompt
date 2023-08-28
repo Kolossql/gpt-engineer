@@ -1,0 +1,5 @@
+I am trying to create a Behavioral Verilog module for a binary to binary-coded-decimal converter. Use the Double Dabble algorithm to compute the conversion. It must meet the following specifications:
+Inputs:
+Binary input (8-bits): Binary number between 0-255
+Outputs:
+BCD (12-bits): 4-bits for the 100's place, 4-bits for the 10's place, and 4-bits for the 1's place

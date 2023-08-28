@@ -1,0 +1,17 @@
+TrafficLightStateMachine
+{ 
+    //Clock input to time the traffic light
+    input wire clk
+    //Active-low reset input to reset the module to its initial state
+    input wire reset_n
+    //Enable input to start or pause the operation of the traffic light module
+    input wire enable
+}
+{
+    //Output to indicate if the signal is displaying red
+    output wire red
+    //Output to indicate if the signal is displaying yellow
+    output wire yellow
+    //Output to indicate if the signal is displaying green
+    output wire green
+}

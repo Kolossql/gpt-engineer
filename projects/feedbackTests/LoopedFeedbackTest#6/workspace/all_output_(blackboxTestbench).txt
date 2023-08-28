@@ -1,0 +1,120 @@
+Blocks necessary for testing the TrafficLightModule:
+1. Clock Driver: Generates the clock signal for the testbench.
+2. Reset Driver: Drives the active-low reset signal for the testbench.
+3. Enable Driver: Drives the enable signal for the testbench.
+4. Monitor: Monitors the outputs of the TrafficLightModule and displays the results.
+5. Test Cases: Define the test cases to be executed in the testbench.
+
+Important edge cases to test in the testbench:
+1. Initial state: Verify that the module starts in the initial state (red light with 32 clock cycles remaining before green).
+2. Transition from red to green: Verify that the module transitions from red to green after 32 clock cycles.
+3. Transition from green to yellow: Verify that the module transitions from green to yellow after 20 clock cycles.
+4. Transition from yellow to red: Verify that the module transitions from yellow to red after 7 clock cycles.
+5. Enable signal changes: Verify that the module correctly responds to changes in the enable signal during idle periods between timing sequences.
+
+Testbench module for TrafficLightModule:
+
+traffic_light_tb.v
+```verilog
+module traffic_light_tb;
+
+  // Inputs
+  reg clk;
+  reg reset_n;
+  reg enable;
+
+  // Outputs
+  wire red;
+  wire yellow;
+  wire green;
+
+  // Instantiate the module under test
+  TrafficLightModule dut (
+    .clk(clk),
+    .reset_n(reset_n),
+    .enable(enable),
+    .red(red),
+    .yellow(yellow),
+    .green(green)
+  );
+
+  // Clock driver
+  always #5 clk = ~clk;
+
+  // Reset driver
+  initial begin
+    reset_n = 0;
+    #10;
+    reset_n = 1;
+  end
+
+  // Enable driver
+  initial begin
+    enable = 0;
+    #20;
+    enable = 1;
+    #50;
+    enable = 0;
+    #30;
+    enable = 1;
+    #40;
+    enable = 0;
+    #10;
+    enable = 1;
+  end
+
+  // Monitor
+  always @(red, yellow, green)
+    $display("Red: %b, Yellow: %b, Green: %b", red, yellow, green);
+
+  // Test cases
+  initial begin
+    // Test case 1: Initial state
+    #160;
+    if (red && !yellow && !green)
+      $display("Test case 1 Passed");
+    else
+      $display("Test case 1 Failed");
+
+    // Test case 2: Transition from red to green
+    #32;
+    if (!red && !yellow && green)
+      $display("Test case 2 Passed");
+    else
+      $display("Test case 2 Failed");
+
+    // Test case 3: Transition from green to yellow
+    #20;
+    if (!red && yellow && !green)
+      $display("Test case 3 Passed");
+    else
+      $display("Test case 3 Failed");
+
+    // Test case 4: Transition from yellow to red
+    #7;
+    if (red && !yellow && !green)
+      $display("Test case 4 Passed");
+    else
+      $display("Test case 4 Failed");
+
+    // Test case 5: Enable signal changes
+    #10;
+    if (red && !yellow && !green)
+      $display("Test case 5 Passed");
+    else
+      $display("Test case 5 Failed");
+
+    // Finish simulation
+    $finish;
+  end
+
+  // Dump waveform
+  initial begin
+    $dumpfile("WaveOutput.vcd");
+    $dumpvars(0, traffic_light_tb);
+  end
+
+endmodule
+```
+
+Note: The testbench assumes that the TrafficLightModule has been defined and implemented correctly. The test cases provided are based on the assumptions made earlier and may need to be adjusted based on the actual implementation of the module.

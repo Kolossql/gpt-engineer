@@ -1,0 +1,13 @@
+SequenceDetector
+{
+    // Clock signal for checking input data on rising edge
+    input wire clk
+    // Active-low reset signal to reset the module
+    input wire reset
+    // 3-bit input data to be checked
+    input wire [2:0] data
+}
+{
+    // Output indicating if the last element of the sequence was just inputted
+    output wire sequence_found
+}

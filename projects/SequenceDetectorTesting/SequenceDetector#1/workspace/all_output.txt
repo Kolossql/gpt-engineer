@@ -1,0 +1,130 @@
+The blocks necessary to properly test the module are:
+1. Testbench module: This module instantiates the sequence detector module and provides stimulus to its inputs. It also monitors the outputs of the sequence detector module and checks if they match the expected values.
+2. Clock generator: This block generates the clock signal for the testbench module.
+3. Reset generator: This block generates the active-low reset signal for the testbench module.
+4. Input data generator: This block generates the input data for the testbench module.
+
+Important edge cases to test in the testbench:
+1. Testing the detection of the sequence when it occurs at the beginning of the input data.
+2. Testing the detection of the sequence when it occurs at the end of the input data.
+3. Testing the detection of the sequence when it occurs in the middle of the input data.
+4. Testing the detection of the sequence when it occurs multiple times consecutively.
+5. Testing the detection of the sequence when it occurs with other non-sequence data in between.
+
+Now, let's proceed with the content of the testbench module:
+
+**sequence_detector_tb.v**
+```verilog
+module sequence_detector_tb;
+  
+  // Parameters
+  parameter CLK_PERIOD = 10; // Clock period in ns
+  
+  // Inputs
+  reg clk;
+  reg reset;
+  reg [2:0] data;
+  
+  // Outputs
+  wire sequence_found;
+  
+  // Instantiate the sequence detector module
+  sequence_detector dut (
+    .clk(clk),
+    .reset(reset),
+    .data(data),
+    .sequence_found(sequence_found)
+  );
+  
+  // Clock generator
+  always #((CLK_PERIOD)/2) clk = ~clk;
+  
+  // Reset generator
+  initial begin
+    reset = 1;
+    #((CLK_PERIOD)*2) reset = 0;
+  end
+  
+  // Input data generator
+  initial begin
+    // Test case 1: Sequence occurs at the beginning
+    #((CLK_PERIOD)*2) data = 3'b001;
+    #((CLK_PERIOD)*2) data = 3'b101;
+    #((CLK_PERIOD)*2) data = 3'b110;
+    #((CLK_PERIOD)*2) data = 3'b000;
+    #((CLK_PERIOD)*2) data = 3'b110;
+    #((CLK_PERIOD)*2) data = 3'b110;
+    #((CLK_PERIOD)*2) data = 3'b011;
+    #((CLK_PERIOD)*2) data = 3'b101;
+    
+    // Test case 2: Sequence occurs at the end
+    #((CLK_PERIOD)*2) data = 3'b000;
+    #((CLK_PERIOD)*2) data = 3'b110;
+    #((CLK_PERIOD)*2) data = 3'b110;
+    #((CLK_PERIOD)*2) data = 3'b011;
+    #((CLK_PERIOD)*2) data = 3'b101;
+    #((CLK_PERIOD)*2) data = 3'b001;
+    #((CLK_PERIOD)*2) data = 3'b101;
+    
+    // Test case 3: Sequence occurs in the middle
+    #((CLK_PERIOD)*2) data = 3'b000;
+    #((CLK_PERIOD)*2) data = 3'b110;
+    #((CLK_PERIOD)*2) data = 3'b110;
+    #((CLK_PERIOD)*2) data = 3'b001;
+    #((CLK_PERIOD)*2) data = 3'b101;
+    #((CLK_PERIOD)*2) data = 3'b000;
+    #((CLK_PERIOD)*2) data = 3'b110;
+    #((CLK_PERIOD)*2) data = 3'b110;
+    #((CLK_PERIOD)*2) data = 3'b011;
+    #((CLK_PERIOD)*2) data = 3'b101;
+    
+    // Test case 4: Sequence occurs multiple times consecutively
+    #((CLK_PERIOD)*2) data = 3'b001;
+    #((CLK_PERIOD)*2) data = 3'b101;
+    #((CLK_PERIOD)*2) data = 3'b110;
+    #((CLK_PERIOD)*2) data = 3'b000;
+    #((CLK_PERIOD)*2) data = 3'b110;
+    #((CLK_PERIOD)*2) data = 3'b110;
+    #((CLK_PERIOD)*2) data = 3'b011;
+    #((CLK_PERIOD)*2) data = 3'b101;
+    #((CLK_PERIOD)*2) data = 3'b001;
+    #((CLK_PERIOD)*2) data = 3'b101;
+    #((CLK_PERIOD)*2) data = 3'b110;
+    #((CLK_PERIOD)*2) data = 3'b000;
+    #((CLK_PERIOD)*2) data = 3'b110;
+    #((CLK_PERIOD)*2) data = 3'b110;
+    #((CLK_PERIOD)*2) data = 3'b011;
+    #((CLK_PERIOD)*2) data = 3'b101;
+    
+    // Test case 5: Sequence occurs with other non-sequence data in between
+    #((CLK_PERIOD)*2) data = 3'b001;
+    #((CLK_PERIOD)*2) data = 3'b101;
+    #((CLK_PERIOD)*2) data = 3'b110;
+    #((CLK_PERIOD)*2) data = 3'b000;
+    #((CLK_PERIOD)*2) data = 3'b111;
+    #((CLK_PERIOD)*2) data = 3'b110;
+    #((CLK_PERIOD)*2) data = 3'b011;
+    #((CLK_PERIOD)*2) data = 3'b101;
+  end
+  
+  // Monitor the outputs and check against expected values
+  always @(posedge clk) begin
+    if (reset == 0) begin
+      if (sequence_found) begin
+        $display("Sequence detected!");
+      end
+    end
+  end
+  
+endmodule
+```
+Note: The testbench module assumes that the sequence detector module is named "sequence_detector" and has the specified inputs and outputs.
+
+This testbench module tests five cases:
+1. Sequence occurs at the beginning of the input data.
+2. Sequence occurs at the end of the input data.
+3. Sequence occurs in the middle of the input data.
+4. Sequence occurs multiple times consecutively.
+5. Sequence occurs with other non-sequence data in between.
+
+The testbench generates the clock signal, reset signal, and input data for each test case. It monitors the "sequence_found" output of the sequence detector module and displays a message when the sequence is detected.

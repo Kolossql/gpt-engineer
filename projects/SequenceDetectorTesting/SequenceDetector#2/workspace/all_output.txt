@@ -1,0 +1,100 @@
+The necessary blocks for testing the sequence detector module are as follows:
+
+1. Testbench module: This module will instantiate the sequence detector module and provide stimulus to its inputs. It will also monitor the outputs of the sequence detector module and verify their correctness.
+
+Important edge cases to test in the testbench:
+
+1. Testing the initial state of the sequence detector module.
+2. Testing the detection of the sequence when it occurs at the beginning of the input data.
+3. Testing the detection of the sequence when it occurs in the middle of the input data.
+4. Testing the detection of the sequence when it occurs at the end of the input data.
+5. Testing the non-detection of the sequence when the input data does not match any part of the sequence.
+
+Now, let's write the content of the testbench module:
+
+testbench.v
+```verilog
+module testbench;
+
+  // Parameters
+  parameter CLK_PERIOD = 10; // Clock period in ns
+
+  // Inputs
+  reg clk;
+  reg reset;
+  reg [2:0] data;
+
+  // Outputs
+  wire sequence_found;
+
+  // Instantiate the sequence detector module
+  sequence_detector dut (
+    .clk(clk),
+    .reset(reset),
+    .data(data),
+    .sequence_found(sequence_found)
+  );
+
+  // Clock generation
+  always #((CLK_PERIOD)/2) clk = ~clk;
+
+  // Stimulus generation
+  initial begin
+    // Initialize inputs
+    reset = 1;
+    data = 3'b000;
+
+    // Wait for a few clock cycles
+    #((CLK_PERIOD)*10);
+
+    // Deassert reset
+    reset = 0;
+
+    // Test case 1: Initial state
+    #((CLK_PERIOD)*10);
+    $display("Test Case 1: Initial state");
+    $display("Sequence Found: %b", sequence_found);
+
+    // Test case 2: Sequence at the beginning
+    #((CLK_PERIOD)*10);
+    $display("Test Case 2: Sequence at the beginning");
+    data = 3'b001;
+    #((CLK_PERIOD)*10);
+    $display("Sequence Found: %b", sequence_found);
+
+    // Test case 3: Sequence in the middle
+    #((CLK_PERIOD)*10);
+    $display("Test Case 3: Sequence in the middle");
+    data = 3'b101;
+    #((CLK_PERIOD)*10);
+    $display("Sequence Found: %b", sequence_found);
+
+    // Test case 4: Sequence at the end
+    #((CLK_PERIOD)*10);
+    $display("Test Case 4: Sequence at the end");
+    data = 3'b011;
+    #((CLK_PERIOD)*10);
+    $display("Sequence Found: %b", sequence_found);
+
+    // Test case 5: Non-detection of sequence
+    #((CLK_PERIOD)*10);
+    $display("Test Case 5: Non-detection of sequence");
+    data = 3'b111;
+    #((CLK_PERIOD)*10);
+    $display("Sequence Found: %b", sequence_found);
+
+    // End simulation
+    $finish;
+  end
+
+endmodule
+```
+
+This testbench module tests five cases:
+1. Initial state: The sequence detector module is in the initial state and the sequence has not been detected yet.
+2. Sequence at the beginning: The sequence occurs at the beginning of the input data.
+3. Sequence in the middle: The sequence occurs in the middle of the input data.
+4. Sequence at the end: The sequence occurs at the end of the input data.
+5. Non-detection of sequence: The input data does not match any part of the sequence.
+
+The testbench module uses display statements to print the value of the `sequence_found` output at different points in time. This allows us to verify the correctness of the sequence detection. The testbench also includes a clock generation block to generate the clock signal for the sequence detector module.

@@ -1,0 +1,34 @@
+The core blocks necessary for the LFSR module are:
+
+1. Shift Register: This is the main component of the LFSR. It is an 8-bit register that shifts its content to the right on every clock cycle.
+
+2. XOR Gates: These are used to generate the feedback bit. The feedback bit is the XOR of the bits at the tap locations.
+
+3. Reset Logic: This is used to reset the shift register to its initial state when the reset signal is active-low.
+
+Now, let's write the Verilog code for the LFSR module.
+
+lfsr.v
+```verilog
+module LFSR_Module (
+    input wire clk,
+    input wire reset,
+    output reg [7:0] data
+);
+
+    reg [7:0] shift_reg;
+
+    always @(posedge clk or negedge reset) begin
+        if (~reset) begin
+            shift_reg <= 8'b10001010;
+        end else begin
+            shift_reg <= {shift_reg[6:0], shift_reg[0]^shift_reg[3]^shift_reg[5]^shift_reg[6]};
+        end
+    end
+
+    assign data = shift_reg;
+
+endmodule
+```
+
+This code defines a module named `LFSR_Module` with inputs `clk` and `reset`, and output `data`. The shift register is implemented as an 8-bit register `shift_reg`. The `always` block describes the behavior of the shift register. On the rising edge of the clock or the falling edge of the reset signal, if the reset signal is active-low, the shift register is reset to its initial state `10001010`. Otherwise, the shift register shifts its content to the right and the new bit is the XOR of the bits at the tap locations. The output `data` is assigned the value of the shift register.

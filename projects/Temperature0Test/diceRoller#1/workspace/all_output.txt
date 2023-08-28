@@ -1,0 +1,121 @@
+The necessary blocks for testing the module are:
+1. Testbench module: This module will instantiate the module under test and provide stimulus to its inputs. It will also monitor the outputs and verify their correctness.
+2. Clock generator: This block will generate the clock signal for the testbench module.
+3. Reset generator: This block will generate the active-low reset signal for the testbench module.
+4. Stimulus generator: This block will generate the necessary stimulus for the inputs of the module under test.
+5. Monitor: This block will monitor the outputs of the module under test and display them for verification.
+
+Important edge cases to test in the testbench:
+1. Testing the roll input when it is low.
+2. Testing the roll input when it is high but the clock rising edge does not occur.
+3. Testing the roll input when it is high and the clock rising edge occurs.
+4. Testing the active-low reset signal.
+5. Testing different die select values to simulate rolling different types of dice.
+
+Now let's proceed with the content of the testbench module:
+
+**testbench.v**
+```verilog
+module testbench;
+  
+  // Parameters
+  parameter CLK_PERIOD = 10; // Clock period in ns
+  
+  // Signals
+  reg clk;
+  reg reset;
+  reg [1:0] die_select;
+  reg roll;
+  wire [7:0] rolled_number;
+  
+  // Instantiate the module under test
+  dice_roller dut (
+    .clk(clk),
+    .reset(reset),
+    .die_select(die_select),
+    .roll(roll),
+    .rolled_number(rolled_number)
+  );
+  
+  // Clock generator
+  always #((CLK_PERIOD)/2) clk = ~clk;
+  
+  // Reset generator
+  initial begin
+    reset = 1;
+    #((CLK_PERIOD)*2) reset = 0;
+  end
+  
+  // Stimulus generator
+  initial begin
+    // Test case 1: roll input is low
+    die_select = 2'b00; // 4-sided die
+    roll = 0;
+    #((CLK_PERIOD)*10);
+    
+    // Test case 2: roll input is high but clock rising edge does not occur
+    die_select = 2'b01; // 6-sided die
+    roll = 1;
+    #((CLK_PERIOD)*5);
+    roll = 0;
+    #((CLK_PERIOD)*10);
+    
+    // Test case 3: roll input is high and clock rising edge occurs
+    die_select = 2'b10; // 8-sided die
+    roll = 1;
+    #((CLK_PERIOD)*5);
+    roll = 0;
+    #((CLK_PERIOD)*10);
+    
+    // Test case 4: active-low reset
+    die_select = 2'b11; // 20-sided die
+    roll = 1;
+    #((CLK_PERIOD)*5);
+    reset = 1;
+    #((CLK_PERIOD)*2) reset = 0;
+    #((CLK_PERIOD)*10);
+    
+    // Test case 5: different die select values
+    die_select = 2'b00; // 4-sided die
+    roll = 1;
+    #((CLK_PERIOD)*5);
+    roll = 0;
+    #((CLK_PERIOD)*10);
+    
+    die_select = 2'b01; // 6-sided die
+    roll = 1;
+    #((CLK_PERIOD)*5);
+    roll = 0;
+    #((CLK_PERIOD)*10);
+    
+    die_select = 2'b10; // 8-sided die
+    roll = 1;
+    #((CLK_PERIOD)*5);
+    roll = 0;
+    #((CLK_PERIOD)*10);
+    
+    die_select = 2'b11; // 20-sided die
+    roll = 1;
+    #((CLK_PERIOD)*5);
+    roll = 0;
+    #((CLK_PERIOD)*10);
+    
+    $finish;
+  end
+  
+  // Monitor
+  always @(posedge clk) begin
+    $display("Rolled Number: %d", rolled_number);
+  end
+  
+endmodule
+```
+
+This testbench module tests five cases:
+1. Testing the roll input when it is low.
+2. Testing the roll input when it is high but the clock rising edge does not occur.
+3. Testing the roll input when it is high and the clock rising edge occurs.
+4. Testing the active-low reset signal.
+5. Testing different die select values to simulate rolling different types of dice.
+
+The testbench module generates the necessary clock and reset signals. It also provides stimulus to the inputs of the module under test and monitors the output. The output is displayed using the `$display` statement for verification. The testbench module finishes execution after all test cases have been executed.

@@ -1,0 +1,118 @@
+The necessary blocks for testing the sequence generator module are as follows:
+
+1. Testbench module: This module will instantiate the sequence generator module and provide the necessary inputs (clock, reset, enable) and monitor the outputs (data). It will also generate the test stimuli and verify the expected outputs.
+
+Important edge cases to test in the testbench:
+
+1. Test the initial state: Verify that the output data is the first element of the sequence (0xAF) when the module is reset.
+2. Test the sequence generation: Verify that the output data follows the specified sequence when the enable signal is high and the clock signal has rising edges.
+3. Test the enable signal: Verify that the output data remains unchanged when the enable signal is low.
+4. Test the active-low reset: Verify that the module resets to the initial state (outputting 0xAF) when the reset signal goes low.
+5. Test the continuous sequence generation: Verify that the output data repeats the sequence indefinitely.
+
+Now, let's proceed with the content of the testbench module:
+
+**File: sequence_generator_tb.v**
+
+```verilog
+module sequence_generator_tb;
+
+  // Parameters
+  parameter CLK_PERIOD = 10; // Clock period in ns
+
+  // Inputs
+  reg clk;
+  reg reset;
+  reg enable;
+
+  // Outputs
+  wire [7:0] data;
+
+  // Instantiate the sequence generator module
+  sequence_generator dut (
+    .clk(clk),
+    .reset(reset),
+    .enable(enable),
+    .data(data)
+  );
+
+  // Clock generation
+  always #((CLK_PERIOD)/2) clk = ~clk;
+
+  // Test stimuli generation
+  initial begin
+    // Initialize inputs
+    reset = 1;
+    enable = 0;
+
+    // Wait for a few clock cycles
+    #((CLK_PERIOD)*10);
+
+    // Test case 1: Initial state
+    $display("Test Case 1: Initial state");
+    reset = 0;
+    #((CLK_PERIOD)*10);
+    if (data !== 8'hAF) $display("Test Case 1 failed!");
+
+    // Test case 2: Sequence generation
+    $display("Test Case 2: Sequence generation");
+    enable = 1;
+    #((CLK_PERIOD)*10);
+    if (data !== 8'hAF) $display("Test Case 2 failed!");
+    #((CLK_PERIOD)*10);
+    if (data !== 8'hBC) $display("Test Case 2 failed!");
+    #((CLK_PERIOD)*10);
+    if (data !== 8'hE2) $display("Test Case 2 failed!");
+    #((CLK_PERIOD)*10);
+    if (data !== 8'h78) $display("Test Case 2 failed!");
+    #((CLK_PERIOD)*10);
+    if (data !== 8'hFF) $display("Test Case 2 failed!");
+    #((CLK_PERIOD)*10);
+    if (data !== 8'hE2) $display("Test Case 2 failed!");
+    #((CLK_PERIOD)*10);
+    if (data !== 8'h0B) $display("Test Case 2 failed!");
+    #((CLK_PERIOD)*10);
+    if (data !== 8'h8D) $display("Test Case 2 failed!");
+
+    // Test case 3: Enable signal low
+    $display("Test Case 3: Enable signal low");
+    enable = 0;
+    #((CLK_PERIOD)*10);
+    if (data !== 8'h8D) $display("Test Case 3 failed!");
+
+    // Test case 4: Active-low reset
+    $display("Test Case 4: Active-low reset");
+    reset = 1;
+    #((CLK_PERIOD)*10);
+    if (data !== 8'hAF) $display("Test Case 4 failed!");
+    reset = 0;
+    #((CLK_PERIOD)*10);
+    if (data !== 8'hAF) $display("Test Case 4 failed!");
+
+    // Test case 5: Continuous sequence generation
+    $display("Test Case 5: Continuous sequence generation");
+    enable = 1;
+    #((CLK_PERIOD)*100);
+    if (data !== 8'hAF) $display("Test Case 5 failed!");
+    #((CLK_PERIOD)*100);
+    if (data !== 8'hBC) $display("Test Case 5 failed!");
+    #((CLK_PERIOD)*100);
+    if (data !== 8'hE2) $display("Test Case 5 failed!");
+    #((CLK_PERIOD)*100);
+    if (data !== 8'h78) $display("Test Case 5 failed!");
+    #((CLK_PERIOD)*100);
+    if (data !== 8'hFF) $display("Test Case 5 failed!");
+    #((CLK_PERIOD)*100);
+    if (data !== 8'hE2) $display("Test Case 5 failed!");
+    #((CLK_PERIOD)*100);
+    if (data !== 8'h0B) $display("Test Case 5 failed!");
+    #((CLK_PERIOD)*100);
+    if (data !== 8'h8D) $display("Test Case 5 failed!");
+
+    $finish;
+  end
+
+endmodule
+```
+
+This testbench module tests the sequence generator module with five test cases, including the important edge cases mentioned earlier. It initializes the inputs, generates the clock signal, and monitors the output data. It uses the `$display` statement to print the test case results and checks if the output data matches the expected values. The test cases are executed sequentially with appropriate delays between them. Finally, the simulation is finished using `$finish`.

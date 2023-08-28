@@ -1,0 +1,31 @@
+Core Blocks:
+1. Shift Register: Implements the behavior of the shift register, including the shift operation and reset functionality.
+
+shift_register.v
+```verilog
+module shift_register (
+  input wire clk,
+  input wire reset,
+  input wire data,
+  input wire shift_enable,
+  output wire [7:0] stored_data
+);
+
+  reg [7:0] register;
+
+  always @(posedge clk) begin
+    if (reset == 0) begin
+      register <= 8'b00000000;
+    end else if (shift_enable == 1) begin
+      register <= {register[6:0], data};
+    end
+  end
+
+  assign stored_data = register;
+
+endmodule
+```
+
+In the above code, we define a module named `shift_register` that takes inputs `clk`, `reset`, `data`, and `shift_enable`, and outputs `stored_data`. Inside the module, we declare a register `register` of size 8 bits to store the data. We use an `always` block triggered by the positive edge of the clock signal to perform the shift operation and reset functionality. When the reset signal is active low, the register is set to the initial state of 00000000. When the shift enable signal is high, the data bit is shifted into the register. Finally, we assign the value of the register to the `stored_data` output.
+
+This module can be used as a blackbox reference for the shift register in a larger design.

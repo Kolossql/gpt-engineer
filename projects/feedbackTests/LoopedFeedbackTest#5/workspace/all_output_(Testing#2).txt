@@ -1,0 +1,166 @@
+traffic_light_controller.v
+```verilog
+module TrafficLightController(
+  input wire clk,
+  input wire reset,
+  input wire enable,
+  output wire red,
+  output wire yellow,
+  output wire green
+);
+
+  // Define the states
+  parameter RED_STATE = 2'b00;
+  parameter GREEN_STATE = 2'b01;
+  parameter YELLOW_STATE = 2'b10;
+
+  // Define the state register
+  reg [1:0] state;
+
+  // Define the state transition counters
+  reg [5:0] red_counter;
+  reg [4:0] green_counter;
+  reg [3:0] yellow_counter;
+
+  // State transition logic
+  always @(posedge clk or posedge reset) begin
+    if (reset) begin
+      state <= RED_STATE;
+      red_counter <= 6'd0;
+      green_counter <= 5'd0;
+      yellow_counter <= 4'd0;
+    end else if (enable) begin
+      case (state)
+        RED_STATE: begin
+          if (red_counter == 6'd31) begin
+            state <= GREEN_STATE;
+            red_counter <= 6'd0;
+          end else begin
+            red_counter <= red_counter + 1;
+          end
+        end
+        GREEN_STATE: begin
+          if (green_counter == 5'd19) begin
+            state <= YELLOW_STATE;
+            green_counter <= 5'd0;
+          end else begin
+            green_counter <= green_counter + 1;
+          end
+        end
+        YELLOW_STATE: begin
+          if (yellow_counter == 4'd6) begin
+            state <= RED_STATE;
+            yellow_counter <= 4'd0;
+          end else begin
+            yellow_counter <= yellow_counter + 1;
+          end
+        end
+      endcase
+    end
+  end
+
+  // Output logic
+  assign red = (state == RED_STATE) ? 1'b1 : 1'b0;
+  assign yellow = (state == YELLOW_STATE) ? 1'b1 : 1'b0;
+  assign green = (state == GREEN_STATE) ? 1'b1 : 1'b0;
+
+endmodule
+```
+
+traffic_light_tb.v
+```verilog
+module traffic_light_tb;
+
+  // Inputs
+  reg clk;
+  reg reset;
+  reg enable;
+
+  // Outputs
+  wire red;
+  wire yellow;
+  wire green;
+
+  // Instantiate the module under test
+  TrafficLightController dut (
+    .clk(clk),
+    .reset(reset),
+    .enable(enable),
+    .red(red),
+    .yellow(yellow),
+    .green(green)
+  );
+
+  // Clock Generator
+  always #5 clk = ~clk;
+
+  // Reset Generator
+  initial begin
+    reset = 1;
+    #10 reset = 0;
+  end
+
+  // Enable Generator
+  initial begin
+    enable = 1;
+    #50 enable = 0;
+    #50 enable = 1;
+    #50 enable = 0;
+  end
+
+  // Monitor
+  always @(red, yellow, green) begin
+    $display("Red: %b, Yellow: %b, Green: %b", red, yellow, green);
+  end
+
+  // Test Cases
+  initial begin
+    // Test Case 1: Transition from red to green after 32 clock cycles
+    #160;
+    if (red === 1'b0 && yellow === 1'b0 && green === 1'b1)
+      $display("Test Case 1 Passed");
+    else
+      $display("Test Case 1 Failed");
+
+    // Test Case 2: Transition from green to yellow after 20 clock cycles
+    #100;
+    if (red === 1'b0 && yellow === 1'b1 && green === 1'b0)
+      $display("Test Case 2 Passed");
+    else
+      $display("Test Case 2 Failed");
+
+    // Test Case 3: Transition from yellow to red after 7 clock cycles
+    #35;
+    if (red === 1'b1 && yellow === 1'b0 && green === 1'b0)
+      $display("Test Case 3 Passed");
+    else
+      $display("Test Case 3 Failed");
+
+    // Test Case 4: Resetting the module to its initial state
+    reset = 1;
+    #10 reset = 0;
+    if (red === 1'b1 && yellow === 1'b0 && green === 1'b0)
+      $display("Test Case 4 Passed");
+    else
+      $display("Test Case 4 Failed");
+
+    // Test Case 5: Pausing the operation of the module by setting the enable signal low
+    enable = 0;
+    #100;
+    if (red === 1'b1 && yellow === 1'b0 && green === 1'b0)
+      $display("Test Case 5 Passed");
+    else
+      $display("Test Case 5 Failed");
+
+    // Finish the simulation
+    $finish;
+  end
+
+  // Dump waveform for GTKWave
+  initial begin
+    $dumpfile("WaveOutput.vcd");
+    $dumpvars(0, traffic_light_tb);
+  end
+
+endmodule
+```

@@ -1,0 +1,38 @@
+[
+    {
+        "role": "system",
+        "content": "You will read instructions and not carry them out, only seek to clarify them.\nSpecifically you will first summarise a list of super short bullets of areas that need clarification.\nThen you will pick one clarifying question, and wait for an answer from the user.\n"
+    },
+    {
+        "role": "user",
+        "content": "I am trying to create a Verilog model for a sequence generator. It must meet the following specifications:\nInputs: Clock, Active-low reset, Enable\nOutputs: Data (8 bits)\nWhile enabled, it should generate an output sequence of the following hexadecimal values and then repeat:\n        - 0xAF\n        - 0xBC\n        - 0xE2\n        - 0x78\n        - 0xFF\n        - 0xE2\n        - 0x0B\n        - 0x8D\""
+    },
+    {
+        "role": "assistant",
+        "content": "Areas that need clarification:\n1. How should the clock signal be used in the sequence generator?\n2. How should the active-low reset signal be used in the sequence generator?\n3. How should the enable signal be used in the sequence generator?\n4. Should the output sequence be generated continuously or only when enabled?\n5. What should happen to the output sequence when the enable signal is deasserted?\n6. What should happen to the output sequence when the active-low reset signal is asserted?\n7. Should the output sequence start from the beginning every time the active-low reset signal is deasserted?\n8. Should the output sequence start from the beginning every time the enable signal is deasserted?\n9. Should the output sequence be synchronous or asynchronous with respect to the clock signal?\n10. How should the output sequence be represented in the Verilog model?"
+    },
+    {
+        "role": "user",
+        "content": "The expected functionality of this sequence generator is to output the following sequence, moving a step forward whenever the clk has a rising edge and the enable is high. Once the sequence has reached its end it should repeat.\n\nIs anything else unclear? If yes, only answer in the form:\n{remaining unclear areas} remaining questions.\n{Next question}\nIf everything is sufficiently clear, only answer \"Nothing more to clarify.\"."
+    },
+    {
+        "role": "assistant",
+        "content": "The following areas are still unclear:\n1. How should the active-low reset signal be used in the sequence generator?\n2. What should happen to the output sequence when the enable signal is deasserted?\n3. Should the output sequence start from the beginning every time the active-low reset signal is deasserted?\n4. Should the output sequence start from the beginning every time the enable signal is deasserted?\n5. How should the output sequence be represented in the Verilog model?\n\n5 remaining questions.\nNext question."
+    },
+    {
+        "role": "user",
+        "content": "When reset it should start the sequence from the beginning. When the enable signal is deasserted wait for it to be reasserted to continue.\n\nIs anything else unclear? If yes, only answer in the form:\n{remaining unclear areas} remaining questions.\n{Next question}\nIf everything is sufficiently clear, only answer \"Nothing more to clarify.\"."
+    },
+    {
+        "role": "assistant",
+        "content": "The following areas are still unclear:\n1. How should the output sequence be represented in the Verilog model?\n\n1 remaining question.\nNext question."
+    },
+    {
+        "role": "user",
+        "content": "Make your own assumptions and state them explicitly before starting"
+    },
+    {
+        "role": "assistant",
+        "content": "Assumption: The output sequence will be represented as an 8-bit signal named \"data_out\" in the Verilog model.\n\nIs there anything else unclear? If yes, please let me know. If not, please confirm by saying \"Nothing more to clarify.\"."
+    }
+]

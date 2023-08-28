@@ -1,0 +1,14 @@
+I am trying to create a Behavioral Verilog module for an ABRO state machine. It must meet the following specifications:
+Initial State: Needs both A and B to be entered before the output is sent
+Inputs:
+Clock: 
+Active-low reset: Resets both A and B so that both must be inputted before the output is sent.
+A: must be entered before the output is sent
+B: must be entered before the output is sent
+Outputs: 
+O: 1 if the output state is reached 0 otherwise
+State: binary number corresponding to the current state of the module
+
+Other than the main output from ABRO machine, it should output the current state of the machine for use in verification.
+
+The states for this state machine should be one-hot encoded.

@@ -1,0 +1,223 @@
+[
+    {
+        "type": "system",
+        "data": {
+            "content": "You will get instructions for code to write.\nYou will write a very long answer. Make sure that every detail of the architecture is, in the end, implemented as code.\n\nThink step by step and reason yourself to the right decisions to make sure we get it right.\nYou will first lay out the names of the core modules, blocks that will be necessary, as well as a quick comment on their purpose.\n\nThen you will output the content of each file including ALL code.\nEach file must strictly follow a markdown code block format, where the following tokens must be replaced such that\nFILENAME is the lowercase file name including the file extension,\nLANG is the markup code block language for the code's language, and CODE is the code:\n\nFILENAME\n```LANG\nCODE\n```\n\nDo not comment on what every file does\n\nYou will start with the \"entrypoint\" file, then go to the ones that are imported by that file, and so on.\nPlease note that the code should be fully functional. No placeholders.\n\nFollow a language and framework appropriate best practice file naming convention.\nMake sure that code in different files are compatible with each other.\nEnsure to implement all code, if you are unsure, write a plausible implementation.\nBefore you finish, double check that all parts of the architecture is present in the files.\n\nUseful to know:\nYou almost always put different classes in different files.\nFor Verilog, you always create a complete testbench for each modules. \nYou try to add comments explaining very complex bits of logic.\nYou always follow the best practices for the requested languages in terms of describing the code written as a defined\npackage/project.",
+            "additional_kwargs": {}
+        }
+    },
+    {
+        "type": "human",
+        "data": {
+            "content": "I am trying to create a Behavioral Verilog module for a sequence generator. It must meet the following specifications:\nInitial state: outputting the first element of the sequence.\nInputs: \nClock: When the clock has a rising edge the sequence generator should output the next part of the sequence. This is the only time that \nActive-low reset: The active-low reset should set the module to the initial state.\nEnable: The sequence should only be outputted if enable is high.\nOutputs: Data (8 bits), Hexadecimal format of the values below.\nWhile enabled, it should generate an output sequence of the following hexadecimal values in the following order and then repeat:\n        - 0xAF\n        - 0xBC\n        - 0xE2\n        - 0x78\n        - 0xFF\n        - 0xE2\n        - 0x0B\n        - 0x8D\n\n",
+            "additional_kwargs": {},
+            "example": false
+        }
+    },
+    {
+        "type": "ai",
+        "data": {
+            "content": "- Clarification needed on what happens when the enable is low. Does the sequence pause or reset?\n- Clarification needed on the behavior of the sequence generator when the active-low reset is triggered while the sequence is being outputted.\n- Clarification needed on what should happen if the clock has a rising edge but the enable is not high.\n- Clarification needed on the initial state. Is it the first element of the sequence (0xAF) or something else?\n- Clarification needed on the behavior of the sequence generator when the sequence ends. Does it start over immediately or does it wait for the next clock rising edge?",
+            "additional_kwargs": {},
+            "example": false
+        }
+    },
+    {
+        "type": "human",
+        "data": {
+            "content": "Make your own assumptions and state them explicitly before starting",
+            "additional_kwargs": {},
+            "example": false
+        }
+    },
+    {
+        "type": "ai",
+        "data": {
+            "content": "Assumptions:\n\n1. When the enable is low, the sequence generator pauses and resumes from where it left off when the enable is high again.\n2. If the active-low reset is triggered while the sequence is being outputted, the sequence generator immediately resets to the initial state, regardless of the enable signal or the clock state.\n3. If the clock has a rising edge but the enable is not high, the sequence generator does not output the next part of the sequence.\n4. The initial state of the sequence generator is outputting the first element of the sequence (0xAF).\n5. When the sequence ends, the sequence generator starts over immediately at the next clock rising edge, provided the enable signal is high.",
+            "additional_kwargs": {},
+            "example": false
+        }
+    },
+    {
+        "type": "human",
+        "data": {
+            "content": "You will read specifications but not carry them out instead generate a blackbox reference with the following details of the module. Do not write any other description besides what is included in the following format. Do not write any code.\nIn this format ModuleName is the exact name of the module. type is the type of the input or output on the same line. size is the size of the input or output on the same line. Size should be in the format [(bits-1):0]. Size should not be included if the size is 1 bit. name is the exact name of the input or output on the same line.\nFollow the format of the following:\n\nModuleName\n{ \n    //comment on the following input\n    input type size name\n}\n{\n    output type size name\n}",
+            "additional_kwargs": {},
+            "example": false
+        }
+    },
+    {
+        "type": "ai",
+        "data": {
+            "content": "SequenceGenerator\n{ \n    //Clock signal\n    input wire clk\n    //Active-low reset signal\n    input wire reset_n\n    //Enable signal\n    input wire enable\n}\n{\n    //8-bit data output in hexadecimal format\n    output reg [7:0] data\n}",
+            "additional_kwargs": {},
+            "example": false
+        }
+    },
+    {
+        "type": "system",
+        "data": {
+            "content": "You will get instructions for code to write.\nYou will write a very long answer. Make sure that every detail of the architecture is, in the end, implemented as code.\n\nThink step by step and reason yourself to the right decisions to make sure we get it right.\nYou will first lay out the names of the core modules, blocks that will be necessary, as well as a quick comment on their purpose.\n\nThen you will output the content of each file including ALL code.\nEach file must strictly follow a markdown code block format, where the following tokens must be replaced such that\nFILENAME is the lowercase file name including the file extension,\nLANG is the markup code block language for the code's language, and CODE is the code:\n\nFILENAME\n```LANG\nCODE\n```\n\nDo not comment on what every file does\n\nYou will start with the \"entrypoint\" file, then go to the ones that are imported by that file, and so on.\nPlease note that the code should be fully functional. No placeholders.\n\nFollow a language and framework appropriate best practice file naming convention.\nMake sure that code in different files are compatible with each other.\nEnsure to implement all code, if you are unsure, write a plausible implementation.\nBefore you finish, double check that all parts of the architecture is present in the files.\n\nUseful to know:\nYou almost always put different classes in different files.\nFor Verilog, you always create a complete testbench for each modules. \nYou try to add comments explaining very complex bits of logic.\nYou always follow the best practices for the requested languages in terms of describing the code written as a defined\npackage/project.",
+            "additional_kwargs": {}
+        }
+    },
+    {
+        "type": "human",
+        "data": {
+            "content": "I am trying to create a Behavioral Verilog module for a sequence generator. It must meet the following specifications:\nInitial state: outputting the first element of the sequence.\nInputs: \nClock: When the clock has a rising edge the sequence generator should output the next part of the sequence. This is the only time that \nActive-low reset: The active-low reset should set the module to the initial state.\nEnable: The sequence should only be outputted if enable is high.\nOutputs: Data (8 bits), Hexadecimal format of the values below.\nWhile enabled, it should generate an output sequence of the following hexadecimal values in the following order and then repeat:\n        - 0xAF\n        - 0xBC\n        - 0xE2\n        - 0x78\n        - 0xFF\n        - 0xE2\n        - 0x0B\n        - 0x8D\n\n",
+            "additional_kwargs": {},
+            "example": false
+        }
+    },
+    {
+        "type": "ai",
+        "data": {
+            "content": "- Clarification needed on what happens when the enable is low. Does the sequence pause or reset?\n- Clarification needed on the behavior of the sequence generator when the active-low reset is triggered while the sequence is being outputted.\n- Clarification needed on what should happen if the clock has a rising edge but the enable is not high.\n- Clarification needed on the initial state. Is it the first element of the sequence (0xAF) or something else?\n- Clarification needed on the behavior of the sequence generator when the sequence ends. Does it start over immediately or does it wait for the next clock rising edge?",
+            "additional_kwargs": {},
+            "example": false
+        }
+    },
+    {
+        "type": "human",
+        "data": {
+            "content": "Make your own assumptions and state them explicitly before starting",
+            "additional_kwargs": {},
+            "example": false
+        }
+    },
+    {
+        "type": "ai",
+        "data": {
+            "content": "Assumptions:\n\n1. When the enable is low, the sequence generator pauses and resumes from where it left off when the enable is high again.\n2. If the active-low reset is triggered while the sequence is being outputted, the sequence generator immediately resets to the initial state, regardless of the enable signal or the clock state.\n3. If the clock has a rising edge but the enable is not high, the sequence generator does not output the next part of the sequence.\n4. The initial state of the sequence generator is outputting the first element of the sequence (0xAF).\n5. When the sequence ends, the sequence generator starts over immediately at the next clock rising edge, provided the enable signal is high.",
+            "additional_kwargs": {},
+            "example": false
+        }
+    },
+    {
+        "type": "human",
+        "data": {
+            "content": "You will read specifications but not carry them out instead generate a blackbox reference with the following details of the module. Do not write any other description besides what is included in the following format. Do not write any code.\nIn this format ModuleName is the exact name of the module. type is the type of the input or output on the same line. size is the size of the input or output on the same line. Size should be in the format [(bits-1):0]. Size should not be included if the size is 1 bit. name is the exact name of the input or output on the same line.\nFollow the format of the following:\n\nModuleName\n{ \n    //comment on the following input\n    input type size name\n}\n{\n    output type size name\n}",
+            "additional_kwargs": {},
+            "example": false
+        }
+    },
+    {
+        "type": "ai",
+        "data": {
+            "content": "SequenceGenerator\n{ \n    //Clock signal\n    input wire clk\n    //Active-low reset signal\n    input wire reset_n\n    //Enable signal\n    input wire enable\n}\n{\n    //8-bit data output in hexadecimal format\n    output reg [7:0] data\n}",
+            "additional_kwargs": {},
+            "example": false
+        }
+    },
+    {
+        "type": "human",
+        "data": {
+            "content": "Please now remember the steps:\n\nThink step by step and reason yourself to the right decisions to make sure we get it right.\n\nFirst lay out the names of the core blocks that will be necessary, As well as a quick comment on their purpose.\nDo not write additional modules.\n\nThen you will output the content of the file including ALL code. Every module should be complete. Don't leave empty modules.\nthe file must strictly follow a markdown code block format, where the following tokens must be replaced such that\nFILENAME is the lowercase file name including the file extension,\nLANG is the markup code block language for the code's language, and CODE is the code:\n\nFILENAME\n```LANG\nCODE\n```\n\nPlease note that the code should be fully functional. No placeholders.\n\nFollow a language and framework appropriate best practice file naming convention.\nThe code should be fully functional. Make sure that code in different files are compatible with each other.\nBefore you finish, double check that all parts of the architecture is present in the files.\nFor Verilog, do not write a testbench.\nFor Verilog, use the exact names for inputs and ouputs as described in the blackbox reference. \nFor Verilog, follow the 2005 standard without the use of SystemVerilog\nFor Verilog, write a single synthesizeable module. Don't use funcitions starting with a $ and Don't use initial blocks.",
+            "additional_kwargs": {},
+            "example": false
+        }
+    },
+    {
+        "type": "ai",
+        "data": {
+            "content": "The core blocks necessary for this module are:\n\n1. State Machine: This will control the sequence of the output data based on the clock, reset, and enable signals.\n2. Output Register: This will hold the current output data.\n\nNow, let's write the Verilog code for the sequence generator.\n\nsequence_generator.v\n```verilog\nmodule SequenceGenerator (\n    input wire clk,\n    input wire reset_n,\n    input wire enable,\n    output reg [7:0] data\n);\n\n    // State encoding\n    parameter S0 = 3'b000, // State for 0xAF\n              S1 = 3'b001, // State for 0xBC\n              S2 = 3'b010, // State for 0xE2\n              S3 = 3'b011, // State for 0x78\n              S4 = 3'b100, // State for 0xFF\n              S5 = 3'b101, // State for 0xE2\n              S6 = 3'b110, // State for 0x0B\n              S7 = 3'b111; // State for 0x8D\n\n    // Current state\n    reg [2:0] state;\n\n    // State machine\n    always @(posedge clk or negedge reset_n) begin\n        if (!reset_n) begin\n            state <= S0;\n        end else if (enable) begin\n            case (state)\n                S0: state <= S1;\n                S1: state <= S2;\n                S2: state <= S3;\n                S3: state <= S4;\n                S4: state <= S5;\n                S5: state <= S6;\n                S6: state <= S7;\n                S7: state <= S0;\n                default: state <= S0;\n            endcase\n        end\n    end\n\n    // Output register\n    always @(state) begin\n        case (state)\n            S0: data = 8'hAF;\n            S1: data = 8'hBC;\n            S2: data = 8'hE2;\n            S3: data = 8'h78;\n            S4: data = 8'hFF;\n            S5: data = 8'hE2;\n            S6: data = 8'h0B;\n            S7: data = 8'h8D;\n            default: data = 8'hAF;\n        endcase\n    end\n\nendmodule\n```\nThis code defines a sequence generator module that outputs a sequence of 8-bit hexadecimal values based on the clock, reset, and enable signals. The sequence is controlled by a state machine, and the current output data is held in a register. The state machine transitions to the next state on the rising edge of the clock if the enable signal is high, and it resets to the initial state on the falling edge of the reset signal. The output data is updated whenever the state changes.",
+            "additional_kwargs": {},
+            "example": false
+        }
+    },
+    {
+        "type": "system",
+        "data": {
+            "content": "You will get instructions for code to write.\nYou will write a very long answer. Make sure that every detail of the architecture is, in the end, implemented as code.\n\nThink step by step and reason yourself to the right decisions to make sure we get it right.\nYou will first lay out the names of the core modules, blocks that will be necessary, as well as a quick comment on their purpose.\n\nThen you will output the content of each file including ALL code.\nEach file must strictly follow a markdown code block format, where the following tokens must be replaced such that\nFILENAME is the lowercase file name including the file extension,\nLANG is the markup code block language for the code's language, and CODE is the code:\n\nFILENAME\n```LANG\nCODE\n```\n\nDo not comment on what every file does\n\nYou will start with the \"entrypoint\" file, then go to the ones that are imported by that file, and so on.\nPlease note that the code should be fully functional. No placeholders.\n\nFollow a language and framework appropriate best practice file naming convention.\nMake sure that code in different files are compatible with each other.\nEnsure to implement all code, if you are unsure, write a plausible implementation.\nBefore you finish, double check that all parts of the architecture is present in the files.\n\nUseful to know:\nYou almost always put different classes in different files.\nFor Verilog, you always create a complete testbench for each modules. \nYou try to add comments explaining very complex bits of logic.\nYou always follow the best practices for the requested languages in terms of describing the code written as a defined\npackage/project.",
+            "additional_kwargs": {}
+        }
+    },
+    {
+        "type": "human",
+        "data": {
+            "content": "I am trying to create a Behavioral Verilog module for a sequence generator. It must meet the following specifications:\nInitial state: outputting the first element of the sequence.\nInputs: \nClock: When the clock has a rising edge the sequence generator should output the next part of the sequence. This is the only time that \nActive-low reset: The active-low reset should set the module to the initial state.\nEnable: The sequence should only be outputted if enable is high.\nOutputs: Data (8 bits), Hexadecimal format of the values below.\nWhile enabled, it should generate an output sequence of the following hexadecimal values in the following order and then repeat:\n        - 0xAF\n        - 0xBC\n        - 0xE2\n        - 0x78\n        - 0xFF\n        - 0xE2\n        - 0x0B\n        - 0x8D\n\n",
+            "additional_kwargs": {},
+            "example": false
+        }
+    },
+    {
+        "type": "ai",
+        "data": {
+            "content": "- Clarification needed on what happens when the enable is low. Does the sequence pause or reset?\n- Clarification needed on the behavior of the sequence generator when the active-low reset is triggered while the sequence is being outputted.\n- Clarification needed on what should happen if the clock has a rising edge but the enable is not high.\n- Clarification needed on the initial state. Is it the first element of the sequence (0xAF) or something else?\n- Clarification needed on the behavior of the sequence generator when the sequence ends. Does it start over immediately or does it wait for the next clock rising edge?",
+            "additional_kwargs": {},
+            "example": false
+        }
+    },
+    {
+        "type": "human",
+        "data": {
+            "content": "Make your own assumptions and state them explicitly before starting",
+            "additional_kwargs": {},
+            "example": false
+        }
+    },
+    {
+        "type": "ai",
+        "data": {
+            "content": "Assumptions:\n\n1. When the enable is low, the sequence generator pauses and resumes from where it left off when the enable is high again.\n2. If the active-low reset is triggered while the sequence is being outputted, the sequence generator immediately resets to the initial state, regardless of the enable signal or the clock state.\n3. If the clock has a rising edge but the enable is not high, the sequence generator does not output the next part of the sequence.\n4. The initial state of the sequence generator is outputting the first element of the sequence (0xAF).\n5. When the sequence ends, the sequence generator starts over immediately at the next clock rising edge, provided the enable signal is high.",
+            "additional_kwargs": {},
+            "example": false
+        }
+    },
+    {
+        "type": "human",
+        "data": {
+            "content": "You will read specifications but not carry them out instead generate a blackbox reference with the following details of the module. Do not write any other description besides what is included in the following format. Do not write any code.\nIn this format ModuleName is the exact name of the module. type is the type of the input or output on the same line. size is the size of the input or output on the same line. Size should be in the format [(bits-1):0]. Size should not be included if the size is 1 bit. name is the exact name of the input or output on the same line.\nFollow the format of the following:\n\nModuleName\n{ \n    //comment on the following input\n    input type size name\n}\n{\n    output type size name\n}",
+            "additional_kwargs": {},
+            "example": false
+        }
+    },
+    {
+        "type": "ai",
+        "data": {
+            "content": "SequenceGenerator\n{ \n    //Clock signal\n    input wire clk\n    //Active-low reset signal\n    input wire reset_n\n    //Enable signal\n    input wire enable\n}\n{\n    //8-bit data output in hexadecimal format\n    output reg [7:0] data\n}",
+            "additional_kwargs": {},
+            "example": false
+        }
+    },
+    {
+        "type": "human",
+        "data": {
+            "content": "Please now remember the steps:\n\nThink step by step and reason yourself to the right decisions to make sure we get it right. We will be writing a testbench for the module as described.\nFirst lay out the names of the blocks that will be necessary to properly test the written module, As well as a quick comment on their purpose.\nSecond, list important edge cases that should be tested in the testbench.\n\nThen you will output the content of the testbench module including ALL code. It should test five cases and each edge case as concisely as possible. It should verify the output using display statements and gtkwave.\nThe display statements should output \"Passed\" when a test is succesfully passed by the module and \"Failed\" when a test is failed\nInclude the lines \"$dumpfile(\"WaveOutput.vcd)\" and \"$dumpvars(0, x)\" where x is the name of the testbench module.\nInclude the line \"$finish\" at a time after all of the tests have been run\nEach file must strictly follow a markdown code block format, where the following tokens must be replaced such that\nFILENAME is the lowercase file name including the file extension,\nCODE is the code:\n\nFILENAME\n```verilog\nCODE\n```\n\nPlease note that the code should be fully functional. No placeholders.\n\nFollow a language and framework appropriate best practice file naming convention.\nThe code should be fully functional. Make sure that code in different files are compatible with each other.\nBefore you finish, double check that all parts of the architecture is present in the files.\n\nFor Verilog, the module to be tested uses the exact inputs and ouputs as described in the blackbox reference. \n",
+            "additional_kwargs": {},
+            "example": false
+        }
+    },
+    {
+        "type": "ai",
+        "data": {
+            "content": "The necessary blocks for the testbench are:\n\n1. Initialization block: This block will initialize the inputs and outputs of the module under test (MUT). It will also instantiate the MUT.\n\n2. Test case blocks: These blocks will each test a specific behavior of the MUT. There will be five test case blocks in total.\n\nThe important edge cases to test are:\n\n1. The behavior of the MUT when the enable signal is toggled while the sequence is being outputted.\n2. The behavior of the MUT when the active-low reset signal is triggered while the sequence is being outputted.\n3. The behavior of the MUT when the clock has a rising edge but the enable signal is not high.\n4. The behavior of the MUT when the sequence ends.\n5. The behavior of the MUT when it is in its initial state.\n\nHere is the content of the testbench module:\n\ntestbench.v\n```verilog\n`timescale 1ns / 1ps\n\nmodule SequenceGenerator_tb;\n\n    // Inputs\n    reg clk;\n    reg reset_n;\n    reg enable;\n\n    // Outputs\n    wire [7:0] data;\n\n    // Instantiate the Unit Under Test (UUT)\n    SequenceGenerator uut (\n        .clk(clk), \n        .reset_n(reset_n), \n        .enable(enable), \n        .data(data)\n    );\n\n    initial begin\n        // Initialize Inputs\n        clk = 0;\n        reset_n = 0;\n        enable = 0;\n\n        // Dump waveforms\n        $dumpfile(\"WaveOutput.vcd\");\n        $dumpvars(0, SequenceGenerator_tb);\n\n        // Test Case 1: Toggle enable while sequence is being outputted\n        #10 enable = 1;\n        #10 enable = 0;\n        #10 enable = 1;\n        if (data == 8'hAF) $display(\"Test Case 1: Passed\");\n        else $display(\"Test Case 1: Failed\");\n\n        // Test Case 2: Trigger active-low reset while sequence is being outputted\n        #10 reset_n = 1;\n        #10 reset_n = 0;\n        if (data == 8'hAF) $display(\"Test Case 2: Passed\");\n        else $display(\"Test Case 2: Failed\");\n\n        // Test Case 3: Clock has a rising edge but enable is not high\n        #10 clk = 1;\n        #10 clk = 0;\n        if (data == 8'hAF) $display(\"Test Case 3: Passed\");\n        else $display(\"Test Case 3: Failed\");\n\n        // Test Case 4: Sequence ends\n        #80 enable = 1;\n        if (data == 8'hAF) $display(\"Test Case 4: Passed\");\n        else $display(\"Test Case 4: Failed\");\n\n        // Test Case 5: Initial state\n        #10 reset_n = 1;\n        if (data == 8'hAF) $display(\"Test Case 5: Passed\");\n        else $display(\"Test Case 5: Failed\");\n\n        // End of tests\n        $finish;\n    end\n\n    // Clock generator\n    always #5 clk = ~clk;\n\nendmodule\n```\n",
+            "additional_kwargs": {},
+            "example": false
+        }
+    },
+    {
+        "type": "human",
+        "data": {
+            "content": "VCD info: dumpfile WaveOutput.vcd opened for output.\nTest Case 1: Passed\nTest Case 2: Failed\nTest Case 3: Passed\nTest Case 4: Passed\nTest Case 5: Passed\ntestbench.v:61: $finish called at 160000 (1ps)\n   ",
+            "additional_kwargs": {},
+            "example": false
+        }
+    },
+    {
+        "type": "human",
+        "data": {
+            "content": "You have just recieved the modules ran and the output. Your job is review the code along with the output and fix any errors so that the module and testbench function as intended. You do not need to run the code it has been provided in the previous message.",
+            "additional_kwargs": {},
+            "example": false
+        }
+    },
+    {
+        "type": "ai",
+        "data": {
+            "content": "Looking at the output, it seems that Test Case 2 has failed. This test case is supposed to check the behavior of the SequenceGenerator when the active-low reset signal is triggered while the sequence is being outputted. The expected behavior, as per our assumptions, is that the SequenceGenerator should immediately reset to the initial state, regardless of the enable signal or the clock state.\n\nUpon reviewing the testbench code, it appears that the issue lies in the timing of the signals. The reset_n signal is asserted low at time 40, but the enable signal is not asserted high until time 50. This means that the SequenceGenerator is not in the middle of outputting the sequence when the reset_n signal is triggered, which is not the intended scenario for this test case.\n\nTo fix this, we need to adjust the timing of the signals in Test Case 2. The enable signal should be asserted high before the reset_n signal is triggered. Here is the corrected testbench code:\n\ntestbench.v\n```verilog\n`timescale 1ns / 1ps\n\nmodule SequenceGenerator_tb;\n\n    // Inputs\n    reg clk;\n    reg reset_n;\n    reg enable;\n\n    // Outputs\n    wire [7:0] data;\n\n    // Instantiate the Unit Under Test (UUT)\n    SequenceGenerator uut (\n        .clk(clk), \n        .reset_n(reset_n), \n        .enable(enable), \n        .data(data)\n    );\n\n    initial begin\n        // Initialize Inputs\n        clk = 0;\n        reset_n = 0;\n        enable = 0;\n\n        // Dump waveforms\n        $dumpfile(\"WaveOutput.vcd\");\n        $dumpvars(0, SequenceGenerator_tb);\n\n        // Test Case 1: Toggle enable while sequence is being outputted\n        #10 enable = 1;\n        #10 enable = 0;\n        #10 enable = 1;\n        if (data == 8'hAF) $display(\"Test Case 1: Passed\");\n        else $display(\"Test Case 1: Failed\");\n\n        // Test Case 2: Trigger active-low reset while sequence is being outputted\n        #10 enable = 1;\n        #10 reset_n = 1;\n        #10 reset_n = 0;\n        if (data == 8'hAF) $display(\"Test Case 2: Passed\");\n        else $display(\"Test Case 2: Failed\");\n\n        // Test Case 3: Clock has a rising edge but enable is not high\n        #10 clk = 1;\n        #10 clk = 0;\n        if (data == 8'hAF) $display(\"Test Case 3: Passed\");\n        else $display(\"Test Case 3: Failed\");\n\n        // Test Case 4: Sequence ends\n        #80 enable = 1;\n        if (data == 8'hAF) $display(\"Test Case 4: Passed\");\n        else $display(\"Test Case 4: Failed\");\n\n        // Test Case 5: Initial state\n        #10 reset_n = 1;\n        if (data == 8'hAF) $display(\"Test Case 5: Passed\");\n        else $display(\"Test Case 5: Failed\");\n\n        // End of tests\n        $finish;\n    end\n\n    // Clock generator\n    always #5 clk = ~clk;\n\nendmodule\n```\nThis corrected testbench should now pass all test cases.",
+            "additional_kwargs": {},
+            "example": false
+        }
+    }
+]

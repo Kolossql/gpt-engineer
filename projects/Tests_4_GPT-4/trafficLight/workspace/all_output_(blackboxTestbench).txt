@@ -1,0 +1,97 @@
+The necessary blocks for the testbench are:
+
+1. Initialization: This block will initialize the inputs and outputs of the module.
+2. Test Case 1: This block will test the initial state of the module.
+3. Test Case 2: This block will test the transition from red to green after 32 clock cycles.
+4. Test Case 3: This block will test the transition from green to yellow after 20 clock cycles.
+5. Test Case 4: This block will test the transition from yellow to red after 7 clock cycles.
+6. Test Case 5: This block will test the behavior of the module when the 'Enable' input is switched from low to high.
+
+Important edge cases to test:
+
+1. The behavior of the module when the 'Active-low reset' is triggered while the module is operating.
+2. The behavior of the module when multiple inputs (Clock, Active-low reset, Enable) change at the same time.
+
+Here is the content of the testbench module:
+
+testbench.v
+```verilog
+`timescale 1ns / 1ps
+
+module Testbench;
+    reg clk;
+    reg reset_n;
+    reg enable;
+    wire red;
+    wire yellow;
+    wire green;
+
+    TrafficLightStateMachine u1 (
+        .clk(clk), 
+        .reset_n(reset_n), 
+        .enable(enable), 
+        .red(red), 
+        .yellow(yellow), 
+        .green(green)
+    );
+
+    initial begin
+        $dumpfile("WaveOutput.vcd");
+        $dumpvars(0, Testbench);
+
+        // Initialization
+        clk = 0;
+        reset_n = 0;
+        enable = 0;
+
+        // Test Case 1: Initial State
+        reset_n = 1;
+        enable = 1;
+        #32;
+        if (red == 1 && yellow == 0 && green == 0) begin
+            $display("Test Case 1: Passed");
+        end else begin
+            $display("Test Case 1: Failed");
+        end
+
+        // Test Case 2: Red to Green Transition
+        #32;
+        if (red == 0 && yellow == 0 && green == 1) begin
+            $display("Test Case 2: Passed");
+        end else begin
+            $display("Test Case 2: Failed");
+        end
+
+        // Test Case 3: Green to Yellow Transition
+        #20;
+        if (red == 0 && yellow == 1 && green == 0) begin
+            $display("Test Case 3: Passed");
+        end else begin
+            $display("Test Case 3: Failed");
+        end
+
+        // Test Case 4: Yellow to Red Transition
+        #7;
+        if (red == 1 && yellow == 0 && green == 0) begin
+            $display("Test Case 4: Passed");
+        end else begin
+            $display("Test Case 4: Failed");
+        end
+
+        // Test Case 5: Enable Switching
+        enable = 0;
+        #10;
+        enable = 1;
+        #32;
+        if (red == 0 && yellow == 0 && green == 1) begin
+            $display("Test Case 5: Passed");
+        end else begin
+            $display("Test Case 5: Failed");
+        end
+
+        $finish;
+    end
+
+    always #10 clk = ~clk;
+endmodule
+```

@@ -1,0 +1,76 @@
+uart
+{ 
+    //core clock
+    input wire clk
+    //active-low reset
+    input wire resetn
+    //enable signal
+    input wire enable
+    //input (receive) value
+    input wire rx
+    //baud rate clock divider
+    input wire [15:0] divider
+}
+{
+    //data byte out
+    output reg [7:0] data_out
+    //data ready signal
+    output wire data_ready
+}
+
+sky130_sram_1kbyte_1rw1r_8x1024_8
+{ 
+    //core clock
+    input wire clk0
+    //disable
+    input wire csb0
+    //active low write control
+    input wire web0
+    //write mask
+    input wire [0:0] wmask0
+    //buffer top address
+    input wire [9:0] addr0
+    //UART data in
+    input wire [7:0] din0
+    //core clock
+    input wire clk1
+    //disable
+    input wire csb1
+    //buffer bottom address
+    input wire [9:0] addr1
+}
+{
+    //unused
+    output wire [7:0] dout0
+    //data out to wishbone
+    output wire [7:0] dout1
+}
+
+buffered_uart_wb
+{ 
+    //SoC-wishbone bus facing signals
+    input wire wb_clk_i
+    input wire wb_rst_i
+    input wire [31:0] wb_adr_i
+    input wire [31:0] wb_dat_i
+    input wire [3:0] wb_sel_i
+    input wire wb_we_i
+    input wire wb_cyc_i
+    input wire wb_stb_i
+    //Memory (SRAM) connections
+    input wire [7:0] buffer_output
+    //UART connections (from internal registers)
+    input wire uart_ready
+}
+{
+    //SoC-wishbone bus facing signals
+    output wire wb_ack_o
+    output wire [31:0] wb_dat_o
+    //Memory (SRAM) connections
+    output wire [9:0] buffer_top
+    output wire [9:0] buffer_bottom
+    //UART connections (from internal registers)
+    output wire [7:0] uart_value
+    output wire uart_enable
+    output wire uart_divider
+}

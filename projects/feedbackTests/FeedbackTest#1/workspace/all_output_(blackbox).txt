@@ -1,0 +1,18 @@
+ShiftRegister
+{
+    // Clock signal input
+    input wire clk
+
+    // Active-low reset signal input
+    input wire reset
+
+    // Data input signal
+    input wire data
+
+    // Shift enable signal input
+    input wire shift_enable
+}
+{
+    // Stored data output
+    output wire [7:0] stored_data
+}

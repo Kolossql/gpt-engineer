@@ -1,0 +1,110 @@
+The blocks necessary to properly test the shift_register module are:
+1. Clock generator: To generate the clock signal for triggering the shift operation.
+2. Reset generator: To generate the active-low reset signal for resetting the shift register.
+3. Data generator: To generate the data bit to be shifted into the shift register.
+4. Shift enable generator: To generate the shift enable signal for enabling the shift operation.
+5. Monitor: To monitor the output of the shift register and verify the correctness of the stored data.
+
+Important edge cases to be tested in the testbench:
+1. Testing the initial state of the shift register.
+2. Testing the shift operation when the shift enable signal is high.
+3. Testing the shift operation when the shift enable signal is low.
+4. Testing the reset operation when the reset signal is active.
+5. Testing the output of the shift register when the data is changed.
+
+testbench_shift_register.v
+```verilog
+module testbench_shift_register;
+
+  // Inputs
+  reg clk;
+  reg reset;
+  reg data;
+  reg shift_enable;
+
+  // Outputs
+  wire [7:0] stored_data;
+
+  // Instantiate the shift_register module
+  shift_register dut (
+    .clk(clk),
+    .reset(reset),
+    .data(data),
+    .shift_enable(shift_enable),
+    .stored_data(stored_data)
+  );
+
+  // Clock generator
+  always begin
+    clk = 0;
+    #5;
+    clk = 1;
+    #5;
+  end
+
+  // Reset generator
+  initial begin
+    reset = 1;
+    #10;
+    reset = 0;
+  end
+
+  // Data generator
+  initial begin
+    data = 0;
+    #20;
+    data = 1;
+    #20;
+    data = 0;
+  end
+
+  // Shift enable generator
+  initial begin
+    shift_enable = 0;
+    #15;
+    shift_enable = 1;
+    #30;
+    shift_enable = 0;
+  end
+
+  // Monitor
+  always @(posedge clk) begin
+    $display("Stored Data: %b", stored_data);
+    if (stored_data === 8'b00000000)
+      $display("Passed: Initial state test");
+    else
+      $display("Failed: Initial state test");
+
+    if (stored_data === 8'b00000001)
+      $display("Passed: Shift operation test");
+    else
+      $display("Failed: Shift operation test");
+
+    if (stored_data === 8'b00000001)
+      $display("Passed: Shift operation with shift enable low test");
+    else
+      $display("Failed: Shift operation with shift enable low test");
+
+    if (stored_data === 8'b00000000)
+      $display("Passed: Reset operation test");
+    else
+      $display("Failed: Reset operation test");
+
+    if (stored_data === 8'b00000010)
+      $display("Passed: Output when data is changed test");
+    else
+      $display("Failed: Output when data is changed test");
+  end
+
+  // Dump waveform and finish simulation
+  initial begin
+    $dumpfile("WaveOutput.vcd");
+    $dumpvars(0, testbench_shift_register);
+    #100;
+    $finish;
+  end
+
+endmodule
+```
+
+Note: The testbench assumes a clock period of 10 time units and simulates for 100 time units. Adjust the timing parameters as per the desired simulation duration.

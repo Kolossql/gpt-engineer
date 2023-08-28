@@ -1,0 +1,38 @@
+Core Blocks:
+1. Sequence Generator: Generates the sequence of hexadecimal values based on the clock, reset, and enable signals.
+
+SequenceGenerator.v
+```verilog
+module SequenceGenerator (
+    input wire clk,
+    input wire reset,
+    input wire enable,
+    output reg [7:0] data
+);
+    // Internal state variable to keep track of the current index in the sequence
+    reg [2:0] index;
+
+    // Sequence of hexadecimal values
+    reg [7:0] sequence [7:0] = {8'hAF, 8'hBC, 8'hE2, 8'h78, 8'hFF, 8'hE2, 8'h0B, 8'h8D};
+
+    always @(posedge clk or posedge reset) begin
+        if (reset == 1'b0) begin
+            // Reset to the initial state (index = 0, data = first element of the sequence)
+            index <= 3'b000;
+            data <= sequence[0];
+        end else if (enable == 1'b1) begin
+            // Increment the index and output the corresponding element from the sequence
+            index <= index + 1;
+            data <= sequence[index];
+        end
+    end
+endmodule
+```
+
+The SequenceGenerator module takes in the clock (clk), active-low reset (reset), and enable (enable) signals as inputs. It also has an 8-bit data output (data) representing the hexadecimal values in the sequence.
+
+Inside the module, there is a reg variable (index) to keep track of the current index in the sequence. The sequence is defined as a reg array (sequence) containing the hexadecimal values.
+
+The always block is triggered on the positive edge of the clock or the positive edge of the reset signal. When the reset signal is low, the module resets to the initial state with index = 0 and data = the first element of the sequence. When the enable signal is high, the module increments the index and outputs the corresponding element from the sequence.
+
+Note: The code assumes that the clock and reset signals are properly connected and synchronized with the rest of the design.

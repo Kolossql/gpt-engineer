@@ -1,0 +1,66 @@
+The core blocks necessary for this module are:
+
+1. State Machine: This will control the sequence of the output data based on the clock, reset, and enable signals.
+2. Output Register: This will hold the current output data.
+
+Now, let's write the Verilog code for the sequence generator.
+
+sequence_generator.v
+```verilog
+module SequenceGenerator (
+    input wire clk,
+    input wire reset_n,
+    input wire enable,
+    output reg [7:0] data
+);
+
+    // State encoding
+    parameter S0 = 3'b000, // State for 0xAF
+              S1 = 3'b001, // State for 0xBC
+              S2 = 3'b010, // State for 0xE2
+              S3 = 3'b011, // State for 0x78
+              S4 = 3'b100, // State for 0xFF
+              S5 = 3'b101, // State for 0xE2
+              S6 = 3'b110, // State for 0x0B
+              S7 = 3'b111; // State for 0x8D
+
+    // Current state
+    reg [2:0] state;
+
+    // State machine
+    always @(posedge clk or negedge reset_n) begin
+        if (!reset_n) begin
+            state <= S0;
+        end else if (enable) begin
+            case (state)
+                S0: state <= S1;
+                S1: state <= S2;
+                S2: state <= S3;
+                S3: state <= S4;
+                S4: state <= S5;
+                S5: state <= S6;
+                S6: state <= S7;
+                S7: state <= S0;
+                default: state <= S0;
+            endcase
+        end
+    end
+
+    // Output register
+    always @(state) begin
+        case (state)
+            S0: data = 8'hAF;
+            S1: data = 8'hBC;
+            S2: data = 8'hE2;
+            S3: data = 8'h78;
+            S4: data = 8'hFF;
+            S5: data = 8'hE2;
+            S6: data = 8'h0B;
+            S7: data = 8'h8D;
+            default: data = 8'hAF;
+        endcase
+    end
+
+endmodule
+```
+This code defines a sequence generator module that outputs a sequence of 8-bit hexadecimal values based on the clock, reset, and enable signals. The sequence is controlled by a state machine, and the current output data is held in a register. The state machine transitions to the next state on the rising edge of the clock if the enable signal is high, and it resets to the initial state on the falling edge of the reset signal. The output data is updated whenever the state changes.
