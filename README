@@ -1,0 +1,160 @@
+GPT-Verilog
+---------------------------------------------------------------
+A fork of GPT Engineer, customized for verilog code generation.
+---------------------------------------------------------------
+-------------------------------------------------------------------
+How-to
+-------------------------------------------------------------------
+1. Clone the repository, currently
+	git clone https://github.com/Kolossql/gpt-verilog
+	cd gpt-verilog
+
+2. Check out this development branch
+	git checkout develop_09_07
+
+2. Generate and activate a python virtual environment:
+	make install
+	source venv/bin/activate
+
+3. Set the API key
+	export OPENAI_API_KEY=sk-my_50_character_openai_key
+
+4. Run an example
+	gpt-engineer --steps blackbox+ \
+	projects/ABROstatemachineTesting/BlackBoxTests/BlackBoxTest#15
+
+   At the first prompt, type "c" to continue.
+   gpt-verilog runs GPT-3.5 by default to avoid costly mistakes.
+   Make sure the process is running correctly before using GPT-4.0.
+
+   Output is placed in:  projects/ABROstatemachintTesting/BlackBoxTests/
+	BlackBoxTest#15/workspace/*.v
+
+   All prompts and responses are saved in the same location as *.txt.
+
+   Common issues with gpt-3.5:
+	- Infinite loop when generating testbench
+	- No progress when attempting to fix errors.  Usually it does not
+	  help to do more than one pass of error correction.
+	
+5. Run an example using gpt-4 (if available):
+
+	gpt-engineer --steps blackbox+ \
+	projects/ABROstatemachineTesting/BlackBoxTexts/BlackBoxTest#15 \
+	gpt-4
+
+-------------------------------------------------------------------
+Development
+-------------------------------------------------------------------
+Tasks to do to make this repository generally usable for the public:
+
+(1) Move entire repository to github/efabless
+
+(2) Change the name of the top level procedure from "gpt-engineer"
+    to "gpt-verilog".  Remove unused portions of the code while
+    keeping what's needed to satisfy copyright requirements.
+
+(3) Define more flows and test them.  Currently, the flows can be
+    selected with:	gpt-engineer --steps <flow_name> <prompt_file>
+    where <flow_name> includes:
+	verilogdefault
+	blackbox
+	blackbox+
+	blackboxcaravel
+
+    These flows are not properly documented, and there are coding
+    flows in the mix that are not for verilog that need to be
+    removed.
+
+    Would prefer that "--steps" be changed to "--flow".
+
+(4) Study how output is being passed to the AI and consider ways to
+    keep the lowest possibly overhead to get in as much relevant
+    information without overflowing the context buffer.
+
+(5) Add a check on the output of memory/logs/token_usage and flag
+    a warning when the context window has been exceeded.  Exceeding
+    the context window appears to be associated with the AI dropping
+    output and failing to produce meaningful results.
+
+(6) Fix issue with clarification not asking for one item at a time.
+
+Existing (verilog) flows:
+	verilogdefault:
+		clarify
+		gen_clarified_code	(create module)
+		gen_verilog_testbench	(create testbench)
+		gen_entrypoint		(suggests installing verilog)
+		execute_entrypoint	(suggests running iverilog)
+		human_review
+
+	blackbox:
+		clarify
+		gen_blackbox			(create module black boxes)
+		gen_blackbox_clarified_code	(create modules)
+		gen_blackbox_verilog_testbench	(create testbench)
+
+	blackbox+:
+		clarify
+		gen_blackbox			(create module black boxes)
+		gen_blackbox_clarified_code	(create modules)
+		gen_blackbox_verilog_testbench	(create testbench)
+		check_output_syntax		(run iverilog)
+		check_output_testbench		(run iverilog and vvp)
+
+	blackboxcaravel:
+		clarify
+		gen_blackbox			(create module black boxes)
+		gen_blackbox_clarified_code	(create modules)
+		gen_blackbox_verilog_testbench	(create testbench)
+		gen_caravel_user_wrapper	(put module in user project wrapper)
+
+Suggest avoiding the "entrypoint" steps and instead assuming an environment
+that includes at least iverilog, verilator, and yosys;  and potentially the
+gcc RISC-V compiler and the entire caravel repository setup.
+
+Suggest removing "blackbox" as a step name and just make it part of
+everything, since this is a very useful step that helps the verilog
+generation by helping the AI to keep the signal names consistent between
+the modules and module instances.  Consequently, "gen_blackbox_clarified_code"
+becomes "gen_clarified_code" and the "blackbox" flow becomes the "default"
+flow, and the "default" flow gets removed because it works poorly without
+black-box entries.
+
+Add a new flow that combines blackboxcaravel (adding the user project
+wrapper) and blackbox+ (runs iverilog and checks output).
+
+Proposed new steps:
+
+(1) Step to run verilator instead of iverilog.  Not sure how useful this
+    is overall, or whether (if implemented) it should just be a command-
+    line switch to choose which verilog simulator/linter to use.
+
+(2) Step to run yosys.  Very similar to the step that runs iverilog, but
+    used to check that the code is synthesizable.
+
+(3) Separate steps to run iverilog for syntax checking and running
+    vvp for testbench result checking.  Do one feedback loop after
+    each.  Probably requires prompt optimization for each as well.
+
+(4) Add a second testbench or alternative testbench for the "caravel"
+    flow in which the testbench is written around the user project
+    wrapper, not around the internal user project.
+
+Harder stuff:
+
+(4) Get the AI to write a *caravel* testbench including C code and
+    verilog top-level testbench.  Can the AI even understand how
+    these two files interact?  Will need syntax checking on the C
+    code.  Will the AI understand how to use the macros in defs.h?
+    How to talk to the user project through the given interface?
+
+(5) Get the AI to write a caravel testbench using cocotb.  Does the
+    AI have any understanding of cocotb?
+
+(6) Get the AI to write an openlane configuration file for the
+    module?
+
+(7) If it can get that far, run iverilog on the full caravel testbench
+    and let the AI debug the result.
+

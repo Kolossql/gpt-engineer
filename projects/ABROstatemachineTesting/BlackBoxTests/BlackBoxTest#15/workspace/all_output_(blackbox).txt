@@ -1,21 +1,17 @@
 ABROStateMachine
-{
-    // Clock input for triggering state transitions
+{ 
+    //Clock input
     input wire clk
-
-    // Active-low reset input for resetting the module
-    input wire reset
-
-    // A input for indicating the occurrence of A being high
-    input wire a
-
-    // B input for indicating the occurrence of B being high
-    input wire b
+    //Active-low reset input
+    input wire reset_n
+    //Input A
+    input wire A
+    //Input B
+    input wire B
 }
 {
-    // Output indicating if both A and B have been high at least once
-    output wire o
-
-    // State output representing the current state of the machine
-    output reg [3:0] state
+    //Output O
+    output wire O
+    //Current state of the machine
+    output wire [1:0] state
 }

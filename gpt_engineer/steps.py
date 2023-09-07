@@ -229,7 +229,7 @@ def gen_blackbox_verilog_testbench(ai: AI, dbs: DBs) -> List[dict]:
     to_files(messages[-1].content.strip(), dbs.workspace, "blackboxTestbench")
     return messages
 
-def check_output(ai: AI, dbs: DBs) -> List[dict]:
+def check_output_syntax(ai: AI, dbs: DBs) -> List[dict]:
 
     checkErrors = True
     loopNum = 0
@@ -248,7 +248,7 @@ def check_output(ai: AI, dbs: DBs) -> List[dict]:
         ## reads each file directly using the filenames retrieved above
         for i in files:
             filenames += i+" "
-            file = open(str(dbs.workspace.path)+"\\"+i, "r")
+            file = open((str(dbs.workspace.path.joinpath(i))), "r")
             
             #Formats the code according to the following format
             ##FILENAME
@@ -257,9 +257,15 @@ def check_output(ai: AI, dbs: DBs) -> List[dict]:
             # ```
             fileMessages += "\n"+i+"\n```verilog\n"+file.read()+"\n```"
 
-        ## Runs the files in iverilog and records both successful and unsuccesful outputs
-        args = shlex.split("iverilog -o attempt#"+ str(loopNum)+ " "+filenames +" && vvp attempt#"+ str(loopNum)+ " && exit")
-        process = subprocess.run(args, shell=True, capture_output = True, cwd = dbs.workspace.path )
+        ## Runs the files in iverilog and records any syntax issues
+        args = shlex.split("iverilog -o attempt#"+ str(loopNum)+ " "+filenames)
+        #--- Diagnostic
+        print('')
+        print('Diagnostic:')
+        print('Running iverilog with command line: ' + ' '.join(args))
+        print('(Current working directory is: ' + str(dbs.workspace.path) + ')')
+        #---
+        process = subprocess.run(args, capture_output = True, cwd = str(dbs.workspace.path) )
         output = str(process.stdout).strip("b'").replace("\\n", "\n").replace("\\r", "") +"   "+ str(process.stderr).strip("b'").replace("\\n", "\n").replace("\\r", "")
 
         ## Checks to ensure that iverilog did finish running
@@ -272,6 +278,8 @@ def check_output(ai: AI, dbs: DBs) -> List[dict]:
         messages = [
             ai.fsystem(setup_sys_prompt(dbs)),
         ] + messages[1:] + [files, output]
+
+        ## To do:  Automatically break on no output (no syntax errors)
         
         ## Prints the outputs so that the user can decide to run the error checking again or not
         print("\n\n -----iverilog output------ \n\n" +output.content+"\n\n -----iverilog output------ \n\n")
@@ -284,6 +292,77 @@ def check_output(ai: AI, dbs: DBs) -> List[dict]:
             checkErrors = True
             
         
+
+        to_files(messages[-1].content.strip(), dbs.workspace, "Testing#" + str(loopNum))
+    return messages
+
+def check_output_testbench(ai: AI, dbs: DBs) -> List[dict]:
+
+    checkErrors = True
+    loopNum = 0
+    while checkErrors:
+
+        ## Loads the blackbox and the generation of the module and testbench
+        messages = AI.deserialize_messages(dbs.logs[gen_blackbox.__name__])
+        module = AI.deserialize_messages(dbs.logs[gen_blackbox_clarified_code.__name__])
+        testbench = AI.deserialize_messages(dbs.logs[gen_blackbox_verilog_testbench.__name__])
+
+        ## Gets all filesnames from both the generation of the module and testbench
+        files = find_file_names(module[-1].content) + find_file_names(testbench[-1].content)
+        filenames = ""
+        fileMessages = ""
+
+        ## reads each file directly using the filenames retrieved above
+        for i in files:
+            filenames += i+" "
+            file = open((str(dbs.workspace.path.joinpath(i))), "r")
+            
+            #Formats the code according to the following format
+            ##FILENAME
+            # ``` LANG
+            # CODE
+            # ```
+            fileMessages += "\n"+i+"\n```verilog\n"+file.read()+"\n```"
+
+        ## Re-run iverilog and capture output to make sure the updated
+        ## testbench has been recompiled.  Ideally, this should not be done
+        ## the first time, but need to know the loopNum from the previous
+        ## step.
+        args = shlex.split("iverilog -o attempt#"+ str(loopNum)+ " "+filenames)
+        process = subprocess.run(args, capture_output = True, cwd = str(dbs.workspace.path) )
+        output0 = str(process.stdout).strip("b'").replace("\\n", "\n").replace("\\r", "") +"   "+ str(process.stderr).strip("b'").replace("\\n", "\n").replace("\\r", "")
+
+        ## Runs the compiled testbench in vvp and records both successful and unsuccesful outputs
+        args = shlex.split("vvp attempt#"+ str(loopNum))
+        #--- Diagnostic
+        print('')
+        print('Diagnostic:')
+        print('Running vvp with command line: ' + ' '.join(args))
+        print('(Current working directory is: ' + str(dbs.workspace.path) + ')')
+        #---
+        process = subprocess.run(args, capture_output = True, cwd = str(dbs.workspace.path) )
+        output = str(process.stdout).strip("b'").replace("\\n", "\n").replace("\\r", "") +"   "+ str(process.stderr).strip("b'").replace("\\n", "\n").replace("\\r", "")
+
+        ## Checks to ensure that vvp did finish running
+        if str(output) == str(bytes()):
+            output = "The module and testbench never finished running"
+
+        ## Message chain attatches files and output after the clarification and blackbox messages
+        files = ai.fassistant(fileMessages)
+        output = ai.fassistant(output0 + output)
+        messages = [
+            ai.fsystem(setup_sys_prompt(dbs)),
+        ] + messages[1:] + [files, output]
+        
+        ## Prints the outputs so that the user can decide to run the error checking again or not
+        print("\n\n -----vvp output------ \n\n" +output.content+"\n\n -----vvp output------ \n\n")
+
+        # runs the ai if and only if the user accepts it
+        checkErrors = False
+        if (input("Would you like to automatically debug based on this output? (y or n) ") == "y"):
+            loopNum += 1
+            messages = ai.next(messages, dbs.preprompts["Testing"], step_name=curr_fn())
+            checkErrors = True
 
         to_files(messages[-1].content.strip(), dbs.workspace, "Testing#" + str(loopNum))
     return messages
@@ -438,7 +517,8 @@ STEPS = {
         gen_blackbox,
         gen_blackbox_clarified_code,
         gen_blackbox_verilog_testbench,
-        check_output,
+        check_output_syntax,
+        check_output_testbench,
         ],
     Config.BLACKBOXCARAVEL: [
         clarify,

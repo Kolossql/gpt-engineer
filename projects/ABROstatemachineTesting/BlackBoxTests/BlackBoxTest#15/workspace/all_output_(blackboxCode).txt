@@ -1,76 +1,74 @@
-Core Blocks:
-1. ABROStateMachine: Implements the ABRO state machine logic.
+Core blocks:
 
-ABROStateMachine.v
+1. State Register: This block will hold the current state of the machine. It will be updated on every rising edge of the clock based on the current state and the inputs A and B.
+
+2. Next State Logic: This block will determine the next state of the machine based on the current state and the inputs A and B.
+
+3. Output Logic: This block will generate the output O based on the current state of the machine.
+
+Now, let's write the Verilog code for the ABRO state machine.
+
+abro_state_machine.v
 ```verilog
 module ABROStateMachine (
-  input wire clk,
-  input wire reset,
-  input wire a,
-  input wire b,
-  output wire o,
-  output reg [3:0] state
+    input wire clk,
+    input wire reset_n,
+    input wire A,
+    input wire B,
+    output wire O,
+    output wire [1:0] state
 );
 
-  // State definitions
-  localparam IDLE = 4'b0000;
-  localparam A_HIGH = 4'b0001;
-  localparam B_HIGH = 4'b0010;
-  localparam AB_HIGH = 4'b0011;
+    // State encoding
+    parameter [1:0] S0 = 2'b00; // Initial state
+    parameter [1:0] S1 = 2'b01; // A is high
+    parameter [1:0] S2 = 2'b10; // B is high
+    parameter [1:0] S3 = 2'b11; // Both A and B are high
 
-  // State register
-  reg [3:0] next_state;
+    // State Register
+    reg [1:0] current_state, next_state;
 
-  // Output register
-  reg o_reg;
-
-  always @(posedge clk or posedge reset) begin
-    if (reset) begin
-      // Reset the state machine to the initial state
-      state <= IDLE;
-      o_reg <= 1'b0;
-    end else begin
-      // State machine logic
-      case (state)
-        IDLE: begin
-          if (a && b) begin
-            next_state <= AB_HIGH;
-            o_reg <= 1'b1;
-          end else if (a) begin
-            next_state <= A_HIGH;
-          end else if (b) begin
-            next_state <= B_HIGH;
-          end
-        end
-        A_HIGH: begin
-          if (b) begin
-            next_state <= AB_HIGH;
-            o_reg <= 1'b1;
-          end
-        end
-        B_HIGH: begin
-          if (a) begin
-            next_state <= AB_HIGH;
-            o_reg <= 1'b1;
-          end
-        end
-        AB_HIGH: begin
-          if (!(a && b)) begin
-            next_state <= IDLE;
-            o_reg <= 1'b0;
-          end
-        end
-      endcase
+    // Next State Logic
+    always @(posedge clk or negedge reset_n) begin
+        if (!reset_n)
+            current_state <= S0;
+        else
+            current_state <= next_state;
     end
-  end
 
-  always @(posedge clk) begin
-    // Update the state register
-    state <= next_state;
-  end
+    // Next State Logic
+    always @(*) begin
+        case (current_state)
+            S0: 
+                if (A)
+                    next_state = S1;
+                else if (B)
+                    next_state = S2;
+                else
+                    next_state = S0;
+            S1: 
+                if (B)
+                    next_state = S3;
+                else
+                    next_state = S1;
+            S2: 
+                if (A)
+                    next_state = S3;
+                else
+                    next_state = S2;
+            S3: 
+                next_state = S0;
+            default: 
+                next_state = S0;
+        endcase
+    end
 
-  // Assign the output
-  assign o = o_reg;
+    // Output Logic
+    assign O = (current_state == S3) ? 1 : 0;
+
+    // Output current state
+    assign state = current_state;
 
 endmodule
 ```
+This Verilog code defines a module for the ABRO state machine. It includes a state register to hold the current state, next state logic to determine the next state based on the current state and inputs, and output logic to generate the output based on the current state. The state machine transitions on the rising edge of the clock, and can be reset to the initial state by an active-low reset signal. The current state of the machine is also outputted for verification purposes.

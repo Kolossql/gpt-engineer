@@ -27,6 +27,10 @@ def main(
     logging.basicConfig(level=logging.DEBUG if verbose else logging.INFO)
 
     model = fallback_model(model)
+
+    # Diagnostic output.
+    print('gpt-verilog:  Using LLM "' + model + '"')
+
     ai = AI(
         model_name=model,
         temperature=temperature,
